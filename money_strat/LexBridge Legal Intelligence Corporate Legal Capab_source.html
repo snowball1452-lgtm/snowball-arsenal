@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: #0a0a0a; }
+.slide { width: 1920px; height: 1080px; position: relative; overflow: hidden; page-break-after: always; }
+
+/* SLIDE 1 - Title */
+.slide-1 { background: linear-gradient(135deg, #0a0a08 0%, #100e08 50%, #0a0a08 100%); display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 120px 160px; }
+.slide-1::before { content: ''; position: absolute; top: 0; right: 0; width: 880px; height: 1080px; background: url('IMAGE_PLACEHOLDER:generated_image_20260528_185152_1.png') center/cover; opacity: 0.2; }
+.slide-1::after { content: ''; position: absolute; top: 0; right: 0; width: 880px; height: 1080px; background: linear-gradient(to right, #0a0a08 0%, transparent 100%); }
+.s1-eyebrow { font-size: 26px; font-weight: 700; color: #c9a84c; letter-spacing: 8px; text-transform: uppercase; margin-bottom: 28px; position: relative; z-index: 2; }
+.s1-title { font-family: 'Playfair Display', serif; font-size: 120px; color: #ffffff; line-height: 0.95; position: relative; z-index: 2; margin-bottom: 36px; font-weight: 900; }
+.s1-title span { color: #c9a84c; font-style: italic; }
+.s1-sub { font-size: 30px; color: rgba(255,255,255,0.55); position: relative; z-index: 2; font-weight: 300; max-width: 720px; line-height: 1.6; }
+.s1-bar { width: 100px; height: 3px; background: linear-gradient(to right, #c9a84c, rgba(201,168,76,0.2)); margin-bottom: 40px; position: relative; z-index: 2; }
+
+/* SLIDE 2 - Metrics */
+.slide-2 { background: #0d0d0b; padding: 80px 120px; display: flex; flex-direction: column; justify-content: center; }
+.slide-title { font-family: 'Playfair Display', serif; font-size: 68px; color: #ffffff; margin-bottom: 12px; font-weight: 700; }
+.slide-title span { color: #c9a84c; font-style: italic; }
+.subtitle { font-size: 26px; color: rgba(255,255,255,0.45); margin-bottom: 56px; }
+.metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
+.metric-card { background: linear-gradient(135deg, #1a1a16, #13130f); border: 1px solid rgba(201,168,76,0.15); border-radius: 16px; padding: 44px 32px; text-align: center; }
+.big-num { font-family: 'Playfair Display', serif; font-size: 88px; color: #c9a84c; line-height: 1; font-weight: 900; }
+.metric-label { font-size: 22px; color: rgba(255,255,255,0.7); margin-top: 14px; font-weight: 600; }
+.metric-context { font-size: 19px; color: rgba(255,255,255,0.35); margin-top: 8px; }
+
+/* SLIDE 3 - Services */
+.slide-3 { background: #0d0d0b; padding: 80px 120px; display: flex; flex-direction: column; justify-content: center; }
+.services-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; margin-top: 56px; }
+.service-card { background: #1a1a16; border-top: 3px solid #c9a84c; border-radius: 12px; padding: 44px 32px; }
+.service-card .icon-wrap { width: 60px; height: 60px; background: rgba(201,168,76,0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
+.service-card h3 { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: #ffffff; margin-bottom: 14px; }
+.service-card p { font-size: 21px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+
+/* SLIDE 4 - Governance */
+.slide-4 { background: #0d0d0b; padding: 80px 120px; display: flex; gap: 80px; align-items: center; }
+.slide-4 .left { flex: 1; }
+.slide-4 .right { flex: 1.2; }
+.layer-list { display: flex; flex-direction: column; gap: 20px; }
+.layer-item { display: flex; gap: 24px; align-items: flex-start; background: #1a1a16; border-radius: 12px; padding: 28px 32px; border-left: 3px solid #c9a84c; }
+.layer-num { font-family: 'Playfair Display', serif; font-size: 48px; color: #c9a84c; font-weight: 900; line-height: 1; flex-shrink: 0; }
+.layer-content h4 { font-size: 24px; font-weight: 700; color: #ffffff; margin-bottom: 8px; }
+.layer-content p { font-size: 20px; color: rgba(255,255,255,0.5); }
+.gap-stat { background: linear-gradient(135deg, #c9a84c, #a8852e); border-radius: 16px; padding: 40px; text-align: center; margin-bottom: 24px; }
+.gap-stat .big { font-family: 'Playfair Display', serif; font-size: 100px; color: #0a0a08; font-weight: 900; line-height: 1; }
+.gap-stat .lbl { font-size: 24px; color: rgba(0,0,0,0.65); font-weight: 700; }
+
+/* SLIDE 5 - Employment */
+.slide-5 { background: #0d0d0b; padding: 80px 120px; display: flex; flex-direction: column; justify-content: center; }
+.policy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 48px; }
+.policy-card { background: #1a1a16; border-radius: 12px; padding: 36px 28px; }
+.policy-card h4 { font-size: 24px; font-weight: 700; color: #c9a84c; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+.policy-card ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.policy-card ul li { font-size: 20px; color: rgba(255,255,255,0.6); display: flex; align-items: center; gap: 10px; }
+.policy-card ul li::before { content: ''; width: 6px; height: 6px; background: #c9a84c; border-radius: 50%; flex-shrink: 0; }
+
+/* SLIDE 6 - Data Privacy */
+.slide-6 { background: #0d0d0b; padding: 80px 120px; display: flex; flex-direction: column; justify-content: center; }
+.privacy-table { width: 100%; border-collapse: collapse; margin-top: 48px; }
+.privacy-table th { background: #c9a84c; color: #0a0a08; font-size: 24px; font-weight: 700; padding: 24px 28px; text-align: left; }
+.privacy-table td { font-size: 22px; color: rgba(255,255,255,0.75); padding: 20px 28px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.privacy-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+.privacy-table td:first-child { color: #c9a84c; font-weight: 700; }
+</style>
+</head>
+<body>
+<section class="slide slide-1">
+  <div class="s1-eyebrow">Legal Intelligence Platform</div>
+  <div class="s1-bar"></div>
+  <div class="s1-title">LEX<span>BRIDGE</span><br>LEGAL</div>
+  <div class="s1-sub">Enterprise-Grade Corporate Legal Documentation Delivered in 48 Hours — At a Fraction of Outside Counsel Costs</div>
+</section>
+
+<section class="slide slide-2">
+  <div class="slide-title">The Legal <span>Gap Crisis</span></div>
+  <div class="subtitle">Critical documentation failures costing mid-market businesses every quarter</div>
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="big-num">58%</div>
+      <div class="metric-label">Lack Current Bylaws</div>
+      <div class="metric-context">Operating on outdated or unsigned governance docs</div>
+    </div>
+    <div class="metric-card">
+      <div class="big-num">71%</div>
+      <div class="metric-label">Outdated Cap Tables</div>
+      <div class="metric-context">Last updated more than 12 months ago</div>
+    </div>
+    <div class="metric-card">
+      <div class="big-num">$850</div>
+      <div class="metric-label">Per Hour</div>
+      <div class="metric-context">Average outside counsel rate for documentation work</div>
+    </div>
+    <div class="metric-card">
+      <div class="big-num">$12M</div>
+      <div class="metric-label">Deal Killed</div>
+      <div class="metric-context">Acquisition lost due to missing IP assignment agreements</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide slide-3">
+  <div class="slide-title">Our <span>Services</span></div>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="icon-wrap"><i data-lucide="landmark" style="width:30px;height:30px;color:#c9a84c"></i></div>
+      <h3>Corporate Governance</h3>
+      <p>Formation docs, cap table, board resolutions, compliance calendar</p>
+    </div>
+    <div class="service-card">
+      <div class="icon-wrap"><i data-lucide="users" style="width:30px;height:30px;color:#c9a84c"></i></div>
+      <h3>Employment Law</h3>
+      <p>Full handbook, federal statute compliance, I-9 audit preparation</p>
+    </div>
+    <div class="service-card">
+      <div class="icon-wrap"><i data-lucide="file-signature" style="width:30px;height:30px;color:#c9a84c"></i></div>
+      <h3>Contract Management</h3>
+      <p>MSA, NDA, SOW templates, contract lifecycle playbook</p>
+    </div>
+    <div class="service-card">
+      <div class="icon-wrap"><i data-lucide="shield" style="width:30px;height:30px;color:#c9a84c"></i></div>
+      <h3>Data Privacy</h3>
+      <p>CCPA, multi-state privacy law compliance, GDPR frameworks</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide slide-4">
+  <div class="left">
+    <div class="slide-title">Governance <span>Framework</span></div>
+    <div class="layer-list" style="margin-top:40px;">
+      <div class="layer-item"><div class="layer-num">1</div><div class="layer-content"><h4>Formation Documents</h4><p>Articles, operating agreements, EIN, state registrations</p></div></div>
+      <div class="layer-item"><div class="layer-num">2</div><div class="layer-content"><h4>Ownership Documentation</h4><p>Cap table, stock ledger, buy-sell agreements</p></div></div>
+      <div class="layer-item"><div class="layer-num">3</div><div class="layer-content"><h4>Board and Management</h4><p>Resolutions, minutes, officer appointments, D&amp;O coverage</p></div></div>
+      <div class="layer-item"><div class="layer-num">4</div><div class="layer-content"><h4>Compliance Calendar</h4><p>Annual filings, license renewals, regulatory deadlines</p></div></div>
+    </div>
+  </div>
+  <div class="right">
+    <div class="gap-stat"><div class="big">44%</div><div class="lbl">of Mid-Market Firms Have Never Held a Formal Board Meeting</div></div>
+    <div class="gap-stat" style="background:linear-gradient(135deg,#1a1a16,#13130f);border:1px solid rgba(201,168,76,0.2)"><div class="big" style="color:#c9a84c">52%</div><div class="lbl" style="color:rgba(255,255,255,0.5)">Have No Documented Succession Plan</div></div>
+  </div>
+</section>
+
+<section class="slide slide-5">
+  <div class="slide-title">Employment Law <span>Compliance</span></div>
+  <div class="policy-grid">
+    <div class="policy-card">
+      <h4><i data-lucide="alert-triangle" style="width:24px;height:24px"></i>Anti-Harassment</h4>
+      <ul><li>Zero-tolerance policy</li><li>Investigation procedures</li><li>Non-retaliation policy</li><li>EEO statement</li></ul>
+    </div>
+    <div class="policy-card">
+      <h4><i data-lucide="clock" style="width:24px;height:24px"></i>Wage and Hour</h4>
+      <ul><li>Exempt classification criteria</li><li>Overtime authorization</li><li>Meal and rest breaks</li><li>Remote expense reimbursement</li></ul>
+    </div>
+    <div class="policy-card">
+      <h4><i data-lucide="calendar" style="width:24px;height:24px"></i>Leave Policies</h4>
+      <ul><li>FMLA administration</li><li>State-specific leave laws</li><li>ADA accommodation process</li><li>Military and jury duty leave</li></ul>
+    </div>
+  </div>
+</section>
+
+<section class="slide slide-6">
+  <div class="slide-title">Data Privacy <span>Landscape</span></div>
+  <table class="privacy-table">
+    <thead><tr><th>State</th><th>Law</th><th>Effective Date</th><th>Key Threshold</th><th>LexBridge Solution</th></tr></thead>
+    <tbody>
+      <tr><td>California</td><td>CCPA/CPRA</td><td>Jan 1, 2020/2023</td><td>$25M revenue OR 100K consumers</td><td>Full compliance framework</td></tr>
+      <tr><td>Virginia</td><td>VCDPA</td><td>Jan 1, 2023</td><td>100K consumers</td><td>Multi-state package</td></tr>
+      <tr><td>Texas</td><td>TDPSA</td><td>Jul 1, 2024</td><td>Any processor</td><td>Multi-state package</td></tr>
+      <tr><td>Florida</td><td>FDBR</td><td>Jul 1, 2024</td><td>$1B revenue</td><td>Enterprise package</td></tr>
+      <tr><td>EU/UK</td><td>GDPR</td><td>May 25, 2018</td><td>Any EU data processing</td><td>Enterprise+ package</td></tr>
+    </tbody>
+  </table>
+</section>
+<script>lucide.createIcons();</script>
+</body>
+</html>

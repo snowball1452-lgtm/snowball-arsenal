@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: #0a0a0a; }
+.slide { width: 1920px; height: 1080px; position: relative; overflow: hidden; page-break-after: always; }
+
+/* SLIDE 1 - Title */
+.slide-1 { background: linear-gradient(135deg, #0a0a0a 0%, #1a1208 50%, #0a0a0a 100%); display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 120px 160px; }
+.slide-1::before { content: ''; position: absolute; top: 0; right: 0; width: 900px; height: 1080px; background: url('IMAGE_PLACEHOLDER:generated_image_20260528_185125_1.png') center/cover; opacity: 0.25; }
+.slide-1::after { content: ''; position: absolute; top: 0; right: 0; width: 900px; height: 1080px; background: linear-gradient(to right, #0a0a0a 0%, transparent 100%); }
+.s1-eyebrow { font-size: 28px; font-weight: 700; color: #d4a843; letter-spacing: 6px; text-transform: uppercase; margin-bottom: 32px; position: relative; z-index: 2; }
+.s1-title { font-family: 'Bebas Neue', sans-serif; font-size: 140px; color: #ffffff; line-height: 0.9; position: relative; z-index: 2; margin-bottom: 40px; }
+.s1-title span { color: #d4a843; }
+.s1-sub { font-size: 32px; color: rgba(255,255,255,0.6); position: relative; z-index: 2; font-weight: 300; max-width: 700px; line-height: 1.5; }
+.s1-bar { width: 80px; height: 4px; background: #d4a843; margin-bottom: 40px; position: relative; z-index: 2; }
+
+/* SLIDE 2 - Metrics */
+.slide-2 { background: #0d0d0d; padding: 80px 120px; display: flex; flex-direction: column; justify-content: center; }
+.slide-2 .slide-title { font-family: 'Bebas Neue', sans-serif; font-size: 72px; color: #ffffff; margin-bottom: 16px; }
+.slide-2 .slide-title span { color: #d4a843; }
+.slide-2 .subtitle { font-size: 28px; color: rgba(255,255,255,0.5); margin-bottom: 60px; }
+.metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; }
+.metric-card { background: linear-gradient(135deg, #1a1a1a, #111); border: 1px solid rgba(212,168,67,0.2); border-radius: 16px; padding: 48px 36px; text-align: center; }
+.metric-card .big-num { font-family: 'Bebas Neue', sans-serif; font-size: 96px; color: #d4a843; line-height: 1; }
+.metric-card .metric-label { font-size: 24px; color: rgba(255,255,255,0.7); margin-top: 16px; font-weight: 600; }
+.metric-card .metric-context { font-size: 20px; color: rgba(255,255,255,0.4); margin-top: 8px; }
+
+/* SLIDE 3 - Services */
+.slide-3 { background: linear-gradient(180deg, #0d0d0d 0%, #111008 100%); padding: 80px 120px; display: flex; flex-direction: column; justify-content: center; }
+.slide-3 .slide-title { font-family: 'Bebas Neue', sans-serif; font-size: 72px; color: #ffffff; margin-bottom: 60px; }
+.slide-3 .slide-title span { color: #d4a843; }
+.services-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; }
+.service-card { background: #1a1a1a; border-left: 4px solid #d4a843; border-radius: 12px; padding: 48px 36px; }
+.service-card .icon-wrap { width: 64px; height: 64px; background: rgba(212,168,67,0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 28px; }
+.service-card h3 { font-size: 28px; font-weight: 700; color: #ffffff; margin-bottom: 16px; }
+.service-card p { font-size: 22px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+
+/* SLIDE 4 - Timeline */
+.slide-4 { background: #0d0d0d; padding: 80px 120px; display: flex; flex-direction: column; justify-content: center; }
+.slide-4 .slide-title { font-family: 'Bebas Neue', sans-serif; font-size: 72px; color: #ffffff; margin-bottom: 16px; }
+.slide-4 .slide-title span { color: #d4a843; }
+.slide-4 .subtitle { font-size: 28px; color: rgba(255,255,255,0.5); margin-bottom: 56px; }
+.timeline { display: flex; gap: 0; align-items: stretch; }
+.tl-item { flex: 1; position: relative; }
+.tl-item:not(:last-child)::after { content: ''; position: absolute; top: 40px; right: -1px; width: 40px; height: 2px; background: #d4a843; z-index: 2; }
+.tl-num { font-family: 'Bebas Neue', sans-serif; font-size: 56px; color: #d4a843; margin-bottom: 16px; }
+.tl-title { font-size: 24px; font-weight: 700; color: #ffffff; margin-bottom: 12px; }
+.tl-desc { font-size: 20px; color: rgba(255,255,255,0.5); line-height: 1.5; padding-right: 40px; }
+.tl-bar { width: 100%; height: 3px; background: linear-gradient(to right, #d4a843, rgba(212,168,67,0.2)); margin-bottom: 24px; }
+
+/* SLIDE 5 - OSHA */
+.slide-5 { background: #0d0d0d; padding: 80px 120px; display: flex; gap: 80px; align-items: center; }
+.slide-5 .left { flex: 1; }
+.slide-5 .right { flex: 1; }
+.slide-5 .slide-title { font-family: 'Bebas Neue', sans-serif; font-size: 72px; color: #ffffff; margin-bottom: 40px; }
+.slide-5 .slide-title span { color: #d4a843; }
+.citation-list { display: flex; flex-direction: column; gap: 16px; }
+.citation-item { display: flex; align-items: center; gap: 20px; background: #1a1a1a; border-radius: 10px; padding: 20px 24px; }
+.citation-rank { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: #d4a843; width: 48px; flex-shrink: 0; }
+.citation-text { font-size: 22px; color: rgba(255,255,255,0.8); }
+.citation-count { font-size: 20px; color: rgba(255,255,255,0.4); margin-left: auto; white-space: nowrap; }
+.stat-box { background: linear-gradient(135deg, #d4a843, #b8862e); border-radius: 16px; padding: 48px; text-align: center; margin-bottom: 32px; }
+.stat-box .big { font-family: 'Bebas Neue', sans-serif; font-size: 120px; color: #0a0a0a; line-height: 1; }
+.stat-box .lbl { font-size: 26px; color: rgba(0,0,0,0.7); font-weight: 700; }
+
+/* SLIDE 6 - Bonding */
+.slide-6 { background: #0d0d0d; padding: 80px 120px; display: flex; flex-direction: column; justify-content: center; }
+.slide-6 .slide-title { font-family: 'Bebas Neue', sans-serif; font-size: 72px; color: #ffffff; margin-bottom: 56px; }
+.slide-6 .slide-title span { color: #d4a843; }
+.bonding-table { width: 100%; border-collapse: collapse; }
+.bonding-table th { background: #d4a843; color: #0a0a0a; font-size: 26px; font-weight: 700; padding: 28px 32px; text-align: left; }
+.bonding-table td { font-size: 26px; color: rgba(255,255,255,0.8); padding: 24px 32px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.bonding-table tr:nth-child(even) td { background: rgba(255,255,255,0.03); }
+.bonding-table td:first-child { color: #d4a843; font-weight: 700; }
+</style>
+</head>
+<body>
+<section class="slide slide-1">
+  <div class="s1-eyebrow">Corporate Asset Package</div>
+  <div class="s1-bar"></div>
+  <div class="s1-title">CONSTRUCT<span>CORE</span><br>SOLUTIONS</div>
+  <div class="s1-sub">Construction and Real Estate Compliance Documentation Delivered in 48 Hours</div>
+</section>
+
+<section class="slide slide-2">
+  <div class="slide-title">The Documentation <span>Gap</span></div>
+  <div class="subtitle">What poor compliance infrastructure costs mid-market construction firms every year</div>
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="big-num">$47K</div>
+      <div class="metric-label">Per Week</div>
+      <div class="metric-context">Average project delay cost from documentation gaps</div>
+    </div>
+    <div class="metric-card">
+      <div class="big-num">23</div>
+      <div class="metric-label">Days Average</div>
+      <div class="metric-context">Subcontractor onboarding without a system</div>
+    </div>
+    <div class="metric-card">
+      <div class="big-num">67%</div>
+      <div class="metric-label">Lack Briefings</div>
+      <div class="metric-context">Of GCs lack capabilities decks for bonding agencies</div>
+    </div>
+    <div class="metric-card">
+      <div class="big-num">$2.3M</div>
+      <div class="metric-label">Annual Loss</div>
+      <div class="metric-context">Average cost of documentation friction per firm</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide slide-3">
+  <div class="slide-title">Our <span>Services</span></div>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="icon-wrap"><i data-lucide="users" style="width:32px;height:32px;color:#d4a843"></i></div>
+      <h3>Subcontractor Onboarding</h3>
+      <p>7-stage prequalification protocol reducing mobilization from 23 days to under 7</p>
+    </div>
+    <div class="service-card">
+      <div class="icon-wrap"><i data-lucide="shield" style="width:32px;height:32px;color:#d4a843"></i></div>
+      <h3>OSHA Compliance</h3>
+      <p>Complete safety program documentation covering all top-10 citation categories</p>
+    </div>
+    <div class="service-card">
+      <div class="icon-wrap"><i data-lucide="file-text" style="width:32px;height:32px;color:#d4a843"></i></div>
+      <h3>Bonding Documentation</h3>
+      <p>Surety-ready financial packages that maximize your single-job and aggregate limits</p>
+    </div>
+    <div class="service-card">
+      <div class="icon-wrap"><i data-lucide="building" style="width:32px;height:32px;color:#d4a843"></i></div>
+      <h3>Real Estate Due Diligence</h3>
+      <p>Complete pre-development and construction loan documentation packages</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide slide-4">
+  <div class="slide-title">Subcontractor <span>Onboarding</span></div>
+  <div class="subtitle">7-Stage Protocol — From 23 Days to Under 7</div>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-bar"></div>
+      <div class="tl-num">01</div>
+      <div class="tl-title">Pre-Qualification</div>
+      <div class="tl-desc">License, COI, W-9, OSHA 300 log verification</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-bar"></div>
+      <div class="tl-num">02</div>
+      <div class="tl-title">Safety Pre-Qual</div>
+      <div class="tl-desc">OSHA 10/30 certs, safety program review</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-bar"></div>
+      <div class="tl-num">03</div>
+      <div class="tl-title">Insurance Verify</div>
+      <div class="tl-desc">GL $2M, Auto $1M, WC statutory, Umbrella $5M</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-bar"></div>
+      <div class="tl-num">04</div>
+      <div class="tl-title">Scope Docs</div>
+      <div class="tl-desc">SOW, schedule of values, milestone alignment</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-bar"></div>
+      <div class="tl-num">05</div>
+      <div class="tl-title">Lien Waivers</div>
+      <div class="tl-desc">State-specific preliminary notices and waiver framework</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-bar"></div>
+      <div class="tl-num">06</div>
+      <div class="tl-title">Monitoring</div>
+      <div class="tl-desc">Monthly COI renewals, OSHA incident tracking</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-bar"></div>
+      <div class="tl-num">07</div>
+      <div class="tl-title">Closeout</div>
+      <div class="tl-desc">Final lien waivers, as-builts, warranty package</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide slide-5">
+  <div class="left">
+    <div class="slide-title">OSHA <span>Compliance</span></div>
+    <div class="citation-list">
+      <div class="citation-item"><div class="citation-rank">1</div><div class="citation-text">Fall Protection (1926.501)</div><div class="citation-count">6,307 citations</div></div>
+      <div class="citation-item"><div class="citation-rank">2</div><div class="citation-text">Scaffolding (1926.451)</div><div class="citation-count">3,814 citations</div></div>
+      <div class="citation-item"><div class="citation-rank">3</div><div class="citation-text">Ladders (1926.1053)</div><div class="citation-count">2,946 citations</div></div>
+      <div class="citation-item"><div class="citation-rank">4</div><div class="citation-text">Eye and Face Protection</div><div class="citation-count">2,074 citations</div></div>
+      <div class="citation-item"><div class="citation-rank">5</div><div class="citation-text">Hazard Communication</div><div class="citation-count">1,947 citations</div></div>
+    </div>
+  </div>
+  <div class="right">
+    <div class="stat-box">
+      <div class="big">$15K</div>
+      <div class="lbl">Average OSHA Serious Citation Fine</div>
+    </div>
+    <div class="stat-box" style="background: linear-gradient(135deg, #1a1a1a, #111); border: 1px solid rgba(212,168,67,0.3);">
+      <div class="big" style="color:#d4a843;">9</div>
+      <div class="lbl" style="color:rgba(255,255,255,0.6);">Required Safety Programs We Deliver</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide slide-6">
+  <div class="slide-title">Bonding <span>Capacity</span></div>
+  <table class="bonding-table">
+    <thead>
+      <tr><th>Annual Revenue</th><th>Single Job Limit</th><th>Aggregate Limit</th><th>ConstructCore Package</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>$5M</td><td>$3M</td><td>$8M</td><td>Professional — $2,500</td></tr>
+      <tr><td>$10M</td><td>$6M</td><td>$15M</td><td>Professional — $2,500</td></tr>
+      <tr><td>$25M</td><td>$15M</td><td>$35M</td><td>Enterprise — $4,500</td></tr>
+      <tr><td>$50M</td><td>$25M</td><td>$65M</td><td>Enterprise — $4,500</td></tr>
+      <tr><td>$100M</td><td>$50M</td><td>$130M</td><td>Enterprise+ — $6,000</td></tr>
+    </tbody>
+  </table>
+</section>
+<script>lucide.createIcons();</script>
+</body>
+</html>

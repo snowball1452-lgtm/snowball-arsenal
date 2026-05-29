@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APEX STUDIO</title>
+    <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
+    <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#0a0a0f;--accent:#4a9eff;--surface:rgba(255,255,255,0.04);
+      --border:rgba(255,255,255,0.08);--border-alert:rgba(74,158,255,1);
+      --green:#4ade80;--amber:#fbbf24;--red:#f87171;
+      --t1:rgba(255,255,255,0.92);--t2:rgba(255,255,255,0.50);--t3:rgba(255,255,255,0.28);
+      --mono:ui-monospace,monospace;
+    }
+    html,body{height:100%;background:var(--bg);color:var(--t1);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;overflow:hidden}
+    #app{display:grid;grid-template-rows:auto 1fr;height:100vh;overflow:hidden}
+    
+    /* ORB DOCK */
+    #dock{position:relative;display:flex;flex-direction:column;align-items:center;padding:16px 0 10px;background:linear-gradient(180deg,rgba(8,8,18,.98) 0%,transparent 100%);z-index:100;flex-shrink:0}
+    #orb-canvas{width:110px;height:110px;cursor:pointer;border-radius:50%}
+    #face{position:absolute;top:16px;width:110px;height:110px;display:flex;align-items:center;justify-content:center;pointer-events:none}
+    .eyes{display:flex;gap:20px;margin-top:-6px}
+    .eye{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.85);transition:all .6s ease;box-shadow:0 0 8px rgba(74,158,255,.8)}
+    .eye.alert{background:var(--amber);box-shadow:0 0 10px var(--amber);transform:scaleY(1.5)}
+    .eye.speaking{background:#fff;box-shadow:0 0 14px #fff;width:6px;height:8px;border-radius:40%}
+    .eye.dark{opacity:.12;box-shadow:none}
+    
+    /* COMPUTE PILL */
+    #compute-pill{display:flex;align-items:center;gap:4px;margin-top:7px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:3px 5px}
+    .cmode{background:none;border:none;color:var(--t3);font-size:10px;font-family:var(--mono);letter-spacing:.08em;padding:3px 8px;border-radius:12px;cursor:pointer;transition:all .2s;text-transform:uppercase}
+    .cmode.active{background:var(--accent);color:#fff;font-weight:700}
+    .cmode.active.solo{background:var(--amber);color:#0a0a0f}
+    .cmode.active.dark-m{background:rgba(255,255,255,.12);color:var(--t2)}
+    
+    #mock-badge{position:absolute;top:10px;right:14px;font-size:9px;font-family:var(--mono);color:var(--amber);border:1px solid rgba(251,191,36,.3);padding:2px 5px;border-radius:3px;letter-spacing:.1em}
+    #conn-dot{position:absolute;top:14px;right:48px;width:6px;height:6px;border-radius:50%;background:var(--amber)}
+    #conn-dot.live{background:var(--green)}#conn-dot.fail{background:var(--red)}
+    
+    /* STREAM */
+    #stream{overflow-y:auto;overflow-x:hidden;padding:14px 0 60px}
+    #stream::-webkit-scrollbar{width:2px}
+    #stream::-webkit-scrollbar-thumb{background:rgba(255,255,255,.07);border-radius:1px}
+    .stream-inner{max-width:760px;margin:0 auto;padding:0 18px;display:flex;flex-direction:column;gap:8px}
+    
+    /* PROJECT CARD */
+    .pcard{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:7px;overflow:hidden;transition:all .4s ease;animation:up .3s ease-out}
+    @keyframes up{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .pcard-head{display:flex;align-items:center;gap:8px;padding:12px 14px;cursor:pointer;user-select:none}
+    .pcard-head:hover{background:rgba(255,255,255,.02)}
+    .pcard-body{padding:0 14px 14px;display:flex;flex-direction:column;gap:5px}
+    
+    /* DOTS & BADGES */
+    .hdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+    .hdot.green{background:var(--green);box-shadow:0 0 5px var(--green)}
+    .hdot.amber{background:var(--amber);box-shadow:0 0 5px var(--amber)}
+    .hdot.red{background:var(--red);box-shadow:0 0 5px var(--red)}
+    .pname{font-size:15px;font-weight:700;letter-spacing:.04em;flex:1}
+    .sbadge{font-size:9px;font-family:var(--mono);padding:2px 6px;border-radius:3px;letter-spacing:.07em;text-transform:uppercase}
+    .sbadge.running{background:rgba(74,158,255,.15);color:var(--accent);border:1px solid rgba(74,158,255,.3)}
+    .sbadge.queued{background:rgba(251,191,36,.12);color:var(--amber);border:1px solid rgba(251,191,36,.3)}
+    .sbadge.done{background:rgba(255,255,255,.05);color:var(--t3);border:1px solid rgba(255,255,255,.08)}
+    .sbadge.alert{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3)}
+    .wscore{font-size:10px;font-family:var(--mono);color:var(--t3)}
+    .wtag{font-size:9px;font-family:var(--mono);color:var(--amber);background:rgba(251,191,36,.09);border:1px solid rgba(251,191,36,.22);padding:2px 5px;border-radius:3px}
+    .wtag.red{color:var(--red);background:rgba(248,113,113,.09);border-color:rgba(248,113,113,.22)}
+    .chips{display:flex;gap:4px;padding:0 14px 7px}
+    .chip{width:21px;height:21px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0}
+    
+    /* AGENT UPDATE */
+    .acard{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05);border-left:3px solid;border-radius:5px;overflow:hidden}
+    .acard-head{display:flex;align-items:center;gap:7px;padding:9px 11px;cursor:pointer}
+    .aicon{width:19px;height:19px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
+    .aname{font-size:12px;font-weight:600}
+    .asum{font-size:12px;color:var(--t2);flex:1}
+    .ameta{display:flex;gap:5px;align-items:center;padding:0 11px 9px}
+    .ats{font-size:10px;color:var(--t3);font-family:var(--mono)}
+    .tcchip{font-size:9px;color:var(--t3);background:rgba(255,255,255,.05);padding:1px 5px;border-radius:3px}
+    .aout{display:none;padding:9px 11px;background:rgba(0,0,0,.3);font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.65);border-top:1px solid rgba(255,255,255,.05);white-space:pre-wrap;line-height:1.6}
+    .aout.open{display:block}
+    
+    /* DIFF CARD */
+    .dcard{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.06);border-radius:5px;overflow:hidden}
+    .dhead{display:flex;align-items:center;justify-content:space-between;padding:7px 11px;cursor:pointer;background:rgba(255,255,255,.02)}
+    .dfname{font-family:var(--mono);font-size:11px}
+    .dby{font-size:10px;color:var(--t3)}
+    .dhash{font-family:var(--mono);font-size:9px;color:var(--t3)}
+    .dbody{display:none;padding:9px 11px;font-family:var(--mono);font-size:11px;line-height:1.7}
+    .dbody.open{display:block}
+    .da{color:var(--green)}.dr{color:var(--red)}.dn{color:rgba(255,255,255,.45)}
+    
+    /* ALERT SURFACE CARD */
+    .ascard{background:rgba(74,158,255,.04);border:1px solid rgba(74,158,255,.28);border-left:3px solid var(--accent);border-radius:7px;padding:13px 15px;margin:0 -7px;animation:up .3s ease-out}
+    .astop{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+    .asmsg{font-size:13px;line-height:1.5;margin-bottom:11px}
+    .asbtns{display:flex;gap:5px;flex-wrap:wrap}
+    .asbtn{font-size:11px;font-family:var(--mono);padding:5px 11px;border-radius:4px;border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.05);color:var(--t2);cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.05em}
+    .asbtn:hover{background:rgba(255,255,255,.1);color:var(--t1)}
+    .asbtn.act{background:rgba(74,158,255,.14);border-color:rgba(74,158,255,.38);color:var(--accent)}
+    .asbtn.act:hover{background:rgba(74,158,255,.24)}
+    
+    /* CONV CARD */
+    .cvcard{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:13px 15px;animation:up .3s ease-out}
+    .cvex{display:flex;flex-direction:column;gap:7px;margin-bottom:10px}
+    .cvuser{align-self:flex-end;background:rgba(74,158,255,.12);border:1px solid rgba(74,158,255,.2);border-radius:7px 7px 2px 7px;padding:7px 11px;font-size:13px;max-width:78%}
+    .cvorb{align-self:flex-start;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:2px 7px 7px 7px;padding:7px 11px;font-size:13px;max-width:78%;color:var(--t2)}
+    .cvinrow{display:flex;gap:7px;align-items:flex-start;margin-top:9px}
+    .cvinput{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:5px;padding:7px 11px;color:var(--t1);font-size:13px;font-family:inherit;outline:none;transition:border-color .2s,height .2s;resize:none;height:34px;line-height:20px;overflow:hidden}
+    .cvinput:focus{border-color:var(--accent);height:68px;overflow:auto}
+    .cvinput::placeholder{color:var(--t3)}
+    .cvsend{background:var(--accent);border:none;border-radius:5px;color:#fff;font-size:12px;padding:7px 13px;cursor:pointer;font-weight:600;transition:opacity .2s;white-space:nowrap;height:34px}
+    .cvsend:hover{opacity:.85}
+    .cvco{font-size:11px;color:var(--t3);font-family:var(--mono);cursor:pointer;padding:5px 0}
+    
+    /* SUNK STRIP */
+    .sunk{height:46px;background:var(--surface);border:1px solid rgba(255,255,255,.05);border-radius:5px;display:flex;align-items:center;padding:0 13px;gap:9px;cursor:pointer;transition:all .3s;animation:up .3s ease-out;overflow:hidden}
+    .sunk:hover{background:rgba(255,255,255,.06)}
+    .sunk-name{font-size:12px;font-weight:600;flex:1}
+    .sunk-ts{font-size:10px;color:var(--t3);font-family:var(--mono)}
+    
+    /* SKILL PANEL */
+    #skill-panel{position:fixed;top:0;right:-410px;width:390px;height:100vh;background:rgba(10,10,20,.97);border-left:1px solid rgba(255,255,255,.07);backdrop-filter:blur(18px);z-index:200;transition:right .32s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;overflow:hidden}
+    #skill-panel.open{right:0}
+    .ph{padding:18px 18px 13px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+    .ph-title{font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase}
+    .ph-close{background:none;border:none;color:var(--t3);font-size:18px;cursor:pointer;line-height:1}
+    .ph-close:hover{color:var(--t1)}
+    .pb{flex:1;overflow-y:auto;padding:14px 18px}
+    .pb::-webkit-scrollbar{width:2px}
+    .pb::-webkit-scrollbar-thumb{background:rgba(255,255,255,.07)}
+    .ski{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+    .ski-name{font-size:12px;font-weight:600;flex:1}
+    .ski-src{font-size:10px;color:var(--t3);font-family:var(--mono)}
+    .ski-stats{font-size:10px;color:var(--t3);font-family:var(--mono)}
+    .smbadge{font-size:9px;font-family:var(--mono);padding:2px 6px;border-radius:3px;text-transform:uppercase;letter-spacing:.07em}
+    .smbadge.live{background:rgba(74,158,255,.14);color:var(--accent);border:1px solid rgba(74,158,255,.28)}
+    .smbadge.compiled{background:rgba(74,222,128,.09);color:var(--green);border:1px solid rgba(74,222,128,.22)}
+    .smbadge.dormant{background:rgba(255,255,255,.04);color:var(--t3);border:1px solid rgba(255,255,255,.07)}
+    .sprom{font-size:9px;background:none;border:1px solid rgba(255,255,255,.08);color:var(--t3);padding:2px 6px;border-radius:3px;cursor:pointer;font-family:var(--mono);transition:all .2s}
+    .sprom:hover{border-color:var(--green);color:var(--green)}
+    .padd{padding:14px 18px;border-top:1px solid rgba(255,255,255,.05);flex-shrink:0}
+    .padd-input{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:5px;padding:7px 11px;color:var(--t1);font-size:12px;font-family:var(--mono);outline:none}
+    .padd-input:focus{border-color:var(--accent)}
+    .padd-input::placeholder{color:var(--t3)}
+    .padd-btn{width:100%;margin-top:7px;background:rgba(74,158,255,.09);border:1px solid rgba(74,158,255,.22);border-radius:5px;color:var(--accent);font-size:11px;font-family:var(--mono);padding:7px;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:all .2s}
+    .padd-btn:hover{background:rgba(74,158,255,.17)}
+    
+    /* MODE OVERLAY */
+    #moverlay{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(8,8,18,.97);border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:18px 28px;z-index:300;font-family:var(--mono);font-size:11px;color:var(--t2);letter-spacing:.08em;text-align:center;animation:fadein .2s ease}
+    @keyframes fadein{from{opacity:0}to{opacity:1}}
+    
+    /* SPEECH BAR */
+    #sbar{display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(8,8,18,.96);border:1px solid rgba(74,158,255,.28);border-radius:7px;padding:9px 16px;font-size:12px;color:var(--accent);font-family:var(--mono);z-index:400;max-width:440px;text-align:center;cursor:pointer}
+    #sbar.on{display:block;animation:fadein .3s ease}
+    
+    .slabel{font-size:10px;font-family:var(--mono);color:var(--t3);letter-spacing:.12em;text-transform:uppercase;padding:7px 0 3px;text-align:center}
+    </style>
+    </head>
+    <body>
+    <div id="app">
+    
+      <!-- DOCK -->
+      <div id="dock">
+        <div id="mock-badge">MOCK</div>
+        <div id="conn-dot"></div>
+        <canvas id="orb-canvas" title="Click to speak · Right-click for skills"></canvas>
+        <div id="face"><div class="eyes"><div class="eye" id="eL"></div><div class="eye" id="eR"></div></div></div>
+        <div id="compute-pill">
+          <button class="cmode active" data-m="full" onclick="setMode('full')">Full Crew</button>
+          <button class="cmode solo" data-m="solo" onclick="setMode('solo')">Solo</button>
+          <button class="cmode dark-m" data-m="dark" onclick="setMode('dark')">Dark</button>
+        </div>
+      </div>
+    
+      <!-- STREAM -->
+      <div id="stream"><div class="stream-inner" id="si"></div></div>
+    </div>
+    
+    <!-- SKILL PANEL -->
+    <div id="skill-panel">
+      <div class="ph"><span class="ph-title">Skill Registry</span><button class="ph-close" onclick="closeSkills()">×</button></div>
+      <div class="pb" id="skill-list"></div>
+      <div class="padd">
+        <input class="padd-input" id="skill-url" placeholder="repo URL or manifest block…">
+        <button class="padd-btn" onclick="addSkill()">+ Add Skill Library</button>
+      </div>
+    </div>
+    
+    <!-- MODE OVERLAY -->
+    <div id="moverlay"></div>
+    
+    <!-- SPEECH BAR -->
+    <div id="sbar" onclick="cancelSpeech()"></div>
+    
+    <script type="module">
+    import * as THREE from 'three';
+    
+    // ═══ STATE ═══
+    const S = {
+      mode:'full', orbState:'idle',
+      queue:[], speaking:false,
+      lastSpoke:0, lastUserSpoke:0,
+      quiet:{start:23,end:7},
+      respondingToUser:false,
+    };
+    
+    // ═══ MOCK DATA ═══
+    const PROJECTS = [
+      { id:'hyperforge', name:'HyperForge', status:'running', health:'amber', weight:0.87,
+        agents:[{n:'NanoClaw',c:'#4a9eff',i:'N'},{n:'Welder',c:'#f59e0b',i:'W'},{n:'Scribe',c:'#a78bfa',i:'S'}],
+        whyTag:null,
+        updates:[
+          { id:'u1', agent:'NanoClaw', ac:'#4a9eff', icon:'⚡', summary:'Dependency scan complete. anthropic SDK version drift detected.',
+            tools:['sdk-scan','diff'], ts:'2h ago', dur:'14s',
+            output:'amber — anthropic SDK behind declared requirement\nCurrent: 0.18.1 | Required: >=0.20.0\nFix: pip install --upgrade anthropic' },
+          { id:'u2', agent:'Welder', ac:'#f59e0b', icon:'🔧', summary:'Compiled substrate module. 3 files changed.',
+            tools:['compiler','blake3'], ts:'2h ago', dur:'31s', output:null,
+            diff:{ file:'substrate/core.py', by:'Welder', hash:'b8f4e2a1c9d3071fe0258a94b36d8c5f',
+              lines:[{t:'r',x:'- substrate_version = "1.2.0"'},{t:'a',x:'+ substrate_version = "1.3.1"'},{t:'a',x:'+ enable_async_dispatch = True'},{t:'n',x:'  # core dispatch layer unchanged'}] } }
+        ]
+      },
+      { id:'snowball-folio', name:'Snowball Folio', status:'queued', health:'green', weight:0.61,
+        agents:[{n:'Scribe',c:'#a78bfa',i:'S'}], whyTag:null,
+        updates:[
+          { id:'u3', agent:'Scribe', ac:'#a78bfa', icon:'📝', summary:'Ink engine compiled clean. Folio output ready.',
+            tools:['ink-engine','render'], ts:'1d ago', dur:'8s',
+            output:'Build OK.\nPages: 47\nOutput: ./dist/folio-v2.pdf\nInk engine v3.1 — no warnings.' }
+        ]
+      },
+      { id:'bramble', name:'BrambleThundery', status:'alert', health:'red', weight:0.18,
+        agents:[], whyTag:{l:'dependency drift',r:false},
+        updates:[]
+      },
+    ];
+    
+    const SUNK = [{ id:'nexuslogix', name:'NexusLogix', health:'green', ts:'12 days ago' }];
+    
+    const SKILLS = [
+      { id:'s1', name:'dependency-scanner', src:'wondelai/skills', mode:'live', health:'green', lr:'2h ago', sr:'98%', cost:'low' },
+      { id:'s2', name:'ink-engine-renderer', src:'native/clan-schema', mode:'compiled', health:'green', lr:'1d ago', sr:'100%', cost:'none' },
+      { id:'s3', name:'substrate-compiler', src:'antfu/skills', mode:'compiled', health:'amber', lr:'5h ago', sr:'91%', cost:'none' },
+      { id:'s4', name:'market-pulse', src:'marketing-skills', mode:'dormant', health:'green', lr:'never', sr:'—', cost:'med' },
+    ];
+    
+    const SPEECHES = [
+      "HyperForge dependency shifted. anthropic SDK behind required version.",
+      "Snowball Folio build finished. Ink engine compiled clean.",
+      "BrambleThundery last touched five days ago. Checkpoint valid.",
+      "NanoClaw flagged substrate drift. Three files changed.",
+      "Caveman Schema kb_search still red. No recovery yet.",
+      "Swarm at partial capacity. Solo reserve agent is warm.",
+    ];
+    
+    // ═══ THREE.JS ORB ═══
+    const canvas = document.getElementById('orb-canvas');
+    const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+    renderer.setSize(110,110);
+    
+    const scene = new THREE.Scene();
+    const cam = new THREE.PerspectiveCamera(50,1,0.1,100);
+    cam.position.z = 2.8;
+    
+    // Main sphere
+    const geo = new THREE.SphereGeometry(1,64,64);
+    const mat = new THREE.MeshStandardMaterial({color:0x1a3a6e,roughness:.35,metalness:.6,emissive:new THREE.Color(0x4a9eff),emissiveIntensity:.25});
+    const orb = new THREE.Mesh(geo,mat);
+    scene.add(orb);
+    
+    // Inner glow
+    const glowM = new THREE.MeshBasicMaterial({color:0x4a9eff,transparent:true,opacity:.06});
+    scene.add(new THREE.Mesh(new THREE.SphereGeometry(.93,32,32),glowM));
+    
+    // Speaking rings
+    const rings = [];
+    for(let i=0;i<3;i++){
+      const rm = new THREE.MeshBasicMaterial({color:0x4a9eff,transparent:true,opacity:0});
+      const r = new THREE.Mesh(new THREE.TorusGeometry(1.1+i*.25,.012,8,64),rm);
+      r.userData={ph:i*1.5,base:1.1+i*.25};
+      scene.add(r); rings.push(r);
+    }
+    
+    // Particles
+    const pCount=80, pPos=new Float32Array(pCount*3);
+    for(let i=0;i<pCount;i++){
+      const th=Math.random()*Math.PI*2, ph=Math.acos(2*Math.random()-1), r=1.06+Math.random()*.14;
+      pPos[i*3]=r*Math.sin(ph)*Math.cos(th); pPos[i*3+1]=r*Math.sin(ph)*Math.sin(th); pPos[i*3+2]=r*Math.cos(ph);
+    }
+    const pGeo=new THREE.BufferGeometry(); pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
+    const pMat=new THREE.PointsMaterial({color:0x4a9eff,size:.024,transparent:true,opacity:.6});
+    const particles=new THREE.Points(pGeo,pMat);
+    scene.add(particles);
+    
+    // Lights
+    scene.add(new THREE.AmbientLight(0xffffff,.4));
+    const pl=new THREE.PointLight(0x4a9eff,1.2,10); pl.position.set(2,2,3); scene.add(pl);
+    const rl=new THREE.PointLight(0xa78bfa,.4,10); rl.position.set(-2,-1,-2); scene.add(rl);
+    
+    // Orb targets
+    const TGT = { eR:.074,eG:.392,eB:1,eI:.25,gO:.06,pS:1,pA:.03 };
+    const CUR = {...TGT};
+    const clock = new THREE.Clock();
+    
+    function setOrbTargets(st){
+      const m={
+        idle:{eR:.074,eG:.392,eB:1,eI:.25,gO:.06,pS:1,pA:.03},
+        active:{eR:.98,eG:.62,eB:.16,eI:.55,gO:.12,pS:2,pA:.05},
+        speaking:{eR:.3,eG:.7,eB:1,eI:.9,gO:.18,pS:2.5,pA:.04},
+        alert:{eR:1,eG:.5,eB:.1,eI:.7,gO:.14,pS:1.8,pA:.06},
+        dark:{eR:.05,eG:.08,eB:.12,eI:.04,gO:.01,pS:.2,pA:.01},
+      };
+      Object.assign(TGT,m[st]||m.idle);
+    }
+    
+    function lp(a,b,t){return a+(b-a)*t;}
+    
+    function animate(){
+      requestAnimationFrame(animate);
+      const t=clock.getElapsedTime(), dt=.04;
+      for(const k of Object.keys(CUR)) CUR[k]=lp(CUR[k],TGT[k],dt);
+      mat.emissive.setRGB(CUR.eR,CUR.eG,CUR.eB);
+      mat.emissiveIntensity=CUR.eI;
+      glowM.opacity=CUR.gO;
+    
+      const isDark=S.mode==='dark';
+      const pulse = isDark ? 1+Math.sin(t*.12)*.008 : 1+Math.sin(t*CUR.pS)*CUR.pA;
+      orb.scale.setScalar(pulse);
+      if(S.orbState==='alert') orb.scale.setScalar(1+Math.sin(t*3.5)*.04+Math.sin(t*7.1)*.025);
+      orb.rotation.y=t*.08; orb.rotation.x=Math.sin(t*.05)*(CUR.pA*25);
+    
+      rings.forEach(r=>{
+        if(S.orbState==='speaking'){
+          const ph=(t*1.2+r.userData.ph)%3.5;
+          r.scale.setScalar((r.userData.base+ph*.3)/r.userData.base);
+          r.material.opacity=Math.max(0,.5-ph*.15);
+        } else { r.material.opacity=lp(r.material.opacity,0,.1); }
+      });
+    
+      pMat.opacity=lp(pMat.opacity,(S.mode==='full'&&!isDark)?.6:0,.05);
+      particles.rotation.y=t*.05;
+      renderer.render(scene,cam);
+    }
+    animate();
+    
+    // ═══ ORB STATE ═══
+    window.setOrbState=function(st){
+      S.orbState=st; setOrbTargets(st);
+      const cls=st==='dark'?'dark':st==='alert'?'alert':st==='speaking'?'speaking':'';
+      document.getElementById('eL').className='eye '+cls;
+      document.getElementById('eR').className='eye '+cls;
+    };
+    
+    // ═══ COMPUTE MODE ═══
+    window.setMode=function(m){
+      if(S.mode===m)return;
+      const msg={full:'Waking full crew…',solo:'Spinning down to solo…',dark:'Spinning down crew. Compiled skills hold.'};
+      const ov=document.getElementById('moverlay');
+      ov.textContent=msg[m]; ov.style.display='block';
+      setTimeout(()=>{
+        ov.style.display='none'; S.mode=m;
+        document.querySelectorAll('.cmode').forEach(b=>{ b.classList.remove('active'); if(b.dataset.m===m)b.classList.add('active'); });
+        if(m==='dark') setOrbState('dark'); else if(S.orbState==='dark') setOrbState('idle');
+        renderSkills();
+      },1400);
+    };
+    
+    // ═══ WEIGHT SORT (tiebreaker: weight desc then order) ═══
+    function sorted(ps){ return [...ps].sort((a,b)=>b.weight-a.weight||0); }
+    
+    // ═══ RENDER STREAM ═══
+    function renderStream(){
+      const si=document.getElementById('si');
+      si.innerHTML='';
+    
+      // Alert/surface card first
+      si.appendChild(mkAlertCard('Caveman Schema resurfaced','kb_search returning 503 for 12 minutes. NanoClaw flagged dependency drift.','dependency drift'));
+    
+      // Active projects
+      sorted(PROJECTS).forEach(p=>si.appendChild(mkProjectCard(p)));
+    
+      // Divider
+      const d=document.createElement('div'); d.className='slabel'; d.textContent='— done & healthy —'; si.appendChild(d);
+    
+      // Sunk strips
+      SUNK.forEach(p=>si.appendChild(mkSunk(p)));
+    
+      renderSkills();
+    }
+    
+    function mkProjectCard(p){
+      const card=document.createElement('div'); card.className='pcard'; card.id='pc-'+p.id;
+      card.style.borderLeftColor=p.health==='red'?'var(--red)':p.health==='amber'?'var(--amber)':'var(--accent)';
+    
+      const head=document.createElement('div'); head.className='pcard-head';
+      head.innerHTML=`<div class="hdot ${p.health}"></div><div class="pname">${p.name}</div>
+        ${p.whyTag?`<span class="wtag${p.whyTag.r?' red':''}">${p.whyTag.l}</span>`:''}
+        <span class="sbadge ${p.status}">${p.status}</span>
+        <span class="wscore">${p.weight}</span>`;
+    
+      const body=document.createElement('div'); body.className='pcard-body';
+    
+      if(p.agents.length){
+        const ch=document.createElement('div'); ch.className='chips';
+        p.agents.forEach(a=>{
+          const c=document.createElement('div'); c.className='chip';
+          c.style.cssText=`background:${a.c}22;border:1px solid ${a.c}44;color:${a.c}`;
+          c.textContent=a.i; c.title=a.n; ch.appendChild(c);
+        });
+        card.appendChild(head); card.appendChild(ch);
+      } else { card.appendChild(head); }
+    
+      p.updates.forEach(u=>body.appendChild(u.diff?mkDiffCard(u):mkAgentCard(u)));
+      if(p.updates.length) card.appendChild(body);
+    
+      let collapsed=true;
+      head.addEventListener('click',()=>{
+        collapsed=!collapsed;
+        body.style.display=collapsed?'none':'';
+      });
+      body.style.display='none';
+    
+      return card;
+    }
+    
+    function mkAgentCard(u){
+      const c=document.createElement('div'); c.className='acard'; c.style.borderLeftColor=u.ac;
+      c.innerHTML=`
+        <div class="acard-head" onclick="this.parentElement.querySelector('.aout').classList.toggle('open')">
+          <div class="aicon" style="background:${u.ac}22;color:${u.ac}">${u.icon}</div>
+          <span class="aname" style="color:${u.ac}">${u.agent}</span>
+          <span class="asum">${u.summary}</span>
+        </div>
+        <div class="ameta">
+          <span class="ats">${u.ts} · ${u.dur}</span>
+          ${u.tools.map(t=>`<span class="tcchip">${t}</span>`).join('')}
+        </div>
+        ${u.output?`<div class="aout">${u.output}</div>`:''}`;
+      return c;
+    }
+    
+    function mkDiffCard(u){
+      const d=u.diff;
+      const c=document.createElement('div'); c.className='dcard';
+      c.innerHTML=`
+        <div class="dhead" onclick="this.nextElementSibling.classList.toggle('open')">
+          <div><div class="dfname">${d.file}</div><div class="dby">written by ${d.by}</div></div>
+          <div class="dhash">${d.hash.substring(0,16)}…</div>
+        </div>
+        <div class="dbody">
+          ${d.lines.map(l=>`<div class="d${l.t}">${l.x}</div>`).join('')}
+        </div>`;
+      return c;
+    }
+    
+    function mkAlertCard(title,msg,tag){
+      const c=document.createElement('div'); c.className='ascard';
+      c.innerHTML=`
+        <div class="astop"><span style="font-size:13px;font-weight:700">${title}</span><span class="wtag">${tag}</span></div>
+        <div class="asmsg">${msg}</div>
+        <div class="asbtns">
+          <button class="asbtn" onclick="this.closest('.ascard').remove()">Dismiss</button>
+          <button class="asbtn" onclick="snooze(this,'1hr')">Snooze 1hr</button>
+          <button class="asbtn" onclick="snooze(this,'tomorrow')">Snooze Tomorrow</button>
+          <button class="asbtn act" onclick="openConv('caveman-schema')">Act</button>
+        </div>`;
+      return c;
+    }
+    
+    function mkSunk(p){
+      const s=document.createElement('div'); s.className='sunk';
+      s.innerHTML=`<div class="hdot ${p.health}"></div><div class="sunk-name">${p.name}</div><div class="sunk-ts">${p.ts}</div>`;
+      s.onclick=()=>queueSpeech(`${p.name} last touched ${p.ts}. Health: ${p.health}.`);
+      return s;
+    }
+    
+    // ═══ SKILLS ═══
+    function renderSkills(){
+      const list=document.getElementById('skill-list'); list.innerHTML='';
+      SKILLS.forEach(sk=>{
+        const item=document.createElement('div'); item.className='ski';
+        item.innerHTML=`
+          <div class="hdot ${sk.health}"></div>
+          <div style="flex:1">
+            <div class="ski-name">${sk.name}${sk.mode==='compiled'?' 🔒':''}</div>
+            <div class="ski-src">${sk.src}</div>
+            <div class="ski-stats">${sk.lr} · ${sk.sr} · cost: ${sk.cost}</div>
+          </div>
+          <span class="smbadge ${sk.mode}">${sk.mode.toUpperCase()}</span>
+          ${sk.mode==='live'?`<button class="sprom" onclick="promoteSkill('${sk.id}')">→ Compile</button>`:''}`;
+        list.appendChild(item);
+      });
+      const note=document.createElement('div');
+      note.style.cssText='margin-top:14px;padding:9px;background:rgba(255,255,255,.03);border-radius:5px;font-size:10px;color:rgba(255,255,255,.3);font-family:var(--mono);line-height:1.7';
+      note.textContent=S.mode==='dark'?'DARK MODE — COMPILED skills fire. LIVE skills queued.':S.mode==='solo'?'SOLO MODE — COMPILED run. LIVE queue until agent available.':'FULL CREW — All LIVE and COMPILED fire on schedule.';
+      list.appendChild(note);
+    }
+    
+    window.closeSkills=()=>document.getElementById('skill-panel').classList.remove('open');
+    window.promoteSkill=function(id){
+      const sk=SKILLS.find(s=>s.id===id); if(!sk)return;
+      sk.mode='compiled'; renderSkills();
+      queueSpeech(`${sk.name} promoted. Last run saved as compiled workflow.`);
+    };
+    window.addSkill=function(){
+      const inp=document.getElementById('skill-url'), v=inp.value.trim(); if(!v)return;
+      SKILLS.push({id:'s'+Date.now(),name:v.split('/').pop()||v,src:v,mode:'dormant',health:'green',lr:'never',sr:'—',cost:'?'});
+      inp.value=''; renderSkills();
+      queueSpeech(`New skill added. Mode: dormant until activated.`);
+    };
+    
+    // ═══ ORB INTERACTIONS ═══
+    const oc=document.getElementById('orb-canvas');
+    oc.addEventListener('click',()=>{ if(S.speaking){cancelSpeech();return;} openConv(null); });
+    oc.addEventListener('contextmenu',e=>{e.preventDefault();document.getElementById('skill-panel').classList.toggle('open');});
+    let pt; oc.addEventListener('mousedown',()=>{pt=setTimeout(()=>document.getElementById('skill-panel').classList.toggle('open'),600);});
+    oc.addEventListener('mouseup',()=>clearTimeout(pt));
+    oc.addEventListener('touchstart',()=>{pt=setTimeout(()=>document.getElementById('skill-panel').classList.toggle('open'),600);},{passive:true});
+    oc.addEventListener('touchend',()=>clearTimeout(pt));
+    
+    // ═══ CONVERSATION CARD ═══
+    let convEl=null;
+    window.openConv=function(proj){
+      if(convEl){convEl.remove();convEl=null;return;}
+      S.lastUserSpoke=Date.now();
+      const c=document.createElement('div'); c.className='cvcard';
+      const exId='cx'+Date.now();
+      c.innerHTML=`
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px">
+          <span style="font-size:11px;font-family:var(--mono);color:var(--t3)">conversation${proj?' · '+proj:''}</span>
+          <span class="cvco" onclick="collapseConv(this)">collapse</span>
+        </div>
+        <div class="cvex" id="${exId}"></div>
+        <div class="cvinrow">
+          <textarea class="cvinput" placeholder="speak to the orb…" onkeydown="ckSend(event,this,'${exId}')"></textarea>
+          <button class="cvsend" onclick="sendMsg(this.previousElementSibling,'${exId}')">Send</button>
+        </div>`;
+      document.getElementById('si').prepend(c);
+      convEl=c; c.querySelector('.cvinput').focus();
+    };
+    
+    const REPLIES=["Three active jobs. HyperForge is the hot one.","Snowball Folio finished compiling. No warnings.","NanoClaw flagged SDK drift. Patch or ignore.","BrambleThundery checkpoint five days old. Still valid.","Compiled skills hold in dark mode. Nothing drops.","Two queued jobs waiting for compute."];
+    
+    window.ckSend=function(e,el,exId){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg(el,exId);}};
+    window.sendMsg=function(el,exId){
+      const txt=el.value.trim(); if(!txt)return; el.value='';
+      S.lastUserSpoke=Date.now(); S.respondingToUser=true;
+      const ex=document.getElementById(exId);
+      const ub=document.createElement('div'); ub.className='cvuser'; ub.textContent=txt; ex.appendChild(ub);
+      setTimeout(()=>{
+        const rep=REPLIES[Math.floor(Math.random()*REPLIES.length)];
+        const rb=document.createElement('div'); rb.className='cvorb'; rb.textContent=rep; ex.appendChild(rb);
+        queueSpeech(rep); S.respondingToUser=false;
+        ex.scrollIntoView({behavior:'smooth',block:'nearest'});
+      },600);
+    };
+    window.collapseConv=function(btn){
+      if(!convEl)return;
+      const ts=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+      const co=document.createElement('div'); co.className='cvco';
+      co.textContent=`conversation — ${ts}`;
+      co.onclick=()=>{co.remove();convEl=null;openConv(null);};
+      convEl.replaceWith(co); convEl=null;
+    };
+    window.snooze=function(btn,d){
+      const c=btn.closest('.ascard'); c.style.opacity='.3'; c.style.pointerEvents='none';
+      queueSpeech(`Alert snoozed. Check back ${d==='1hr'?'in an hour':'tomorrow'}.`);
+    };
+    
+    // ═══ SPEECH ENGINE — queue max 3, no self-interrupt, drop oldest ═══
+    window.queueSpeech=function(text,force){
+      if(S.mode==='dark')return;
+      // 10min cooldown after user spoke (only for proactive, not responses)
+      if(!force&&!S.respondingToUser&&Date.now()-S.lastUserSpoke<10*60*1000)return;
+      if(S.queue.length>=3) S.queue.shift(); // drop oldest
+      S.queue.push(text);
+      if(!S.speaking) nextSpeech();
+    };
+    
+    function nextSpeech(){
+      if(!S.queue.length){
+        S.speaking=false;
+        setOrbState(S.mode==='dark'?'dark':'idle');
+        document.getElementById('sbar').classList.remove('on');
+        return;
+      }
+      const text=S.queue.shift(); S.speaking=true; S.lastSpoke=Date.now();
+      setOrbState('speaking');
+      const sb=document.getElementById('sbar'); sb.textContent=`"${text}" · click to cancel`; sb.classList.add('on');
+    
+      if('speechSynthesis' in window){
+        const u=new SpeechSynthesisUtterance(text); u.rate=.95; u.pitch=.9; u.volume=.85;
+        const vs=speechSynthesis.getVoices();
+        const v=vs.find(x=>x.localService&&x.lang.startsWith('en'))||vs.find(x=>x.lang.startsWith('en'))||vs[0];
+        if(v)u.voice=v;
+        u.onend=()=>{S.speaking=false;nextSpeech();};
+        u.onerror=()=>{S.speaking=false;nextSpeech();};
+        speechSynthesis.speak(u);
+      } else {
+        setTimeout(()=>{S.speaking=false;nextSpeech();},text.split(' ').length*380);
+      }
+    }
+    
+    window.cancelSpeech=function(){
+      if('speechSynthesis' in window) speechSynthesis.cancel();
+      S.queue=[]; S.speaking=false;
+      setOrbState(S.mode==='dark'?'dark':'idle');
+      document.getElementById('sbar').classList.remove('on');
+    };
+    
+    // ═══ SURFACE TRIGGER EVALUATOR ═══
+    function evalTrigger(){
+      const now=Date.now(), h=new Date().getHours();
+      if(S.mode==='dark')return;
+      if(h>=S.quiet.start||h<S.quiet.end)return; // quiet hours
+      if(now-S.lastSpoke<20*60*1000)return; // 20min min gap
+      if(now-S.lastUserSpoke<10*60*1000)return; // 10min post-user cooldown
+      const sp=SPEECHES[Math.floor(Math.random()*SPEECHES.length)];
+      setOrbState('alert');
+      setTimeout(()=>queueSpeech(sp,true),800);
+    }
+    
+    // ═══ HEALTH SUB-AGENT MOCK ═══
+    const HEALTH_RESULTS=[
+      null,null,null,
+      {pid:'hyperforge',lv:'amber',reason:'anthropic SDK version behind declared requirement'},
+      null,null,
+      {pid:'snowball-folio',lv:'red',reason:'kb_search endpoint returning 503 for 12 minutes'},
+    ];
+    let hIdx=0;
+    function healthTick(){
+      const r=HEALTH_RESULTS[hIdx%HEALTH_RESULTS.length]; hIdx++;
+      if(!r)return;
+      const card=document.getElementById('pc-'+r.pid);
+      if(card){
+        card.style.borderLeftColor=r.lv==='red'?'var(--red)':'var(--amber)';
+        const head=card.querySelector('.pcard-head');
+        if(!head.querySelector('.wtag')){
+          const t=document.createElement('span'); t.className='wtag'+(r.lv==='red'?' red':'');
+          t.textContent='health: '+r.lv; head.appendChild(t);
+        }
+      }
+      if(S.mode!=='dark'){ setOrbState('alert'); setTimeout(()=>queueSpeech(r.reason,true),600); }
+    }
+    
+    // ═══ SSE MOCK — 15s intervals (corrected from 8s per spec) ═══
+    const SSE_EVENTS=[
+      ()=>injectUpdate('NanoClaw','#4a9eff','⚡','snowball-folio','Dependency check passed. All green.',['health-check']),
+      ()=>injectUpdate('Welder','#f59e0b','🔧','hyperforge','Compiled substrate patch. 1 file changed.',['compiler']),
+      ()=>healthTick(),
+      ()=>injectUpdate('Scribe','#a78bfa','📝','snowball-folio','Generated chapter index. 12 entries.',['ink-engine']),
+      ()=>injectUpdate('NanoClaw','#4a9eff','⚡','hyperforge','API version drift flagged on anthropic.',['sdk-scan']),
+    ];
+    let sseIdx=0;
+    setInterval(()=>{SSE_EVENTS[sseIdx%SSE_EVENTS.length]();sseIdx++;},15000);
+    
+    function injectUpdate(agent,ac,icon,pid,summary,tools){
+      const pc=document.getElementById('pc-'+pid); if(!pc)return;
+      let body=pc.querySelector('.pcard-body');
+      if(!body){body=document.createElement('div');body.className='pcard-body';pc.appendChild(body);}
+      const u={id:'l'+Date.now(),agent,ac,icon,summary,tools,ts:'just now',dur:Math.floor(Math.random()*28+2)+'s',output:null};
+      const c=mkAgentCard(u); c.style.animation='up .3s ease-out'; body.prepend(c);
+      if(S.mode!=='dark'){setOrbState('active');setTimeout(()=>{if(S.orbState==='active')setOrbState('idle');},3000);}
+    }
+    
+    // ═══ PROACTIVE MOCK — 30s (per spec) ═══
+    setInterval(evalTrigger,30000);
+    
+    // ═══ SSE REAL CONNECTION ═══
+    (function trySSE(){
+      try{
+        const es=new EventSource('http://localhost:8080/stream/apex-'+Date.now());
+        es.onopen=()=>{
+          document.getElementById('mock-badge').style.display='none';
+          document.getElementById('conn-dot').className='live';
+        };
+        es.onmessage=e=>{
+          try{const d=JSON.parse(e.data);if(d.type==='agent_update')injectUpdate(d.agent,d.color||'#4a9eff','⚡',d.projectId,d.summary,d.tools||[]);}catch{}
+        };
+        es.onerror=()=>{document.getElementById('conn-dot').className='fail';setTimeout(trySSE,30000);};
+      }catch{}
+    })();
+    
+    // ═══ VOICES ═══
+    if('speechSynthesis' in window) speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices();
+    
+    // ═══ INIT ═══
+    renderStream();
+    setTimeout(()=>queueSpeech("Apex Studio online. Three active projects. HyperForge has a dependency drift.",true),2000);
+    
+    </script>
+    </body>
+    </html>

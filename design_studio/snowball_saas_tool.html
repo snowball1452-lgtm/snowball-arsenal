@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snowball — Design Intelligence Platform</title>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Playfair+Display:wght@400;700;900&display=swap');
+    
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --black:#030303;--gold:#C9A84C;--gold-light:#E8C97A;--white:#FAFAFA;
+      --gray:#888;--dark:#0A0A0A;--card:#111;--card2:#141414;--border:rgba(201,168,76,0.15);
+      --sidebar:220px;--header:60px;
+    }
+    body{background:var(--black);color:var(--white);font-family:'Inter',sans-serif;height:100vh;overflow:hidden;display:flex;flex-direction:column}
+    
+    /* HEADER */
+    .app-header{height:var(--header);background:rgba(3,3,3,0.95);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:16px;backdrop-filter:blur(20px);position:sticky;top:0;z-index:100;flex-shrink:0}
+    .app-logo{font-family:'Playfair Display',serif;font-size:20px;color:var(--gold);letter-spacing:3px;font-weight:900;margin-right:8px}
+    .app-logo-sub{font-size:9px;letter-spacing:3px;color:var(--gray);text-transform:uppercase;border-left:1px solid var(--border);padding-left:12px}
+    .header-spacer{flex:1}
+    .header-btn{background:rgba(201,168,76,0.08);border:1px solid var(--border);padding:7px 16px;border-radius:2px;font-size:11px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;cursor:pointer;transition:all 0.2s}
+    .header-btn:hover{background:rgba(201,168,76,0.15)}
+    .header-btn.primary{background:var(--gold);color:var(--black);font-weight:700}
+    .header-btn.primary:hover{background:var(--gold-light)}
+    .header-credits{font-size:10px;color:var(--gray);letter-spacing:1px;padding:7px 14px;border:1px solid var(--border);border-radius:2px}
+    .header-credits span{color:var(--gold)}
+    
+    /* LAYOUT */
+    .app-body{display:flex;flex:1;overflow:hidden}
+    
+    /* SIDEBAR */
+    .sidebar{width:var(--sidebar);background:var(--dark);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0}
+    .sidebar-section{padding:20px 16px 8px;font-size:9px;letter-spacing:3px;color:var(--gray);text-transform:uppercase}
+    .sidebar-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;transition:all 0.2s;border-left:2px solid transparent;font-size:12px;color:var(--gray)}
+    .sidebar-item:hover{background:rgba(201,168,76,0.05);color:var(--white);border-left-color:rgba(201,168,76,0.3)}
+    .sidebar-item.active{background:rgba(201,168,76,0.08);color:var(--white);border-left-color:var(--gold)}
+    .sidebar-item .icon{width:16px;text-align:center;font-size:14px}
+    .sidebar-item .badge{margin-left:auto;background:var(--gold);color:var(--black);font-size:8px;padding:2px 6px;border-radius:10px;font-weight:700}
+    .sidebar-divider{height:1px;background:var(--border);margin:8px 16px}
+    .sidebar-archetype{padding:6px 16px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.2s}
+    .sidebar-archetype:hover{background:rgba(201,168,76,0.05)}
+    .arch-dot{width:8px;height:8px;border-radius:50%}
+    .arch-label{font-size:11px;color:var(--gray)}
+    
+    /* MAIN CONTENT */
+    .main-content{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+    
+    /* TABS */
+    .tabs{display:flex;border-bottom:1px solid var(--border);background:var(--dark);padding:0 24px;flex-shrink:0}
+    .tab{padding:16px 20px;font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;color:var(--gray);border-bottom:2px solid transparent;transition:all 0.2s}
+    .tab:hover{color:var(--white)}
+    .tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+    
+    /* TAB CONTENT */
+    .tab-content{display:none;flex:1;padding:24px;overflow-y:auto}
+    .tab-content.active{display:block}
+    
+    /* GENERATE TAB */
+    .generate-layout{display:grid;grid-template-columns:1fr 340px;gap:24px;height:100%}
+    
+    .generate-form{display:flex;flex-direction:column;gap:20px}
+    .form-section{background:var(--card);border:1px solid var(--border);padding:24px}
+    .form-title{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+    .form-group{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+    .form-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gray)}
+    .form-input{background:var(--dark);border:1px solid var(--border);padding:12px 16px;color:var(--white);font-family:'Inter',sans-serif;font-size:13px;outline:none;transition:border 0.2s;border-radius:2px}
+    .form-input:focus{border-color:var(--gold)}
+    .form-input::placeholder{color:rgba(136,136,136,0.5)}
+    select.form-input option{background:var(--dark)}
+    textarea.form-input{resize:vertical;min-height:80px;line-height:1.6}
+    
+    /* ARCHETYPE SELECTOR */
+    .archetype-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .arch-option{background:var(--dark);border:1px solid var(--border);padding:14px;cursor:pointer;transition:all 0.2s;text-align:center;border-radius:2px}
+    .arch-option:hover{border-color:rgba(201,168,76,0.4);background:rgba(201,168,76,0.05)}
+    .arch-option.selected{border-color:var(--gold);background:rgba(201,168,76,0.1)}
+    .arch-option-name{font-size:11px;color:var(--white);font-weight:600;margin-top:8px}
+    .arch-option-sub{font-size:9px;color:var(--gray);margin-top:4px}
+    .arch-option-dot{width:24px;height:24px;border-radius:50%;margin:0 auto}
+    
+    /* COLOR PICKER */
+    .color-picker-row{display:flex;gap:10px;flex-wrap:wrap}
+    .color-option{width:32px;height:32px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all 0.2s;position:relative}
+    .color-option.selected::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--gold)}
+    .color-option:hover{transform:scale(1.1)}
+    
+    /* GENERATE BTN */
+    .generate-btn{background:var(--gold);color:var(--black);padding:18px;font-size:12px;letter-spacing:3px;text-transform:uppercase;font-weight:700;border:none;cursor:pointer;transition:all 0.2s;width:100%;border-radius:2px}
+    .generate-btn:hover{background:var(--gold-light);transform:translateY(-1px)}
+    .generate-btn:active{transform:translateY(0)}
+    
+    /* PREVIEW PANEL */
+    .preview-panel{background:var(--card);border:1px solid var(--border);display:flex;flex-direction:column;height:fit-content;position:sticky;top:0}
+    .preview-header{padding:16px 20px;border-bottom:1px solid var(--border);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;justify-content:space-between}
+    .preview-screen{background:var(--black);aspect-ratio:16/9;position:relative;overflow:hidden;margin:16px;border:1px solid var(--border)}
+    .preview-nav{background:rgba(3,3,3,0.9);height:20px;display:flex;align-items:center;padding:0 8px;gap:4px}
+    .preview-dot{width:5px;height:5px;border-radius:50%;background:var(--gray)}
+    .preview-body{padding:12px;display:flex;flex-direction:column;gap:6px}
+    .preview-hero-text{height:12px;background:var(--white);opacity:0.9;border-radius:1px;width:70%}
+    .preview-sub-text{height:6px;background:var(--gray);opacity:0.4;border-radius:1px;width:50%}
+    .preview-btn-mock{height:8px;width:80px;background:var(--gold);border-radius:1px;margin-top:4px;opacity:0.7}
+    .preview-grid-mock{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin-top:8px}
+    .preview-card-mock{height:30px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:1px}
+    .preview-actions{padding:16px 20px;border-top:1px solid var(--border);display:flex;gap:8px}
+    .preview-btn{flex:1;padding:10px;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px;font-weight:600;text-align:center}
+    .preview-btn.gold{background:var(--gold);color:var(--black);border:none}
+    .preview-btn.outline{background:transparent;color:var(--gold);border:1px solid var(--border)}
+    
+    /* LUXURY SCORE */
+    .score-panel{background:var(--card);border:1px solid var(--border);padding:20px;margin:0 16px 16px}
+    .score-title{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+    .score-main{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+    .score-number{font-family:'Playfair Display',serif;font-size:48px;color:var(--gold);font-weight:900;line-height:1}
+    .score-label{font-size:10px;color:var(--gray);letter-spacing:1px}
+    .score-bar-bg{height:4px;background:rgba(255,255,255,0.05);border-radius:2px;margin-bottom:12px}
+    .score-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:2px;width:87%}
+    .score-items{display:flex;flex-direction:column;gap:8px}
+    .score-item{display:flex;align-items:center;justify-content:space-between;font-size:10px}
+    .score-item-label{color:var(--gray)}
+    .score-item-val{color:var(--white);font-weight:600}
+    .score-item-val.good{color:#4ade80}
+    .score-item-val.warn{color:#fbbf24}
+    
+    /* LIBRARY TAB */
+    .library-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+    .library-header h2{font-family:'Playfair Display',serif;font-size:28px}
+    .library-search{background:var(--card);border:1px solid var(--border);padding:10px 16px;color:var(--white);font-family:'Inter',sans-serif;font-size:13px;outline:none;width:240px;border-radius:2px}
+    .library-filters{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+    .filter-btn{padding:7px 16px;border:1px solid var(--border);background:transparent;color:var(--gray);font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all 0.2s}
+    .filter-btn:hover,.filter-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.05)}
+    .components-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .component-card{background:var(--card);border:1px solid var(--border);overflow:hidden;cursor:pointer;transition:all 0.2s;border-radius:2px}
+    .component-card:hover{border-color:rgba(201,168,76,0.4);transform:translateY(-2px)}
+    .component-preview{aspect-ratio:16/9;background:var(--dark);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+    .component-info{padding:14px 16px;border-top:1px solid var(--border)}
+    .component-name{font-size:12px;color:var(--white);font-weight:600;margin-bottom:4px}
+    .component-meta{font-size:10px;color:var(--gray);display:flex;justify-content:space-between}
+    .component-tag{font-size:9px;color:var(--gold);background:rgba(201,168,76,0.08);padding:2px 8px;border-radius:10px}
+    
+    /* PROJECTS TAB */
+    .projects-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+    .projects-header h2{font-family:'Playfair Display',serif;font-size:28px}
+    .projects-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .project-card{background:var(--card);border:1px solid var(--border);overflow:hidden;border-radius:2px;transition:all 0.2s}
+    .project-card:hover{border-color:rgba(201,168,76,0.4)}
+    .project-thumb{aspect-ratio:16/9;background:var(--dark);position:relative;overflow:hidden}
+    .project-status{position:absolute;top:12px;right:12px;padding:4px 10px;border-radius:10px;font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700}
+    .status-live{background:rgba(74,222,128,0.2);color:#4ade80;border:1px solid rgba(74,222,128,0.3)}
+    .status-draft{background:rgba(201,168,76,0.2);color:var(--gold);border:1px solid rgba(201,168,76,0.3)}
+    .status-review{background:rgba(251,191,36,0.2);color:#fbbf24;border:1px solid rgba(251,191,36,0.3)}
+    .project-info{padding:16px 20px}
+    .project-name{font-size:14px;color:var(--white);font-weight:600;margin-bottom:4px}
+    .project-client{font-size:11px;color:var(--gray)}
+    .project-footer{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid var(--border)}
+    .project-value{font-size:12px;color:var(--gold);font-weight:600}
+    .project-date{font-size:10px;color:var(--gray)}
+    .project-actions{display:flex;gap:6px}
+    .proj-btn{padding:6px 12px;font-size:9px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px;border:1px solid var(--border);color:var(--gray);background:transparent;transition:all 0.2s}
+    .proj-btn:hover{border-color:var(--gold);color:var(--gold)}
+    .proj-btn.primary{background:var(--gold);color:var(--black);border-color:var(--gold);font-weight:700}
+    
+    /* ANALYTICS TAB */
+    .analytics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+    .metric-card{background:var(--card);border:1px solid var(--border);padding:24px;border-radius:2px}
+    .metric-value{font-family:'Playfair Display',serif;font-size:36px;color:var(--white);font-weight:900;line-height:1;margin-bottom:8px}
+    .metric-value.gold{color:var(--gold)}
+    .metric-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:4px}
+    .metric-change{font-size:11px;color:#4ade80}
+    .metric-change.down{color:#f87171}
+    .chart-row{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:24px}
+    .chart-card{background:var(--card);border:1px solid var(--border);padding:24px;border-radius:2px}
+    .chart-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+    .chart-bars{display:flex;align-items:flex-end;gap:8px;height:120px}
+    .chart-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px}
+    .chart-bar{width:100%;background:linear-gradient(to top,var(--gold),var(--gold-light));border-radius:2px 2px 0 0;opacity:0.7;transition:opacity 0.2s;cursor:pointer}
+    .chart-bar:hover{opacity:1}
+    .chart-bar-label{font-size:9px;color:var(--gray)}
+    .arch-breakdown{display:flex;flex-direction:column;gap:10px}
+    .arch-row{display:flex;align-items:center;gap:12px}
+    .arch-row-label{font-size:10px;color:var(--gray);width:80px}
+    .arch-row-bar{flex:1;height:4px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden}
+    .arch-row-fill{height:100%;border-radius:2px}
+    .arch-row-val{font-size:10px;color:var(--white);font-weight:600;width:30px;text-align:right}
+    .revenue-table{width:100%;border-collapse:collapse}
+    .revenue-table th{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);padding:10px 16px;text-align:left;border-bottom:1px solid var(--border)}
+    .revenue-table td{font-size:12px;color:var(--white);padding:12px 16px;border-bottom:1px solid rgba(201,168,76,0.05)}
+    .revenue-table tr:hover td{background:rgba(201,168,76,0.03)}
+    .td-muted{color:var(--gray) !important}
+    .td-gold{color:var(--gold) !important;font-weight:600}
+    .td-green{color:#4ade80 !important}
+    
+    /* SETTINGS TAB */
+    .settings-grid{display:grid;grid-template-columns:240px 1fr;gap:24px}
+    .settings-nav{background:var(--card);border:1px solid var(--border);padding:16px;height:fit-content;border-radius:2px}
+    .settings-nav-item{padding:10px 14px;font-size:12px;color:var(--gray);cursor:pointer;border-radius:2px;transition:all 0.2s;margin-bottom:2px}
+    .settings-nav-item:hover,.settings-nav-item.active{background:rgba(201,168,76,0.08);color:var(--white)}
+    .settings-content{background:var(--card);border:1px solid var(--border);padding:32px;border-radius:2px}
+    .settings-section-title{font-family:'Playfair Display',serif;font-size:22px;color:var(--white);margin-bottom:8px}
+    .settings-section-sub{font-size:13px;color:var(--gray);margin-bottom:28px}
+    .settings-row{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border)}
+    .settings-row-label{font-size:13px;color:var(--white);font-weight:500}
+    .settings-row-sub{font-size:11px;color:var(--gray);margin-top:2px}
+    .toggle{width:40px;height:22px;background:var(--border);border-radius:11px;position:relative;cursor:pointer;transition:background 0.2s}
+    .toggle.on{background:var(--gold)}
+    .toggle::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:var(--white);top:3px;left:3px;transition:left 0.2s}
+    .toggle.on::after{left:21px}
+    .plan-card{background:var(--dark);border:2px solid var(--gold);padding:24px;border-radius:2px;margin-bottom:16px}
+    .plan-name{font-family:'Playfair Display',serif;font-size:24px;color:var(--gold);margin-bottom:4px}
+    .plan-price{font-size:36px;color:var(--white);font-weight:700;margin-bottom:16px}
+    .plan-features{display:flex;flex-direction:column;gap:8px}
+    .plan-feature{font-size:12px;color:var(--gray);display:flex;align-items:center;gap:8px}
+    .plan-feature::before{content:'—';color:var(--gold)}
+    
+    /* NOTIFICATION */
+    .notification{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--gold);padding:16px 24px;border-radius:2px;font-size:13px;color:var(--white);z-index:1000;transform:translateY(100px);opacity:0;transition:all 0.3s;display:flex;align-items:center;gap:12px}
+    .notification.show{transform:translateY(0);opacity:1}
+    .notif-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0}
+    
+    /* COMPONENT PREVIEWS */
+    .cp-hero{background:linear-gradient(135deg,#030303,#0a0a0a);width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:20px}
+    .cp-hero-title{font-family:'Playfair Display',serif;font-size:20px;color:var(--white);text-align:center}
+    .cp-nav{background:#0a0a0a;width:100%;height:100%;display:flex;flex-direction:column}
+    .cp-nav-bar{height:24px;background:#0a0a0a;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 12px;gap:12px}
+    .cp-nav-logo{font-size:10px;color:var(--gold);font-family:'Playfair Display',serif}
+    .cp-nav-links{display:flex;gap:8px;margin-left:auto}
+    .cp-nav-link{font-size:7px;color:var(--gray);letter-spacing:1px}
+    .cp-card{background:#0a0a0a;width:100%;height:100%;display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;padding:10px}
+    .cp-card-item{background:#111;border:1px solid var(--border)}
+    .cp-stats{background:#0a0a0a;width:100%;height:100%;display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:10px}
+    .cp-stat{background:#111;border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px}
+    .cp-stat-num{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold);font-weight:900}
+    .cp-stat-label{font-size:6px;color:var(--gray);letter-spacing:1px;text-transform:uppercase}
+    .cp-cta{background:linear-gradient(135deg,#030303,#111);width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;text-align:center;border:1px solid var(--border)}
+    .cp-cta-title{font-family:'Playfair Display',serif;font-size:12px;color:var(--white);margin-bottom:8px}
+    .cp-cta-btn{background:var(--gold);color:var(--black);font-size:7px;padding:4px 10px;letter-spacing:2px}
+    .cp-form{background:#0a0a0a;width:100%;height:100%;padding:10px;display:flex;flex-direction:column;gap:4px}
+    .cp-form-field{height:14px;background:#111;border:1px solid var(--border)}
+    .cp-form-btn{height:14px;background:var(--gold);margin-top:4px}
+    
+    /* MOBILE RESPONSIVE */
+    @media(max-width:768px){
+      :root{--sidebar:0px}
+      .sidebar{display:none}
+      .generate-layout{grid-template-columns:1fr}
+      .analytics-grid{grid-template-columns:1fr 1fr}
+      .components-grid{grid-template-columns:1fr 1fr}
+      .projects-grid{grid-template-columns:1fr}
+      .chart-row{grid-template-columns:1fr}
+      .settings-grid{grid-template-columns:1fr}
+      .archetype-grid{grid-template-columns:repeat(2,1fr)}
+      .tabs{overflow-x:auto;padding:0 12px}
+      .tab{white-space:nowrap}
+      main-content{padding:12px}
+    }
+    </style>
+    </head>
+    <body>
+    
+    <!-- HEADER -->
+    <header class="app-header">
+      <div class="app-logo">SNOWBALL</div>
+      <div class="app-logo-sub">Design Intelligence Platform</div>
+      <div class="header-spacer"></div>
+      <div class="header-credits">Credits: <span>2,450</span> remaining</div>
+      <button class="header-btn" onclick="showNotif('Opening brief form...')">New Commission</button>
+      <button class="header-btn primary" onclick="switchTab('generate')">Generate Site</button>
+    </header>
+    
+    <div class="app-body">
+    
+      <!-- SIDEBAR -->
+      <nav class="sidebar">
+        <div class="sidebar-section">Navigation</div>
+        <div class="sidebar-item active" onclick="switchTab('generate');setActive(this)">
+          <span class="icon">⚡</span> Generate
+        </div>
+        <div class="sidebar-item" onclick="switchTab('library');setActive(this)">
+          <span class="icon">◻</span> Component Library <span class="badge">200+</span>
+        </div>
+        <div class="sidebar-item" onclick="switchTab('projects');setActive(this)">
+          <span class="icon">◈</span> Projects
+        </div>
+        <div class="sidebar-item" onclick="switchTab('analytics');setActive(this)">
+          <span class="icon">◉</span> Analytics
+        </div>
+        <div class="sidebar-item" onclick="switchTab('settings');setActive(this)">
+          <span class="icon">◎</span> Settings
+        </div>
+        
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-section">Archetypes</div>
+        
+        <div class="sidebar-archetype">
+          <div class="arch-dot" style="background:#C9A84C"></div>
+          <div class="arch-label">Dark Precision</div>
+        </div>
+        <div class="sidebar-archetype">
+          <div class="arch-dot" style="background:#D4A96A"></div>
+          <div class="arch-label">Fluid Elegance</div>
+        </div>
+        <div class="sidebar-archetype">
+          <div class="arch-dot" style="background:#E53E3E"></div>
+          <div class="arch-label">Avant-Garde</div>
+        </div>
+        <div class="sidebar-archetype">
+          <div class="arch-dot" style="background:#3B82F6"></div>
+          <div class="arch-label">Wedge Futurist</div>
+        </div>
+        <div class="sidebar-archetype">
+          <div class="arch-dot" style="background:#D97706"></div>
+          <div class="arch-label">Brand Identity</div>
+        </div>
+        <div class="sidebar-archetype">
+          <div class="arch-dot" style="background:#1D4ED8"></div>
+          <div class="arch-label">Transport Luxury</div>
+        </div>
+        <div class="sidebar-archetype">
+          <div class="arch-dot" style="background:#84CC16"></div>
+          <div class="arch-label">Future Concept</div>
+        </div>
+        <div class="sidebar-archetype">
+          <div class="arch-dot" style="background:#14B8A6"></div>
+          <div class="arch-label">Technical Sculpture</div>
+        </div>
+    
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-section">Account</div>
+        <div class="sidebar-item">
+          <span class="icon">◇</span> Chad Snowball
+        </div>
+        <div class="sidebar-item">
+          <span class="icon">◈</span> Billing
+        </div>
+      </nav>
+    
+      <!-- MAIN CONTENT -->
+      <div class="main-content">
+        
+        <!-- TABS -->
+        <div class="tabs">
+          <div class="tab active" id="tab-generate" onclick="switchTab('generate')">Generate</div>
+          <div class="tab" id="tab-library" onclick="switchTab('library')">Component Library</div>
+          <div class="tab" id="tab-projects" onclick="switchTab('projects')">Projects</div>
+          <div class="tab" id="tab-analytics" onclick="switchTab('analytics')">Analytics</div>
+          <div class="tab" id="tab-settings" onclick="switchTab('settings')">Settings</div>
+        </div>
+    
+        <!-- GENERATE TAB -->
+        <div class="tab-content active" id="content-generate">
+          <div class="generate-layout">
+            
+            <div class="generate-form">
+              
+              <!-- ARCHETYPE -->
+              <div class="form-section">
+                <div class="form-title">01 — Select Archetype</div>
+                <div class="archetype-grid">
+                  <div class="arch-option selected" onclick="selectArch(this)">
+                    <div class="arch-option-dot" style="background:#C9A84C"></div>
+                    <div class="arch-option-name">Dark Precision</div>
+                    <div class="arch-option-sub">Marcello Style</div>
+                  </div>
+                  <div class="arch-option" onclick="selectArch(this)">
+                    <div class="arch-option-dot" style="background:#D4A96A"></div>
+                    <div class="arch-option-name">Fluid Elegance</div>
+                    <div class="arch-option-sub">Pininfarina Style</div>
+                  </div>
+                  <div class="arch-option" onclick="selectArch(this)">
+                    <div class="arch-option-dot" style="background:#E53E3E"></div>
+                    <div class="arch-option-name">Avant-Garde</div>
+                    <div class="arch-option-sub">Zagato Style</div>
+                  </div>
+                  <div class="arch-option" onclick="selectArch(this)">
+                    <div class="arch-option-dot" style="background:#3B82F6"></div>
+                    <div class="arch-option-name">Wedge Futurist</div>
+                    <div class="arch-option-sub">Bertone Style</div>
+                  </div>
+                  <div class="arch-option" onclick="selectArch(this)">
+                    <div class="arch-option-dot" style="background:#D97706"></div>
+                    <div class="arch-option-name">Brand Identity</div>
+                    <div class="arch-option-sub">Wearbrand Style</div>
+                  </div>
+                  <div class="arch-option" onclick="selectArch(this)">
+                    <div class="arch-option-dot" style="background:#1D4ED8"></div>
+                    <div class="arch-option-name">Transport Luxury</div>
+                    <div class="arch-option-sub">Priestman Style</div>
+                  </div>
+                  <div class="arch-option" onclick="selectArch(this)">
+                    <div class="arch-option-dot" style="background:#84CC16"></div>
+                    <div class="arch-option-name">Future Concept</div>
+                    <div class="arch-option-sub">Seymour Style</div>
+                  </div>
+                  <div class="arch-option" onclick="selectArch(this)">
+                    <div class="arch-option-dot" style="background:#14B8A6"></div>
+                    <div class="arch-option-name">Technical Sculpture</div>
+                    <div class="arch-option-sub">Italdesign Style</div>
+                  </div>
+                </div>
+              </div>
+    
+              <!-- BRAND INFO -->
+              <div class="form-section">
+                <div class="form-title">02 — Brand Information</div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <div class="form-label">Studio / Brand Name</div>
+                    <input class="form-input" type="text" placeholder="e.g. Apex Design Studio" oninput="updateScore()">
+                  </div>
+                  <div class="form-group">
+                    <div class="form-label">Industry Vertical</div>
+                    <select class="form-input" onchange="updateScore()">
+                      <option>Automotive Design</option>
+                      <option>Industrial Design</option>
+                      <option>Architecture</option>
+                      <option>Aerospace</option>
+                      <option>Yacht / Marine</option>
+                      <option>Jewelry / Luxury Goods</option>
+                      <option>Fashion / Apparel</option>
+                      <option>Technology / Hardware</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="form-label">Brand Tagline</div>
+                  <input class="form-input" type="text" placeholder="e.g. Precision engineered for the extraordinary" oninput="updateScore()">
+                </div>
+                <div class="form-group">
+                  <div class="form-label">Brand Story (2-3 sentences)</div>
+                  <textarea class="form-input" placeholder="Tell us what makes your studio unique. Our AI will extract the key brand signals and apply them to your design..." oninput="updateScore()"></textarea>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <div class="form-label">Founded Year</div>
+                    <input class="form-input" type="text" placeholder="e.g. 2019">
+                  </div>
+                  <div class="form-group">
+                    <div class="form-label">Location</div>
+                    <input class="form-input" type="text" placeholder="e.g. Milan, Italy">
+                  </div>
+                </div>
+              </div>
+    
+              <!-- VISUAL PREFERENCES -->
+              <div class="form-section">
+                <div class="form-title">03 — Visual Preferences</div>
+                <div class="form-group">
+                  <div class="form-label">Primary Accent Color</div>
+                  <div class="color-picker-row">
+                    <div class="color-option selected" style="background:#C9A84C" onclick="selectColor(this)"></div>
+                    <div class="color-option" style="background:#E53E3E" onclick="selectColor(this)"></div>
+                    <div class="color-option" style="background:#3B82F6" onclick="selectColor(this)"></div>
+                    <div class="color-option" style="background:#10B981" onclick="selectColor(this)"></div>
+                    <div class="color-option" style="background:#8B5CF6" onclick="selectColor(this)"></div>
+                    <div class="color-option" style="background:#F59E0B" onclick="selectColor(this)"></div>
+                    <div class="color-option" style="background:#EC4899" onclick="selectColor(this)"></div>
+                    <div class="color-option" style="background:#14B8A6" onclick="selectColor(this)"></div>
+                    <div class="color-option" style="background:#FAFAFA" onclick="selectColor(this)"></div>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <div class="form-label">Typography Feel</div>
+                    <select class="form-input">
+                      <option>Editorial Serif (Playfair)</option>
+                      <option>Modern Sans (Inter)</option>
+                      <option>Architectural (Cormorant)</option>
+                      <option>Technical (Space Grotesk)</option>
+                      <option>Luxury (Editorial New)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <div class="form-label">Motion Style</div>
+                    <select class="form-input">
+                      <option>Cinematic (Slow + Deliberate)</option>
+                      <option>Precision (Fast + Sharp)</option>
+                      <option>Fluid (Smooth + Organic)</option>
+                      <option>Minimal (Subtle + Clean)</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="form-label">Sections to Include</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px">
+                    <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--gray);cursor:pointer"><input type="checkbox" checked style="accent-color:var(--gold)"> Hero</label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--gray);cursor:pointer"><input type="checkbox" checked style="accent-color:var(--gold)"> About</label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--gray);cursor:pointer"><input type="checkbox" checked style="accent-color:var(--gold)"> Services</label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--gray);cursor:pointer"><input type="checkbox" checked style="accent-color:var(--gold)"> Portfolio</label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--gray);cursor:pointer"><input type="checkbox" checked style="accent-color:var(--gold)"> Process</label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--gray);cursor:pointer"><input type="checkbox" style="accent-color:var(--gold)"> Team</label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--gray);cursor:pointer"><input type="checkbox" style="accent-color:var(--gold)"> Awards</label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--gray);cursor:pointer"><input type="checkbox" checked style="accent-color:var(--gold)"> Contact</label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--gray);cursor:pointer"><input type="checkbox" style="accent-color:var(--gold)"> Testimonials</label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--gray);cursor:pointer"><input type="checkbox" style="accent-color:var(--gold)"> Press / Media</label>
+                  </div>
+                </div>
+              </div>
+    
+              <!-- DELIVERY -->
+              <div class="form-section">
+                <div class="form-title">04 — Delivery Options</div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <div class="form-label">Output Format</div>
+                    <select class="form-input">
+                      <option>HTML / CSS / JS (Deploy-Ready)</option>
+                      <option>Next.js Component Package</option>
+                      <option>Webflow Export</option>
+                      <option>Framer Export</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <div class="form-label">Commission Tier</div>
+                    <select class="form-input">
+                      <option>Standard — $3,500 (72hrs)</option>
+                      <option>Premium — $5,000 (48hrs)</option>
+                      <option>Elite — $8,500 (24hrs)</option>
+                      <option>License Only — $997</option>
+                    </select>
+                  </div>
+                </div>
+                <button class="generate-btn" onclick="handleGenerate()">
+                  Generate Site — Dark Precision Archetype
+                </button>
+              </div>
+    
+            </div>
+    
+            <!-- PREVIEW PANEL -->
+            <div>
+              <div class="preview-panel">
+                <div class="preview-header">
+                  <span>Live Preview</span>
+                  <span style="color:var(--gray);font-size:9px">Updates as you type</span>
+                </div>
+                <div class="preview-screen">
+                  <div class="preview-nav">
+                    <div class="preview-dot" style="background:#ff5f57"></div>
+                    <div class="preview-dot" style="background:#febc2e"></div>
+                    <div class="preview-dot" style="background:#28c840"></div>
+                  </div>
+                  <div style="background:var(--black);height:calc(100% - 20px);padding:12px">
+                    <div style="height:8px;background:rgba(201,168,76,0.1);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 8px;margin:-12px -12px 8px">
+                      <span style="font-size:6px;color:var(--gold);font-family:'Playfair Display',serif;letter-spacing:1px">SNOWBALL</span>
+                      <span style="margin-left:auto;font-size:5px;color:var(--gray)">Work · About · Commission</span>
+                    </div>
+                    <div style="padding:8px 0">
+                      <div style="font-size:14px;font-family:'Playfair Display',serif;color:var(--white);line-height:1.2;margin-bottom:4px">Precision<br>Design</div>
+                      <div style="height:3px;width:40px;background:var(--gold);margin-bottom:6px"></div>
+                      <div style="font-size:5px;color:var(--gray);margin-bottom:8px">Design intelligence for the extraordinary</div>
+                      <div style="display:inline-block;background:var(--gold);padding:3px 8px;font-size:5px;color:var(--black);font-weight:700;letter-spacing:1px">COMMISSION</div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;margin-top:8px">
+                      <div style="aspect-ratio:1;background:rgba(201,168,76,0.05);border:1px solid var(--border)"></div>
+                      <div style="aspect-ratio:1;background:rgba(201,168,76,0.08);border:1px solid var(--border)"></div>
+                      <div style="aspect-ratio:1;background:rgba(201,168,76,0.05);border:1px solid var(--border)"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="preview-actions">
+                  <div class="preview-btn outline" onclick="showNotif('Opening full preview...')">Preview</div>
+                  <div class="preview-btn gold" onclick="handleGenerate()">Generate</div>
+                </div>
+              </div>
+    
+              <!-- LUXURY SCORE -->
+              <div style="margin-top:16px">
+                <div class="score-panel" style="margin:0">
+                  <div class="score-title">Luxury Intelligence Score</div>
+                  <div class="score-main">
+                    <div>
+                      <div class="score-number" id="scoreNum">87</div>
+                      <div class="score-label">/ 100 Luxury Score</div>
+                    </div>
+                  </div>
+                  <div class="score-bar-bg">
+                    <div class="score-bar-fill" id="scoreBar" style="width:87%"></div>
+                  </div>
+                  <div class="score-items">
+                    <div class="score-item">
+                      <span class="score-item-label">Typography</span>
+                      <span class="score-item-val good">Excellent</span>
+                    </div>
+                    <div class="score-item">
+                      <span class="score-item-label">Color Harmony</span>
+                      <span class="score-item-val good">Excellent</span>
+                    </div>
+                    <div class="score-item">
+                      <span class="score-item-label">Whitespace</span>
+                      <span class="score-item-val warn">Good</span>
+                    </div>
+                    <div class="score-item">
+                      <span class="score-item-label">Motion Language</span>
+                      <span class="score-item-val good">Excellent</span>
+                    </div>
+                    <div class="score-item">
+                      <span class="score-item-label">Archetype Fit</span>
+                      <span class="score-item-val good">98% Match</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+    
+          </div>
+        </div>
+    
+        <!-- LIBRARY TAB -->
+        <div class="tab-content" id="content-library">
+          <div class="library-header">
+            <h2>Component Library</h2>
+            <input class="library-search" type="text" placeholder="Search components...">
+          </div>
+          <div class="library-filters">
+            <button class="filter-btn active">All</button>
+            <button class="filter-btn" onclick="this.parentNode.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">Hero Sections</button>
+            <button class="filter-btn" onclick="this.parentNode.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">Navigation</button>
+            <button class="filter-btn" onclick="this.parentNode.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">Cards</button>
+            <button class="filter-btn" onclick="this.parentNode.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">Statistics</button>
+            <button class="filter-btn" onclick="this.parentNode.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">CTA Blocks</button>
+            <button class="filter-btn" onclick="this.parentNode.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">Forms</button>
+            <button class="filter-btn" onclick="this.parentNode.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">Footers</button>
+          </div>
+          <div class="components-grid">
+            <div class="component-card" onclick="showNotif('Component copied to clipboard')">
+              <div class="component-preview"><div class="cp-hero"><div class="cp-hero-title">Dark Hero<br>Full Bleed</div></div></div>
+              <div class="component-info"><div class="component-name">Hero — Dark Cinematic</div><div class="component-meta"><span class="component-tag">Hero</span><span>Dark Precision</span></div></div>
+            </div>
+            <div class="component-card" onclick="showNotif('Component copied to clipboard')">
+              <div class="component-preview"><div class="cp-nav"><div class="cp-nav-bar"><span class="cp-nav-logo">BRAND</span><div class="cp-nav-links"><span class="cp-nav-link">Work</span><span class="cp-nav-link">About</span><span class="cp-nav-link">Contact</span></div></div></div></div>
+              <div class="component-info"><div class="component-name">Navigation — Sticky Dark</div><div class="component-meta"><span class="component-tag">Nav</span><span>All Archetypes</span></div></div>
+            </div>
+            <div class="component-card" onclick="showNotif('Component copied to clipboard')">
+              <div class="component-preview"><div class="cp-card"><div class="cp-card-item"></div><div class="cp-card-item"></div><div class="cp-card-item"></div></div></div>
+              <div class="component-info"><div class="component-name">Cards — 3-Column Grid</div><div class="component-meta"><span class="component-tag">Cards</span><span>Multi-Archetype</span></div></div>
+            </div>
+            <div class="component-card" onclick="showNotif('Component copied to clipboard')">
+              <div class="component-preview"><div class="cp-stats"><div class="cp-stat"><div class="cp-stat-num">47</div><div class="cp-stat-label">Projects</div></div><div class="cp-stat"><div class="cp-stat-num">$2M</div><div class="cp-stat-label">Revenue</div></div><div class="cp-stat"><div class="cp-stat-num">12</div><div class="cp-stat-label">Awards</div></div><div class="cp-stat"><div class="cp-stat-num">8</div><div class="cp-stat-label">Years</div></div></div></div>
+              <div class="component-info"><div class="component-name">Stats — 4-Up Metrics Block</div><div class="component-meta"><span class="component-tag">Stats</span><span>All Archetypes</span></div></div>
+            </div>
+            <div class="component-card" onclick="showNotif('Component copied to clipboard')">
+              <div class="component-preview"><div class="cp-cta"><div class="cp-cta-title">Ready to Commission?</div><div class="cp-cta-btn">GET STARTED</div></div></div>
+              <div class="component-info"><div class="component-name">CTA — Full Width Dark</div><div class="component-meta"><span class="component-tag">CTA</span><span>Dark Precision</span></div></div>
+            </div>
+            <div class="component-card" onclick="showNotif('Component copied to clipboard')">
+              <div class="component-preview"><div class="cp-form"><div class="cp-form-field"></div><div class="cp-form-field"></div><div class="cp-form-field" style="height:30px"></div><div class="cp-form-btn"></div></div></div>
+              <div class="component-info"><div class="component-name">Form — Contact Commission</div><div class="component-meta"><span class="component-tag">Form</span><span>All Archetypes</span></div></div>
+            </div>
+          </div>
+          <div style="text-align:center;padding:40px;color:var(--gray);font-size:13px">
+            Showing 6 of 200+ components. Use search or filters to find specific components.
+          </div>
+        </div>
+    
+        <!-- PROJECTS TAB -->
+        <div class="tab-content" id="content-projects">
+          <div class="projects-header">
+            <h2>Projects</h2>
+            <button class="header-btn primary" onclick="showNotif('Opening new project wizard...')">New Project</button>
+          </div>
+          <div class="projects-grid">
+            <div class="project-card">
+              <div class="project-thumb" style="background:linear-gradient(135deg,#030303,#0a0a0a)">
+                <div class="project-status status-live">Live</div>
+                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:24px;color:var(--gold);opacity:0.3">S</div>
+              </div>
+              <div class="project-info"><div class="project-name">Snowball Hero Site</div><div class="project-client">Internal · Dark Precision</div></div>
+              <div class="project-footer"><div class="project-value">Hero Asset</div><div class="project-date">May 28, 2026</div><div class="project-actions"><button class="proj-btn">Edit</button><button class="proj-btn primary">View</button></div></div>
+            </div>
+            <div class="project-card">
+              <div class="project-thumb" style="background:linear-gradient(135deg,#1a0a00,#0a0500)">
+                <div class="project-status status-draft">Draft</div>
+                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:18px;color:#D4A96A;opacity:0.4">Aurora</div>
+              </div>
+              <div class="project-info"><div class="project-name">Aurora Design Studio</div><div class="project-client">Client Demo · Fluid Elegance</div></div>
+              <div class="project-footer"><div class="project-value">$4,500</div><div class="project-date">May 27, 2026</div><div class="project-actions"><button class="proj-btn">Edit</button><button class="proj-btn primary">Publish</button></div></div>
+            </div>
+            <div class="project-card">
+              <div class="project-thumb" style="background:linear-gradient(135deg,#0a0000,#1a0000)">
+                <div class="project-status status-review">In Review</div>
+                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:18px;color:#E53E3E;opacity:0.4">Vortex</div>
+              </div>
+              <div class="project-info"><div class="project-name">Vortex Industrial</div><div class="project-client">Client · Avant-Garde</div></div>
+              <div class="project-footer"><div class="project-value">$5,000</div><div class="project-date">May 26, 2026</div><div class="project-actions"><button class="proj-btn">Edit</button><button class="proj-btn primary">Approve</button></div></div>
+            </div>
+          </div>
+        </div>
+    
+        <!-- ANALYTICS TAB -->
+        <div class="tab-content" id="content-analytics">
+          <div class="analytics-grid">
+            <div class="metric-card"><div class="metric-label">Total Revenue</div><div class="metric-value gold">$14,500</div><div class="metric-change">+$9,000 this month</div></div>
+            <div class="metric-card"><div class="metric-label">Active Projects</div><div class="metric-value">3</div><div class="metric-change">+2 this week</div></div>
+            <div class="metric-card"><div class="metric-label">Sites Generated</div><div class="metric-value">8</div><div class="metric-change">+5 this month</div></div>
+            <div class="metric-card"><div class="metric-label">Avg Commission</div><div class="metric-value gold">$4,833</div><div class="metric-change">+$500 vs last month</div></div>
+          </div>
+          <div class="chart-row">
+            <div class="chart-card">
+              <div class="chart-title">Revenue by Month</div>
+              <div class="chart-bars">
+                <div class="chart-bar-wrap"><div class="chart-bar" style="height:30%"></div><div class="chart-bar-label">Jan</div></div>
+                <div class="chart-bar-wrap"><div class="chart-bar" style="height:45%"></div><div class="chart-bar-label">Feb</div></div>
+                <div class="chart-bar-wrap"><div class="chart-bar" style="height:35%"></div><div class="chart-bar-label">Mar</div></div>
+                <div class="chart-bar-wrap"><div class="chart-bar" style="height:60%"></div><div class="chart-bar-label">Apr</div></div>
+                <div class="chart-bar-wrap"><div class="chart-bar" style="height:80%"></div><div class="chart-bar-label">May</div></div>
+                <div class="chart-bar-wrap"><div class="chart-bar" style="height:20%;opacity:0.3"></div><div class="chart-bar-label">Jun</div></div>
+              </div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-title">Archetype Popularity</div>
+              <div class="arch-breakdown">
+                <div class="arch-row"><div class="arch-row-label">Dark Precision</div><div class="arch-row-bar"><div class="arch-row-fill" style="width:85%;background:#C9A84C"></div></div><div class="arch-row-val">85%</div></div>
+                <div class="arch-row"><div class="arch-row-label">Fluid Elegance</div><div class="arch-row-bar"><div class="arch-row-fill" style="width:62%;background:#D4A96A"></div></div><div class="arch-row-val">62%</div></div>
+                <div class="arch-row"><div class="arch-row-label">Avant-Garde</div><div class="arch-row-bar"><div class="arch-row-fill" style="width:48%;background:#E53E3E"></div></div><div class="arch-row-val">48%</div></div>
+                <div class="arch-row"><div class="arch-row-label">Wedge Futurist</div><div class="arch-row-bar"><div class="arch-row-fill" style="width:35%;background:#3B82F6"></div></div><div class="arch-row-val">35%</div></div>
+                <div class="arch-row"><div class="arch-row-label">Others</div><div class="arch-row-bar"><div class="arch-row-fill" style="width:20%;background:var(--gray)"></div></div><div class="arch-row-val">20%</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Recent Commissions</div>
+            <table class="revenue-table">
+              <tr><th>Client</th><th>Archetype</th><th>Value</th><th>Status</th><th>Date</th></tr>
+              <tr><td>Aurora Design Studio</td><td class="td-muted">Fluid Elegance</td><td class="td-gold">$4,500</td><td class="td-green">Delivered</td><td class="td-muted">May 27</td></tr>
+              <tr><td>Vortex Industrial</td><td class="td-muted">Avant-Garde</td><td class="td-gold">$5,000</td><td style="color:#fbbf24">In Review</td><td class="td-muted">May 26</td></tr>
+              <tr><td>Prism Architecture</td><td class="td-muted">Wedge Futurist</td><td class="td-gold">$3,500</td><td class="td-green">Delivered</td><td class="td-muted">May 20</td></tr>
+              <tr><td>Mark Brand Agency</td><td class="td-muted">Brand Identity</td><td class="td-gold">$4,500</td><td class="td-green">Delivered</td><td class="td-muted">May 15</td></tr>
+            </table>
+          </div>
+        </div>
+    
+        <!-- SETTINGS TAB -->
+        <div class="tab-content" id="content-settings">
+          <div class="settings-grid">
+            <div class="settings-nav">
+              <div class="settings-nav-item active">Account</div>
+              <div class="settings-nav-item" onclick="this.parentNode.querySelectorAll('.settings-nav-item').forEach(i=>i.classList.remove('active'));this.classList.add('active')">Plan & Billing</div>
+              <div class="settings-nav-item" onclick="this.parentNode.querySelectorAll('.settings-nav-item').forEach(i=>i.classList.remove('active'));this.classList.add('active')">Brand Defaults</div>
+              <div class="settings-nav-item" onclick="this.parentNode.querySelectorAll('.settings-nav-item').forEach(i=>i.classList.remove('active'));this.classList.add('active')">Integrations</div>
+              <div class="settings-nav-item" onclick="this.parentNode.querySelectorAll('.settings-nav-item').forEach(i=>i.classList.remove('active'));this.classList.add('active')">AI Preferences</div>
+              <div class="settings-nav-item" onclick="this.parentNode.querySelectorAll('.settings-nav-item').forEach(i=>i.classList.remove('active'));this.classList.add('active')">Notifications</div>
+            </div>
+            <div class="settings-content">
+              <div class="settings-section-title">Account Settings</div>
+              <div class="settings-section-sub">Manage your Snowball Design Intelligence account</div>
+              <div class="plan-card">
+                <div class="plan-name">Elite Plan</div>
+                <div class="plan-price">$299<span style="font-size:16px;color:var(--gray)">/mo</span></div>
+                <div class="plan-features">
+                  <div class="plan-feature">Unlimited site generations</div>
+                  <div class="plan-feature">All 8 archetypes unlocked</div>
+                  <div class="plan-feature">Priority 24hr delivery</div>
+                  <div class="plan-feature">White-label client exports</div>
+                  <div class="plan-feature">AI Style Advisor</div>
+                  <div class="plan-feature">Analytics dashboard</div>
+                </div>
+              </div>
+              <div class="settings-row"><div><div class="settings-row-label">AI Style Advisor</div><div class="settings-row-sub">Automatically flag design decisions that break luxury standards</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+              <div class="settings-row"><div><div class="settings-row-label">Auto-Save Projects</div><div class="settings-row-sub">Save project state every 30 seconds</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+              <div class="settings-row"><div><div class="settings-row-label">Email Notifications</div><div class="settings-row-sub">Get notified when generation completes</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+              <div class="settings-row"><div><div class="settings-row-label">Usage Analytics</div><div class="settings-row-sub">Help improve Snowball by sharing anonymous usage data</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            </div>
+          </div>
+        </div>
+    
+      </div>
+    </div>
+    
+    <!-- NOTIFICATION -->
+    <div class="notification" id="notification">
+      <div class="notif-dot"></div>
+      <span id="notif-text">Action completed</span>
+    </div>
+    
+    <script>
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('content-' + tab).classList.add('active');
+      document.getElementById('tab-' + tab).classList.add('active');
+    }
+    
+    function setActive(el) {
+      document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+      el.classList.add('active');
+    }
+    
+    function selectArch(el) {
+      document.querySelectorAll('.arch-option').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      const name = el.querySelector('.arch-option-name').textContent;
+      document.querySelector('.generate-btn').textContent = 'Generate Site — ' + name + ' Archetype';
+      updateScore();
+    }
+    
+    function selectColor(el) {
+      document.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+    
+    let scoreBase = 87;
+    function updateScore() {
+      const score = Math.min(99, scoreBase + Math.floor(Math.random() * 5));
+      document.getElementById('scoreNum').textContent = score;
+      document.getElementById('scoreBar').style.width = score + '%';
+    }
+    
+    function handleGenerate() {
+      showNotif('Generating your luxury site... This takes 60-90 seconds.');
+      setTimeout(() => showNotif('Site generated successfully! Check Projects tab.'), 3000);
+    }
+    
+    let notifTimer;
+    function showNotif(msg) {
+      const n = document.getElementById('notification');
+      document.getElementById('notif-text').textContent = msg;
+      n.classList.add('show');
+      clearTimeout(notifTimer);
+      notifTimer = setTimeout(() => n.classList.remove('show'), 3500);
+    }
+    </script>
+    </body>
+    </html>

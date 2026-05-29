@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snowball — All 8 Archetypes</title>
+    <style>
+    :root {
+      --bg: #070709; --text: #f0f0f5; --text2: #888899; --text3: #444455;
+      --border: rgba(255,255,255,0.06); --sans: -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      --mono: ui-monospace,monospace;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:var(--bg); color:var(--text); font-family:var(--sans); }
+    
+    /* NAV */
+    .arch-nav {
+      position:fixed; top:0; left:0; right:0; height:52px; z-index:100;
+      background:rgba(7,7,9,0.95); border-bottom:1px solid var(--border);
+      display:flex; align-items:center; padding:0 24px; gap:0;
+      backdrop-filter:blur(20px); overflow-x:auto;
+    }
+    .arch-nav::-webkit-scrollbar { display:none; }
+    .arch-btn {
+      font-size:10px; font-family:var(--mono); letter-spacing:0.08em;
+      padding:8px 16px; border:none; background:transparent; color:var(--text3);
+      cursor:pointer; white-space:nowrap; border-bottom:2px solid transparent;
+      transition:all 0.2s;
+    }
+    .arch-btn.active { color:var(--accent,#4a9eff); border-bottom-color:var(--accent,#4a9eff); }
+    
+    /* ARCHETYPE SECTIONS */
+    .arch-section { display:none; min-height:100vh; padding:80px 40px 60px; }
+    .arch-section.active { display:block; }
+    
+    /* COMPONENT DEMOS */
+    .demo-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; margin:24px 0; }
+    .demo-block { padding:24px; border-radius:8px; border:1px solid var(--ab, rgba(255,255,255,0.06)); background:var(--ac, rgba(255,255,255,0.02)); }
+    .demo-label { font-size:9px; font-family:var(--mono); letter-spacing:0.15em; color:var(--text3); margin-bottom:16px; text-transform:uppercase; }
+    
+    /* TOKEN EXPORT */
+    .token-export {
+      background:rgba(0,0,0,0.4); border-radius:6px; padding:16px;
+      font-family:var(--mono); font-size:11px; color:#a8d8a8; line-height:1.8;
+      margin:16px 0; overflow-x:auto; border:1px solid rgba(255,255,255,0.06);
+    }
+    .te-key { color:#88aacc; }
+    .te-val { color:#ccaa88; }
+    
+    /* SECTION HEADERS */
+    .arch-header {
+      margin-bottom:40px; padding-bottom:32px;
+      border-bottom:1px solid var(--border);
+    }
+    .arch-number { font-size:10px; font-family:var(--mono); color:var(--text3); letter-spacing:0.2em; margin-bottom:8px; }
+    .arch-name-big { font-size:clamp(32px,5vw,64px); font-weight:900; line-height:1; letter-spacing:-0.02em; margin-bottom:12px; }
+    .arch-tagline-big { font-size:16px; color:var(--text2); line-height:1.6; max-width:600px; margin-bottom:20px; }
+    .arch-meta { display:flex; gap:16px; flex-wrap:wrap; }
+    .arch-meta-item { font-size:10px; font-family:var(--mono); color:var(--text3); padding:4px 10px; border-radius:3px; border:1px solid var(--border); }
+    
+    .comp-section-title {
+      font-size:11px; font-family:var(--mono); letter-spacing:0.15em;
+      color:var(--text3); margin:32px 0 16px; text-transform:uppercase;
+      border-bottom:1px solid var(--border); padding-bottom:8px;
+    }
+    </style>
+    </head>
+    <body>
+    
+    <div class="arch-nav" id="arch-nav"></div>
+    <div id="arch-sections"></div>
+    
+    <script>
+    const ARCHETYPES = [
+      {
+        id:'marcello', n:'01', name:'Marcello Dark Precision',
+        tagline:'High contrast. Technical elegance. The feeling everything costs money.',
+        accent:'#4a9eff', bg:'#0a0a0f', surface:'rgba(255,255,255,0.03)', border:'rgba(255,255,255,0.07)',
+        fonts:{ display:'Inter 900, tight tracking', body:'Inter 400, comfortable', mono:'ui-monospace' },
+        palette:{ bg:'#0a0a0f', surface:'rgba(255,255,255,0.03)', accent:'#4a9eff', text:'#e8e8f0', muted:'#888899' },
+        tokens:{ '--color-bg':'#0a0a0f','--color-accent':'#4a9eff','--color-text':'#e8e8f0','--radius':'4px','--motion-speed':'220ms','--border':'rgba(255,255,255,0.07)' },
+        components: [
+          { name:'Primary Button', code:`<button style="background:#4a9eff;color:#000;padding:12px 28px;border:none;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:0.1em;cursor:pointer;">ENGAGE SYSTEM →</button>` },
+          { name:'Ghost Button', code:`<button style="background:transparent;color:#888899;padding:12px 28px;border:1px solid rgba(255,255,255,0.12);border-radius:4px;font-size:11px;cursor:pointer;">EXPLORE →</button>` },
+          { name:'Card', code:`<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-left:3px solid #4a9eff;border-radius:4px;padding:20px;"><div style="font-size:13px;font-weight:700;margin-bottom:6px;">Project Title</div><div style="font-size:11px;color:#888899;">Status · last touched 2hr ago</div></div>` },
+          { name:'Badge', code:`<span style="font-size:9px;font-family:monospace;padding:2px 8px;border-radius:3px;background:rgba(74,158,255,0.12);color:#4a9eff;letter-spacing:0.08em;font-weight:700;">RUNNING</span>` },
+          { name:'Input', code:`<input placeholder="enter project name..." style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:4px;padding:10px 14px;color:#e8e8f0;font-family:monospace;font-size:11px;width:100%;outline:none;">` },
+          { name:'Stat Block', code:`<div style="border-left:3px solid #4a9eff;padding-left:16px;"><div style="font-size:48px;font-weight:900;line-height:1;color:#4a9eff;">0.87</div><div style="font-size:9px;font-family:monospace;color:#888899;letter-spacing:0.12em;margin-top:4px;">PROJECT WEIGHT</div></div>` },
+        ],
+        copyRegister:{ good:['HyperForge dependency shifted.','Build finished. Three files changed.'], bad:['I noticed you may want to...','Hello! How can I assist you?'] }
+      },
+      {
+        id:'pininfarina', n:'02', name:'Pininfarina Editorial',
+        tagline:'Italian elegance. Wide whitespace. 90 years of heritage meets the future.',
+        accent:'#c9a84c', bg:'#fafaf8', surface:'rgba(0,0,0,0.02)', border:'rgba(0,0,0,0.08)',
+        fonts:{ display:'Playfair Display 700, wide tracking', body:'Georgia 400, generous line height', mono:'ui-monospace' },
+        palette:{ bg:'#fafaf8', surface:'rgba(0,0,0,0.02)', accent:'#c9a84c', text:'#1a1a1a', muted:'#666666' },
+        tokens:{ '--color-bg':'#fafaf8','--color-accent':'#c9a84c','--color-text':'#1a1a1a','--radius':'2px','--motion-speed':'400ms','--border':'rgba(0,0,0,0.08)' },
+        components: [
+          { name:'Primary Button', code:`<button style="background:#c9a84c;color:#fff;padding:14px 36px;border:none;border-radius:2px;font-size:11px;letter-spacing:0.15em;cursor:pointer;">DISCOVER MORE</button>` },
+          { name:'Section Header', code:`<div style="border-left:3px solid #c9a84c;padding-left:20px;"><div style="font-size:9px;letter-spacing:0.25em;color:#c9a84c;margin-bottom:8px;font-family:monospace;">AUTOMOTIVE</div><h2 style="font-size:32px;font-weight:700;color:#1a1a1a;line-height:1.2;">Designed for Motion</h2></div>` },
+          { name:'Quote Block', code:`<blockquote style="border-left:3px solid #c9a84c;padding-left:24px;"><p style="font-size:18px;font-style:italic;color:#1a1a1a;line-height:1.7;">"Every curve is a conversation between form and function."</p><cite style="font-size:11px;color:#666;letter-spacing:0.08em;display:block;margin-top:12px;">— Pininfarina Heritage</cite></blockquote>` },
+          { name:'Sector Card', code:`<div style="background:rgba(0,0,0,0.02);border:1px solid rgba(0,0,0,0.08);padding:32px;border-radius:2px;"><div style="font-size:9px;letter-spacing:0.2em;color:#c9a84c;margin-bottom:12px;font-family:monospace;">SECTOR</div><div style="font-size:20px;font-weight:700;color:#1a1a1a;margin-bottom:8px;">Automotive</div><div style="font-size:13px;color:#666;line-height:1.6;">90 years of shaping the world's most beautiful cars.</div></div>` },
+        ],
+        copyRegister:{ good:['A new chapter in Italian design.','Where heritage meets tomorrow.'], bad:['Check out our amazing features!','We are excited to announce...'] }
+      },
+      {
+        id:'porsche', n:'03', name:'Porsche Grid System',
+        tagline:'Structured performance. German precision. Every pixel earns its place.',
+        accent:'#e8e8e8', bg:'#111111', surface:'rgba(255,255,255,0.04)', border:'rgba(255,255,255,0.1)',
+        fonts:{ display:'Helvetica Neue 700, precise tracking', body:'Helvetica Neue 400, tight', mono:'ui-monospace' },
+        palette:{ bg:'#111111', surface:'rgba(255,255,255,0.04)', accent:'#e8e8e8', text:'#ffffff', muted:'#888888' },
+        tokens:{ '--color-bg':'#111111','--color-accent':'#e8e8e8','--color-text':'#ffffff','--radius':'0px','--motion-speed':'180ms','--border':'rgba(255,255,255,0.1)' },
+        components: [
+          { name:'Spec Table', code:`<table style="width:100%;border-collapse:collapse;font-size:12px;"><tr style="border-bottom:1px solid rgba(255,255,255,0.1);"><td style="padding:10px 0;color:#888888;letter-spacing:0.05em;">Engine</td><td style="padding:10px 0;color:#ffffff;text-align:right;font-weight:700;">3.0L Flat-Six</td></tr><tr style="border-bottom:1px solid rgba(255,255,255,0.1);"><td style="padding:10px 0;color:#888888;letter-spacing:0.05em;">Power</td><td style="padding:10px 0;color:#ffffff;text-align:right;font-weight:700;">473 hp</td></tr><tr><td style="padding:10px 0;color:#888888;letter-spacing:0.05em;">0-100 km/h</td><td style="padding:10px 0;color:#ffffff;text-align:right;font-weight:700;">3.4s</td></tr></table>` },
+          { name:'Grid Card', code:`<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);padding:24px;"><div style="font-size:9px;letter-spacing:0.2em;color:#888;font-family:monospace;margin-bottom:12px;">MODEL</div><div style="font-size:24px;font-weight:700;color:#fff;margin-bottom:8px;">911 GT3</div><div style="font-size:11px;color:#888;">Pure performance. No compromise.</div></div>` },
+          { name:'CTA Button', code:`<button style="background:#fff;color:#000;padding:12px 32px;border:none;font-size:11px;font-weight:700;letter-spacing:0.1em;cursor:pointer;">CONFIGURE →</button>` },
+        ],
+        copyRegister:{ good:['Performance. Precisely.','Engineering without compromise.'], bad:['Amazing value for money!','You will love this car!'] }
+      },
+      {
+        id:'goblin', n:'04', name:'Gossip Goblin Dark',
+        tagline:'Cinematic dystopian. Otherworldly depth. Art that unsettles, then captivates.',
+        accent:'#7c3aed', bg:'#080810', surface:'rgba(124,58,237,0.06)', border:'rgba(124,58,237,0.15)',
+        fonts:{ display:'Custom variable, distorted weight', body:'Inter 400, loose tracking', mono:'ui-monospace' },
+        palette:{ bg:'#080810', surface:'rgba(124,58,237,0.06)', accent:'#7c3aed', text:'#d0d0e8', muted:'#666688' },
+        tokens:{ '--color-bg':'#080810','--color-accent':'#7c3aed','--color-text':'#d0d0e8','--radius':'0px','--motion-speed':'600ms','--border':'rgba(124,58,237,0.15)' },
+        components: [
+          { name:'Glitch Header', code:`<div style="position:relative;"><h1 style="font-size:48px;font-weight:900;color:#d0d0e8;letter-spacing:-0.02em;line-height:1;">VOID SIGNAL</h1><h1 style="font-size:48px;font-weight:900;color:#7c3aed;letter-spacing:-0.02em;line-height:1;position:absolute;top:2px;left:2px;opacity:0.4;">VOID SIGNAL</h1></div>` },
+          { name:'Dark Card', code:`<div style="background:rgba(124,58,237,0.06);border:1px solid rgba(124,58,237,0.15);padding:24px;"><div style="font-size:9px;letter-spacing:0.25em;color:#7c3aed;font-family:monospace;margin-bottom:12px;">TRANSMISSION 04</div><div style="font-size:15px;color:#d0d0e8;line-height:1.6;">Something stirs in the substrate layer. The agents have noticed.</div></div>` },
+          { name:'Void Button', code:`<button style="background:transparent;color:#7c3aed;padding:12px 28px;border:1px solid rgba(124,58,237,0.4);font-size:11px;letter-spacing:0.15em;cursor:pointer;font-family:monospace;">ENTER THE VOID →</button>` },
+        ],
+        copyRegister:{ good:['Something stirs.','The substrate has shifted.'], bad:['Welcome to our website!','Click here to learn more!'] }
+      },
+      {
+        id:'rollsroyce', n:'05', name:'Rolls-Royce Heritage',
+        tagline:'Warmth. Restraint. Quality so obvious it needs no announcement.',
+        accent:'#8b6914', bg:'#0f0d0a', surface:'rgba(201,168,76,0.04)', border:'rgba(201,168,76,0.12)',
+        fonts:{ display:'Cormorant Garamond 700, generous tracking', body:'Garamond 400, wide leading', mono:'ui-monospace' },
+        palette:{ bg:'#0f0d0a', surface:'rgba(201,168,76,0.04)', accent:'#c9a84c', text:'#f0ece4', muted:'#888070' },
+        tokens:{ '--color-bg':'#0f0d0a','--color-accent':'#c9a84c','--color-text':'#f0ece4','--radius':'2px','--motion-speed':'600ms','--border':'rgba(201,168,76,0.12)' },
+        components: [
+          { name:'Heritage Card', code:`<div style="background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.12);padding:32px;"><div style="font-size:9px;letter-spacing:0.3em;color:#c9a84c;font-family:monospace;margin-bottom:16px;">EST. 1906</div><h3 style="font-size:24px;font-style:italic;color:#f0ece4;margin-bottom:12px;">The Phantom</h3><p style="font-size:13px;color:#888070;line-height:1.8;">Built without compromise. Finished without haste.</p></div>` },
+          { name:'Divider', code:`<div style="display:flex;align-items:center;gap:16px;"><div style="flex:1;height:1px;background:rgba(201,168,76,0.2);"></div><div style="color:#c9a84c;font-size:14px;">◆</div><div style="flex:1;height:1px;background:rgba(201,168,76,0.2);"></div></div>` },
+          { name:'CTA', code:`<button style="background:transparent;color:#c9a84c;padding:14px 40px;border:1px solid rgba(201,168,76,0.4);font-size:11px;letter-spacing:0.2em;cursor:pointer;font-family:serif;">COMMISSION YOURS</button>` },
+        ],
+        copyRegister:{ good:['Reserved for those who know.','Silence is a luxury.'], bad:['Buy now! Limited time offer!','You deserve the best!'] }
+      },
+      {
+        id:'apple', n:'06', name:'Apple Ultra Clean',
+        tagline:'Negative space as design element. Product as hero. Nothing decorative.',
+        accent:'#0071e3', bg:'#fbfbfd', surface:'rgba(0,0,0,0.02)', border:'rgba(0,0,0,0.06)',
+        fonts:{ display:'SF Pro Display 700, tight', body:'SF Pro Text 400, readable', mono:'SF Mono' },
+        palette:{ bg:'#fbfbfd', surface:'rgba(0,0,0,0.02)', accent:'#0071e3', text:'#1d1d1f', muted:'#6e6e73' },
+        tokens:{ '--color-bg':'#fbfbfd','--color-accent':'#0071e3','--color-text':'#1d1d1f','--radius':'12px','--motion-speed':'300ms','--border':'rgba(0,0,0,0.06)' },
+        components: [
+          { name:'Hero Line', code:`<div style="text-align:center;padding:40px 20px;"><h1 style="font-size:48px;font-weight:700;color:#1d1d1f;letter-spacing:-0.02em;line-height:1.1;">Remarkably capable.<br><span style="color:#6e6e73;font-weight:400;">Impossibly thin.</span></h1></div>` },
+          { name:'Pill Button', code:`<button style="background:#0071e3;color:#fff;padding:12px 24px;border:none;border-radius:980px;font-size:13px;font-weight:400;cursor:pointer;letter-spacing:0.01em;">Buy now</button> <button style="background:transparent;color:#0071e3;padding:12px 24px;border:none;border-radius:980px;font-size:13px;cursor:pointer;">Learn more ›</button>` },
+          { name:'Spec Chip', code:`<div style="display:inline-flex;align-items:center;gap:8px;background:rgba(0,0,0,0.04);border-radius:980px;padding:8px 16px;"><span style="font-size:12px;color:#1d1d1f;font-weight:500;">M4 chip</span><span style="font-size:11px;color:#6e6e73;">Up to 32GB</span></div>` },
+        ],
+        copyRegister:{ good:['This changes everything. Again.','Designed to disappear.'], bad:['Amazing features at great price!','Sign up for our newsletter!'] }
+      },
+      {
+        id:'drift', n:'07', name:'Studio Drift Spatial',
+        tagline:'Depth and dimension. Three-dimensional thinking in two dimensions.',
+        accent:'#4ade80', bg:'#050508', surface:'rgba(74,222,128,0.04)', border:'rgba(74,222,128,0.1)',
+        fonts:{ display:'Custom geometric, spaced', body:'Inter 300, airy', mono:'ui-monospace' },
+        palette:{ bg:'#050508', surface:'rgba(74,222,128,0.04)', accent:'#4ade80', text:'#e8f8e8', muted:'#668866' },
+        tokens:{ '--color-bg':'#050508','--color-accent':'#4ade80','--color-text':'#e8f8e8','--radius':'0px','--motion-speed':'800ms','--border':'rgba(74,222,128,0.1)' },
+        components: [
+          { name:'Spatial Card', code:`<div style="background:rgba(74,222,128,0.04);border:1px solid rgba(74,222,128,0.1);padding:32px;position:relative;"><div style="position:absolute;top:-1px;left:40px;right:40px;height:1px;background:rgba(74,222,128,0.3);"></div><div style="font-size:9px;letter-spacing:0.3em;color:#4ade80;font-family:monospace;margin-bottom:16px;">INSTALLATION · 2027</div><h3 style="font-size:20px;color:#e8f8e8;font-weight:300;letter-spacing:0.05em;margin-bottom:12px;">Fragile Future</h3><p style="font-size:13px;color:#668866;line-height:1.8;">Light particles suspended in magnetic fields. 47 dandelion seeds. Real time.</p></div>` },
+          { name:'Depth Line', code:`<div style="position:relative;padding:20px 0;"><div style="width:1px;height:60px;background:linear-gradient(to bottom,rgba(74,222,128,0.6),transparent);margin:0 auto;"></div><div style="text-align:center;font-size:9px;letter-spacing:0.3em;color:#4ade80;font-family:monospace;margin-top:8px;">SCROLL TO DESCEND</div></div>` },
+        ],
+        copyRegister:{ good:['Nature speaks in mathematics.','The work breathes.'], bad:['Cool interactive art!','Check out our portfolio!'] }
+      },
+      {
+        id:'bangolufsen', n:'08', name:'Bang & Olufsen Minimal',
+        tagline:'Sound you can see. Design that justifies the price before you read it.',
+        accent:'#a78bfa', bg:'#0a0a0a', surface:'rgba(167,139,250,0.04)', border:'rgba(167,139,250,0.1)',
+        fonts:{ display:'Helvetica Neue 300, ultra-wide tracking', body:'Helvetica Neue 300, breathing', mono:'ui-monospace' },
+        palette:{ bg:'#0a0a0a', surface:'rgba(167,139,250,0.04)', accent:'#a78bfa', text:'#f8f8f8', muted:'#666666' },
+        tokens:{ '--color-bg':'#0a0a0a','--color-accent':'#a78bfa','--color-text':'#f8f8f8','--radius':'0px','--motion-speed':'500ms','--border':'rgba(167,139,250,0.1)' },
+        components: [
+          { name:'Product Card', code:`<div style="background:rgba(167,139,250,0.04);border:1px solid rgba(167,139,250,0.1);padding:40px;text-align:center;"><div style="font-size:8px;letter-spacing:0.4em;color:#666;font-family:monospace;margin-bottom:24px;">BEOLAB</div><div style="font-size:32px;font-weight:300;color:#f8f8f8;letter-spacing:0.1em;margin-bottom:8px;">90</div><div style="font-size:11px;color:#666;letter-spacing:0.15em;">$100,000</div></div>` },
+          { name:'Minimalist Nav', code:`<nav style="display:flex;justify-content:space-between;align-items:center;padding:20px 0;border-bottom:1px solid rgba(167,139,250,0.1);"><span style="font-size:11px;letter-spacing:0.3em;color:#f8f8f8;font-weight:300;">B&O</span><div style="display:flex;gap:32px;">${['SPEAKERS','TV','HEADPHONES','ABOUT'].map(i=>`<a style="font-size:9px;letter-spacing:0.2em;color:#666;text-decoration:none;">${i}</a>`).join('')}</div></nav>` },
+        ],
+        copyRegister:{ good:['Sound. Perfected.','One product. No compromises.'], bad:['Great sound at great price!','Limited time sale!'] }
+      },
+    ];
+    
+    function renderArchetypes() {
+      const nav = document.getElementById('arch-nav');
+      const sections = document.getElementById('arch-sections');
+    
+      nav.innerHTML = `<span style="font-size:11px;font-weight:800;letter-spacing:0.1em;color:#f0f0f5;margin-right:16px;white-space:nowrap;">SNOWBALL ARCHETYPES</span>` +
+        ARCHETYPES.map(a => `<button class="arch-btn" onclick="showArch('${a.id}',this)" style="--accent:${a.accent};">${a.n} ${a.name.split(' ')[0]}</button>`).join('');
+    
+      sections.innerHTML = ARCHETYPES.map(a => {
+        const tokenLines = Object.entries(a.tokens).map(([k,v]) => `  <span class="te-key">${k}</span>: <span class="te-val">"${v}"</span>;`).join('\n');
+        const components = a.components.map(c => `
+          <div class="demo-block" style="background:${a.surface};border-color:${a.border};">
+            <div class="demo-label">${c.name}</div>
+            <div style="background:${a.bg};padding:16px;border-radius:4px;">${c.code}</div>
+          </div>`).join('');
+    
+        const goodBad = `
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;">
+            <div style="padding:16px;background:rgba(74,222,128,0.05);border:1px solid rgba(74,222,128,0.15);border-radius:5px;">
+              <div style="font-size:9px;font-family:monospace;color:#4ade80;letter-spacing:0.1em;margin-bottom:8px;">COPY REGISTER — CORRECT</div>
+              ${a.copyRegister.good.map(t=>`<div style="font-size:12px;color:#e8e8f0;padding:4px 0;font-family:monospace;">"${t}"</div>`).join('')}
+            </div>
+            <div style="padding:16px;background:rgba(248,113,113,0.05);border:1px solid rgba(248,113,113,0.12);border-radius:5px;">
+              <div style="font-size:9px;font-family:monospace;color:#f87171;letter-spacing:0.1em;margin-bottom:8px;">COPY REGISTER — WRONG</div>
+              ${a.copyRegister.bad.map(t=>`<div style="font-size:12px;color:#888899;padding:4px 0;font-family:monospace;text-decoration:line-through;">"${t}"</div>`).join('')}
+            </div>
+          </div>`;
+    
+        const cssvars = `:root {\n${tokenLines}\n}`;
+        const figmaJSON = JSON.stringify(Object.fromEntries(Object.entries(a.tokens).map(([k,v])=>[k.replace('--',''),{value:v,type:'other'}])),null,2);
+        const nextjsExport = `export const ${a.id}Tokens = ${JSON.stringify(a.tokens,null,2)} as const;`;
+    
+        return `
+        <div class="arch-section" id="arch-${a.id}" style="background:${a.bg};">
+          <div class="arch-header">
+            <div class="arch-number" style="color:${a.accent};">${a.n} · SNOWBALL ARCHETYPE</div>
+            <div class="arch-name-big" style="color:${a.accent};">${a.name}</div>
+            <div class="arch-tagline-big">${a.tagline}</div>
+            <div class="arch-meta">
+              <div class="arch-meta-item" style="border-color:${a.border};color:${a.accent};">accent: ${a.accent}</div>
+              <div class="arch-meta-item" style="border-color:${a.border};">display: ${a.fonts.display}</div>
+              <div class="arch-meta-item" style="border-color:${a.border};">body: ${a.fonts.body}</div>
+              <div class="arch-meta-item" style="border-color:${a.border};">radius: ${a.tokens['--radius']}</div>
+            </div>
+          </div>
+    
+          <div class="comp-section-title" style="color:${a.accent};">COMPONENT LIBRARY</div>
+          <div class="demo-grid">${components}</div>
+    
+          <div class="comp-section-title" style="color:${a.accent};">COPY REGISTER</div>
+          ${goodBad}
+    
+          <div class="comp-section-title" style="color:${a.accent};">DESIGN TOKENS — CSS VARIABLES</div>
+          <div class="token-export" style="background:rgba(0,0,0,0.5);">${cssvars}</div>
+    
+          <div class="comp-section-title" style="color:${a.accent};">FIGMA TOKEN JSON</div>
+          <div class="token-export" style="background:rgba(0,0,0,0.5);">${figmaJSON.replace(/</g,'&lt;')}</div>
+    
+          <div class="comp-section-title" style="color:${a.accent};">NEXT.JS EXPORT</div>
+          <div class="token-export" style="background:rgba(0,0,0,0.5);">${nextjsExport}</div>
+        </div>`;
+      }).join('');
+    
+      // Show first
+      showArch('marcello', nav.querySelectorAll('.arch-btn')[0]);
+    }
+    
+    function showArch(id, btn) {
+      document.querySelectorAll('.arch-section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.arch-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('arch-'+id).classList.add('active');
+      if (btn) btn.classList.add('active');
+      const arch = ARCHETYPES.find(a=>a.id===id);
+      if (arch) document.documentElement.style.setProperty('--accent', arch.accent);
+    }
+    
+    renderArchetypes();
+    </script>
+    </body>
+    </html>

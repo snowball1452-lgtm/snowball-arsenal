@@ -1,0 +1,2683 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APEX STUDIO V5 — 2027</title>
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+    </script>
+    <style>
+      :root {
+        --bg: #0a0a0f;
+        --bg2: #0d0d14;
+        --bg3: #111118;
+        --accent: #4a9eff;
+        --accent2: #7c3aed;
+        --amber: #f59e0b;
+        --red: #f87171;
+        --green: #4ade80;
+        --card: rgba(255,255,255,0.035);
+        --border: rgba(255,255,255,0.07);
+        --border-accent: rgba(74,158,255,0.5);
+        --text: #e8e8f0;
+        --text2: #8888aa;
+        --text3: #555570;
+        --mono: ui-monospace, monospace;
+        --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --radius: 8px;
+        --panel-w: 280px;
+      }
+    
+      * { margin:0; padding:0; box-sizing:border-box; }
+      
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--sans);
+        font-size: 13px;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+    
+      /* ─── TOP BAR ─────────────────────────────────────────── */
+      #topbar {
+        height: 48px;
+        background: rgba(10,10,15,0.95);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
+        gap: 12px;
+        flex-shrink: 0;
+        z-index: 100;
+        backdrop-filter: blur(20px);
+      }
+    
+      #topbar .logo {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        color: var(--accent);
+        font-family: var(--mono);
+      }
+    
+      #topbar .spacer { flex: 1; }
+    
+      .top-badge {
+        font-size: 10px;
+        font-family: var(--mono);
+        padding: 3px 8px;
+        border-radius: 4px;
+        border: 1px solid var(--border);
+        color: var(--text2);
+      }
+    
+      .top-badge.mock { border-color: var(--amber); color: var(--amber); }
+      .top-badge.connected { border-color: var(--green); color: var(--green); }
+    
+      #sse-dot {
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: var(--amber);
+        box-shadow: 0 0 6px var(--amber);
+      }
+      #sse-dot.live { background: var(--green); box-shadow: 0 0 6px var(--green); }
+    
+      /* compute pill */
+      #compute-pill {
+        display: flex;
+        gap: 2px;
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 3px;
+      }
+      .compute-btn {
+        font-size: 10px;
+        font-family: var(--mono);
+        padding: 3px 10px;
+        border-radius: 16px;
+        border: none;
+        background: transparent;
+        color: var(--text2);
+        cursor: pointer;
+        transition: all 0.3s;
+        letter-spacing: 0.05em;
+      }
+      .compute-btn.active {
+        background: var(--accent);
+        color: #000;
+        font-weight: 700;
+      }
+      .compute-btn.active.solo { background: var(--amber); }
+      .compute-btn.active.dark-mode { background: var(--text3); color: var(--text2); }
+    
+      /* ─── MAIN LAYOUT ─────────────────────────────────────── */
+      #main {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
+      }
+    
+      /* ─── LEFT PANEL ──────────────────────────────────────── */
+      #left-panel {
+        width: var(--panel-w);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+    
+      .panel-tabs {
+        display: flex;
+        border-bottom: 1px solid var(--border);
+        overflow-x: auto;
+        flex-shrink: 0;
+      }
+      .panel-tabs::-webkit-scrollbar { display: none; }
+    
+      .ptab {
+        font-size: 10px;
+        font-family: var(--mono);
+        padding: 8px 12px;
+        border: none;
+        background: transparent;
+        color: var(--text3);
+        cursor: pointer;
+        white-space: nowrap;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s;
+        letter-spacing: 0.05em;
+      }
+      .ptab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    
+      .panel-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 12px;
+      }
+      .panel-content::-webkit-scrollbar { width: 3px; }
+      .panel-content::-webkit-scrollbar-thumb { background: var(--border); }
+    
+      /* ─── CENTER ──────────────────────────────────────────── */
+      #center {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        position: relative;
+      }
+    
+      /* ─── ORB AREA ────────────────────────────────────────── */
+      #orb-area {
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        position: relative;
+        border-bottom: 1px solid var(--border);
+        background: radial-gradient(ellipse at 50% 0%, rgba(74,158,255,0.06) 0%, transparent 70%);
+      }
+    
+      #orb-canvas {
+        width: 140px;
+        height: 140px;
+        cursor: pointer;
+        border-radius: 50%;
+      }
+    
+      #orb-state-label {
+        font-size: 9px;
+        font-family: var(--mono);
+        color: var(--text3);
+        letter-spacing: 0.15em;
+        margin-top: 4px;
+      }
+    
+      /* ─── WAKE WORD INDICATOR ─────────────────────────────── */
+      #wake-indicator {
+        position: absolute;
+        top: 8px;
+        right: 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 10px;
+        font-family: var(--mono);
+        color: var(--text3);
+      }
+      #wake-dot {
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: var(--text3);
+        transition: all 0.3s;
+      }
+      #wake-dot.listening {
+        background: var(--red);
+        box-shadow: 0 0 8px var(--red);
+        animation: pulse-red 1s infinite;
+      }
+      @keyframes pulse-red {
+        0%,100% { opacity: 1; } 50% { opacity: 0.4; }
+      }
+    
+      /* push-to-talk hint */
+      #ptt-hint {
+        position: absolute;
+        bottom: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 9px;
+        font-family: var(--mono);
+        color: var(--text3);
+        letter-spacing: 0.1em;
+      }
+    
+      /* ─── CENTER TABS ─────────────────────────────────────── */
+      #center-tabs {
+        display: flex;
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+        overflow-x: auto;
+        background: var(--bg2);
+      }
+      #center-tabs::-webkit-scrollbar { display: none; }
+    
+      .ctab {
+        font-size: 10px;
+        font-family: var(--mono);
+        padding: 10px 16px;
+        border: none;
+        background: transparent;
+        color: var(--text3);
+        cursor: pointer;
+        white-space: nowrap;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s;
+        letter-spacing: 0.06em;
+      }
+      .ctab.active { color: var(--accent); border-bottom-color: var(--accent); }
+      .ctab .badge {
+        display: inline-block;
+        background: var(--accent);
+        color: #000;
+        font-size: 8px;
+        padding: 1px 5px;
+        border-radius: 8px;
+        margin-left: 4px;
+        font-weight: 700;
+      }
+    
+      /* ─── STREAM ──────────────────────────────────────────── */
+      #stream {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      #stream::-webkit-scrollbar { width: 4px; }
+      #stream::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    
+      .stream-section { display: none; }
+      .stream-section.active { display: flex; flex-direction: column; gap: 12px; }
+    
+      /* ─── CARDS ───────────────────────────────────────────── */
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        animation: slideUp 0.3s ease-out;
+      }
+      @keyframes slideUp {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+    
+      .card.alert-card {
+        border-color: rgba(249,115,22,0.4);
+        box-shadow: 0 0 20px rgba(249,115,22,0.08);
+        margin: 0 -8px;
+      }
+    
+      .card.sunk {
+        height: 48px;
+        padding: 0 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        opacity: 0.5;
+      }
+    
+      .card-header {
+        padding: 12px 14px;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        cursor: pointer;
+      }
+    
+      .card-body {
+        padding: 0 14px 12px;
+        border-top: 1px solid var(--border);
+      }
+    
+      .card-left-bar {
+        width: 3px;
+        border-radius: 2px;
+        align-self: stretch;
+        flex-shrink: 0;
+      }
+    
+      /* ─── PROJECT CARD ────────────────────────────────────── */
+      .project-card .card-header { padding: 14px; }
+    
+      .project-name {
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        color: var(--text);
+      }
+    
+      .status-badge {
+        font-size: 9px;
+        font-family: var(--mono);
+        padding: 2px 7px;
+        border-radius: 4px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        margin-left: auto;
+      }
+      .status-badge.running { background: rgba(74,158,255,0.15); color: var(--accent); }
+      .status-badge.idle { background: rgba(255,255,255,0.06); color: var(--text3); }
+      .status-badge.done { background: rgba(74,222,128,0.1); color: var(--green); }
+      .status-badge.blocked { background: rgba(248,113,113,0.1); color: var(--red); }
+    
+      .health-dot {
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        margin-top: 3px;
+      }
+      .health-dot.green { background: var(--green); box-shadow: 0 0 6px var(--green); }
+      .health-dot.amber { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
+      .health-dot.red { background: var(--red); box-shadow: 0 0 8px var(--red); }
+    
+      .weight-score {
+        font-size: 10px;
+        font-family: var(--mono);
+        color: var(--text3);
+      }
+    
+      .why-tag {
+        font-size: 9px;
+        font-family: var(--mono);
+        padding: 2px 6px;
+        border-radius: 3px;
+        background: rgba(249,115,22,0.12);
+        color: #fb923c;
+        letter-spacing: 0.06em;
+      }
+    
+      /* ─── AGENT CHIPS ─────────────────────────────────────── */
+      .agent-chips { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+      .agent-chip {
+        font-size: 9px;
+        font-family: var(--mono);
+        padding: 2px 8px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        color: var(--text3);
+      }
+      .agent-chip.active { border-color: var(--accent); color: var(--accent); }
+    
+      /* ─── DIFF CARD ───────────────────────────────────────── */
+      .diff-block {
+        font-family: var(--mono);
+        font-size: 11px;
+        line-height: 1.7;
+        padding: 10px;
+        background: rgba(0,0,0,0.3);
+        border-radius: 4px;
+        margin-top: 8px;
+        overflow-x: auto;
+      }
+      .diff-add { color: var(--green); }
+      .diff-remove { color: var(--red); }
+      .diff-ctx { color: var(--text3); }
+      .blake3 { font-family: var(--mono); font-size: 9px; color: var(--text3); margin-top: 6px; }
+    
+      /* ─── ALERT ACTIONS ───────────────────────────────────── */
+      .alert-actions { display: flex; gap: 6px; padding: 10px 14px; border-top: 1px solid var(--border); }
+      .alert-btn {
+        font-size: 10px;
+        font-family: var(--mono);
+        padding: 4px 10px;
+        border-radius: 4px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--text2);
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .alert-btn:hover { border-color: var(--accent); color: var(--accent); }
+      .alert-btn.act { border-color: var(--accent); color: var(--accent); }
+      .alert-btn.dismiss { opacity: 0.6; }
+    
+      /* ─── KANBAN ──────────────────────────────────────────── */
+      #kanban-view {
+        display: none;
+        flex: 1;
+        overflow-x: auto;
+        padding: 16px;
+        gap: 12px;
+      }
+      #kanban-view.active { display: flex; }
+      #kanban-view::-webkit-scrollbar { height: 4px; }
+      #kanban-view::-webkit-scrollbar-thumb { background: var(--border); }
+    
+      .kanban-col {
+        min-width: 220px;
+        max-width: 220px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+    
+      .kanban-col-header {
+        font-size: 10px;
+        font-family: var(--mono);
+        color: var(--text3);
+        letter-spacing: 0.1em;
+        padding: 6px 2px;
+        border-bottom: 2px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    
+      .kanban-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 10px 12px;
+        cursor: grab;
+        transition: all 0.2s;
+        draggable: true;
+      }
+      .kanban-card:hover { border-color: var(--border-accent); transform: translateY(-1px); }
+      .kanban-card:active { cursor: grabbing; }
+    
+      .kcard-title { font-size: 12px; font-weight: 600; margin-bottom: 6px; }
+      .kcard-meta { display: flex; gap: 6px; align-items: center; }
+      .priority-dot { width: 6px; height: 6px; border-radius: 50%; }
+      .priority-dot.p1 { background: var(--red); }
+      .priority-dot.p2 { background: var(--amber); }
+      .priority-dot.p3 { background: var(--green); }
+    
+      /* ─── RIGHT PANEL ─────────────────────────────────────── */
+      #right-panel {
+        width: var(--panel-w);
+        border-left: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+    
+      /* ─── CONVERSATION CARD ───────────────────────────────── */
+      #conv-card {
+        display: none;
+        position: absolute;
+        top: 200px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 480px;
+        background: var(--bg2);
+        border: 1px solid var(--border-accent);
+        border-radius: var(--radius);
+        z-index: 200;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+        animation: slideUp 0.25s ease-out;
+      }
+      #conv-card.open { display: block; }
+    
+      .conv-header {
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 10px;
+        font-family: var(--mono);
+        color: var(--text3);
+      }
+    
+      #conv-messages {
+        max-height: 280px;
+        overflow-y: auto;
+        padding: 12px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+    
+      .msg { display: flex; flex-direction: column; gap: 2px; }
+      .msg.user .msg-text { background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.2); align-self: flex-end; border-radius: 8px 8px 2px 8px; }
+      .msg.assistant .msg-text { background: var(--card); border: 1px solid var(--border); align-self: flex-start; border-radius: 2px 8px 8px 8px; }
+      .msg-text { padding: 8px 12px; font-size: 12px; max-width: 85%; line-height: 1.5; }
+      .msg-meta { font-size: 9px; font-family: var(--mono); color: var(--text3); padding: 0 4px; }
+    
+      .conv-input-row {
+        padding: 10px 14px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        gap: 8px;
+      }
+    
+      #conv-input {
+        flex: 1;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 8px 10px;
+        color: var(--text);
+        font-family: var(--sans);
+        font-size: 12px;
+        outline: none;
+        resize: none;
+        height: 36px;
+        min-height: 36px;
+        max-height: 120px;
+        transition: border-color 0.2s;
+      }
+      #conv-input:focus { border-color: var(--border-accent); }
+    
+      .conv-send {
+        background: var(--accent);
+        color: #000;
+        border: none;
+        border-radius: 6px;
+        padding: 0 14px;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: var(--mono);
+      }
+    
+      /* ─── SKILL REGISTRY PANEL ────────────────────────────── */
+      #skill-panel {
+        position: fixed;
+        top: 0; right: -360px;
+        width: 360px;
+        height: 100%;
+        background: var(--bg2);
+        border-left: 1px solid var(--border);
+        z-index: 300;
+        transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      #skill-panel.open { right: 0; }
+    
+      .skill-panel-header {
+        padding: 16px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    
+      .skill-item {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .skill-item:hover { background: rgba(255,255,255,0.02); }
+    
+      .skill-mode {
+        font-size: 9px;
+        font-family: var(--mono);
+        padding: 2px 7px;
+        border-radius: 3px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+      }
+      .skill-mode.live { background: rgba(74,158,255,0.15); color: var(--accent); }
+      .skill-mode.compiled { background: rgba(124,58,237,0.15); color: #a78bfa; }
+      .skill-mode.dormant { background: rgba(255,255,255,0.05); color: var(--text3); }
+    
+      /* ─── MEMORY GRAPH PANEL ──────────────────────────────── */
+      #memory-graph-canvas {
+        width: 100%;
+        height: 200px;
+        background: rgba(0,0,0,0.3);
+        border-radius: 6px;
+        margin-top: 8px;
+      }
+    
+      /* ─── GENERIC PANEL ITEMS ─────────────────────────────── */
+      .section-label {
+        font-size: 9px;
+        font-family: var(--mono);
+        color: var(--text3);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        margin-top: 14px;
+      }
+      .section-label:first-child { margin-top: 0; }
+    
+      .item-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 8px;
+        border-radius: 5px;
+        margin-bottom: 2px;
+        transition: background 0.15s;
+      }
+      .item-row:hover { background: rgba(255,255,255,0.03); }
+    
+      .item-name { flex: 1; font-size: 12px; color: var(--text); }
+      .item-meta { font-size: 10px; font-family: var(--mono); color: var(--text3); }
+    
+      /* server status */
+      .server-item {
+        padding: 10px;
+        background: rgba(0,0,0,0.2);
+        border-radius: 6px;
+        margin-bottom: 6px;
+        border: 1px solid var(--border);
+      }
+      .server-name { font-size: 11px; font-weight: 600; margin-bottom: 4px; }
+      .server-meta { font-size: 10px; font-family: var(--mono); color: var(--text3); display: flex; gap: 10px; }
+      .server-tools { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 6px; }
+      .tool-chip {
+        font-size: 9px;
+        font-family: var(--mono);
+        padding: 1px 6px;
+        border-radius: 3px;
+        background: rgba(74,158,255,0.08);
+        border: 1px solid rgba(74,158,255,0.15);
+        color: var(--text3);
+      }
+    
+      /* inspector log */
+      #inspector-log {
+        height: 120px;
+        overflow-y: auto;
+        font-family: var(--mono);
+        font-size: 10px;
+        background: rgba(0,0,0,0.4);
+        border-radius: 4px;
+        padding: 6px;
+        color: var(--text2);
+        line-height: 1.6;
+      }
+      #inspector-log::-webkit-scrollbar { width: 2px; }
+      #inspector-log::-webkit-scrollbar-thumb { background: var(--border); }
+    
+      .log-entry { padding: 1px 0; }
+      .log-entry .ts { color: var(--text3); margin-right: 6px; }
+      .log-entry .tool { color: var(--accent); }
+      .log-entry .ok { color: var(--green); }
+      .log-entry .err { color: var(--red); }
+      .log-entry .ms { color: var(--text3); }
+    
+      /* ─── CRM ─────────────────────────────────────────────── */
+      .crm-contact {
+        padding: 10px;
+        background: rgba(0,0,0,0.15);
+        border-radius: 6px;
+        margin-bottom: 6px;
+        border: 1px solid var(--border);
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .crm-avatar {
+        width: 30px; height: 30px;
+        border-radius: 50%;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+        color: #000;
+        flex-shrink: 0;
+      }
+      .crm-name { font-size: 12px; font-weight: 600; }
+      .crm-signal {
+        font-size: 9px;
+        font-family: var(--mono);
+        padding: 1px 6px;
+        border-radius: 3px;
+        margin-left: auto;
+      }
+      .crm-signal.hot { background: rgba(248,113,113,0.12); color: var(--red); }
+      .crm-signal.warm { background: rgba(245,158,11,0.12); color: var(--amber); }
+      .crm-signal.cool { background: rgba(255,255,255,0.05); color: var(--text3); }
+    
+      /* pipeline */
+      .pipeline-row {
+        display: flex;
+        gap: 4px;
+        margin-top: 12px;
+        margin-bottom: 4px;
+      }
+      .pipe-stage {
+        flex: 1;
+        text-align: center;
+        font-size: 9px;
+        font-family: var(--mono);
+        color: var(--text3);
+        padding: 6px 2px;
+        background: rgba(0,0,0,0.2);
+        border-radius: 4px;
+        border: 1px solid var(--border);
+      }
+      .pipe-stage.active { border-color: var(--accent); color: var(--accent); }
+      .pipe-count { font-size: 14px; font-weight: 700; color: var(--text); display: block; }
+    
+      /* ─── ORCHESTRATOR VIEW ───────────────────────────────── */
+      .orch-step {
+        padding: 8px 10px;
+        border-radius: 5px;
+        border: 1px solid var(--border);
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 11px;
+      }
+      .orch-step.active { border-color: var(--accent); background: rgba(74,158,255,0.05); }
+      .orch-step.done { border-color: rgba(74,222,128,0.2); background: rgba(74,222,128,0.03); }
+      .orch-step.idle { opacity: 0.4; }
+      .step-num {
+        width: 20px; height: 20px;
+        border-radius: 50%;
+        background: var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-family: var(--mono);
+        flex-shrink: 0;
+      }
+      .orch-step.active .step-num { background: var(--accent); color: #000; }
+      .orch-step.done .step-num { background: var(--green); color: #000; }
+    
+      /* jobs */
+      .job-row {
+        padding: 8px 10px;
+        background: rgba(0,0,0,0.2);
+        border-radius: 5px;
+        margin-bottom: 4px;
+        border: 1px solid var(--border);
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .job-status {
+        font-size: 9px; font-family: var(--mono);
+        padding: 2px 6px; border-radius: 3px;
+        margin-left: auto;
+      }
+      .job-status.running { background: rgba(74,158,255,0.15); color: var(--accent); }
+      .job-status.done { background: rgba(74,222,128,0.1); color: var(--green); }
+      .job-status.queued { background: rgba(255,255,255,0.06); color: var(--text3); }
+    
+      /* ─── AGENT NEGOTIATION ───────────────────────────────── */
+      .neg-msg {
+        padding: 6px 10px;
+        border-radius: 5px;
+        font-size: 11px;
+        font-family: var(--mono);
+        margin-bottom: 4px;
+        border-left: 3px solid var(--border);
+        line-height: 1.5;
+      }
+      .neg-msg.agent-to-agent { border-left-color: var(--accent); background: rgba(74,158,255,0.04); }
+      .neg-msg.system { border-left-color: var(--text3); color: var(--text3); font-size: 10px; }
+      .neg-msg.orch { border-left-color: var(--amber); background: rgba(245,158,11,0.04); }
+      .neg-from { color: var(--text3); font-size: 9px; margin-bottom: 2px; letter-spacing: 0.05em; }
+    
+      /* ─── MEMORY GRAPH ────────────────────────────────────── */
+      .graph-node {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-family: var(--mono);
+        margin: 3px;
+        border: 1px solid var(--border);
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .graph-node:hover { border-color: var(--accent); color: var(--accent); }
+      .graph-node.project { border-color: rgba(74,158,255,0.3); color: var(--accent); }
+      .graph-node.entity { border-color: rgba(124,58,237,0.3); color: #a78bfa; }
+      .graph-node.agent { border-color: rgba(74,222,128,0.3); color: var(--green); }
+      .graph-node.dep { border-color: rgba(245,158,11,0.3); color: var(--amber); }
+    
+      .graph-rel {
+        font-size: 9px;
+        font-family: var(--mono);
+        color: var(--text3);
+        padding: 2px 8px;
+      }
+    
+      /* ─── PROVENANCE ──────────────────────────────────────── */
+      .prov-chain {
+        font-family: var(--mono);
+        font-size: 10px;
+        line-height: 1.8;
+        padding: 10px;
+        background: rgba(0,0,0,0.3);
+        border-radius: 5px;
+      }
+      .prov-step { color: var(--text2); }
+      .prov-step .prov-agent { color: var(--accent); }
+      .prov-step .prov-hash { color: var(--text3); }
+      .prov-step .prov-human { color: var(--green); }
+      .prov-arrow { color: var(--text3); padding: 0 6px; }
+    
+      /* ─── EXTERNAL SIGNALS ────────────────────────────────── */
+      .signal-item {
+        padding: 8px 10px;
+        border-radius: 5px;
+        border: 1px solid var(--border);
+        margin-bottom: 4px;
+        font-size: 11px;
+      }
+      .signal-source {
+        font-size: 9px;
+        font-family: var(--mono);
+        color: var(--text3);
+        margin-bottom: 2px;
+        letter-spacing: 0.05em;
+      }
+      .signal-item.urgent { border-color: rgba(248,113,113,0.3); }
+      .signal-item.info { border-color: rgba(74,158,255,0.2); }
+    
+      /* ─── COMPILED SKILL REPLAY ───────────────────────────── */
+      .replay-step {
+        display: flex;
+        gap: 8px;
+        align-items: flex-start;
+        padding: 6px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 11px;
+      }
+      .replay-step:last-child { border-bottom: none; }
+      .replay-ts { font-family: var(--mono); font-size: 9px; color: var(--text3); width: 50px; flex-shrink: 0; padding-top: 1px; }
+      .replay-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-top: 4px; flex-shrink: 0; }
+    
+      /* ─── PREFERENCE/ACTIVITY ─────────────────────────────── */
+      .activity-bar {
+        height: 40px;
+        display: flex;
+        align-items: flex-end;
+        gap: 2px;
+        margin-top: 8px;
+      }
+      .act-bar-col {
+        flex: 1;
+        border-radius: 2px 2px 0 0;
+        transition: all 0.3s;
+        cursor: pointer;
+      }
+      .act-bar-col:hover { opacity: 0.8; }
+    
+      /* ─── SSE BUS ─────────────────────────────────────────── */
+      .sse-event {
+        padding: 5px 8px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-family: var(--mono);
+        margin-bottom: 3px;
+        border-left: 2px solid var(--border);
+        line-height: 1.5;
+        animation: fadeIn 0.3s;
+      }
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      .sse-event.agent_update { border-left-color: var(--accent); }
+      .sse-event.health_check { border-left-color: var(--amber); }
+      .sse-event.job_complete { border-left-color: var(--green); }
+      .sse-event.external_signal { border-left-color: #a78bfa; }
+      .sse-event.assistant_reply { border-left-color: var(--text3); }
+      .sse-ts { color: var(--text3); margin-right: 6px; }
+    
+      /* ─── HEALTH AGENT ────────────────────────────────────── */
+      .health-item {
+        padding: 8px 10px;
+        border-radius: 5px;
+        border: 1px solid var(--border);
+        margin-bottom: 4px;
+        font-size: 11px;
+      }
+      .health-item.red { border-left: 3px solid var(--red); }
+      .health-item.amber { border-left: 3px solid var(--amber); }
+      .health-item.green { border-left: 3px solid var(--green); }
+      .health-reason { font-family: var(--mono); font-size: 10px; color: var(--text2); margin-top: 3px; }
+    
+      /* ─── AGENTS RIGHT PANEL ──────────────────────────────── */
+      .agent-item {
+        padding: 10px;
+        background: rgba(0,0,0,0.15);
+        border-radius: 6px;
+        margin-bottom: 6px;
+        border: 1px solid var(--border);
+      }
+      .agent-name { font-size: 12px; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+      .agent-running-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse-green 2s infinite; }
+      @keyframes pulse-green { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+      .agent-task { font-size: 10px; color: var(--text3); font-family: var(--mono); }
+      .agent-stats { display: flex; gap: 10px; margin-top: 6px; font-size: 9px; font-family: var(--mono); color: var(--text3); }
+    
+      /* ─── TRANSITION OVERLAY ──────────────────────────────── */
+      #mode-transition {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(10,10,15,0.85);
+        z-index: 500;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 16px;
+        backdrop-filter: blur(10px);
+      }
+      #mode-transition.show { display: flex; }
+      #mode-transition-text {
+        font-size: 18px;
+        font-family: var(--mono);
+        color: var(--text);
+        letter-spacing: 0.1em;
+      }
+      .mode-spinner {
+        width: 40px; height: 40px;
+        border: 2px solid var(--border);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+    
+      /* ─── GAZE CURSOR ─────────────────────────────────────── */
+      #gaze-overlay {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        pointer-events: none;
+        z-index: 1;
+      }
+    
+      /* scrollbar global */
+      ::-webkit-scrollbar { width: 3px; height: 3px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    
+      /* close btn */
+      .close-btn {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text3);
+        width: 24px; height: 24px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .close-btn:hover { border-color: var(--red); color: var(--red); }
+    
+      /* mini bar */
+      .mini-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+      .mini-title { font-size: 11px; font-weight: 600; color: var(--text); }
+    
+      /* compound context banner */
+      #compound-banner {
+        margin: 8px 16px;
+        padding: 10px 14px;
+        background: rgba(124,58,237,0.08);
+        border: 1px solid rgba(124,58,237,0.2);
+        border-radius: 6px;
+        font-size: 11px;
+        font-family: var(--mono);
+        color: #c4b5fd;
+        line-height: 1.5;
+        display: none;
+      }
+      #compound-banner.show { display: block; }
+      #compound-banner .cb-label { font-size: 9px; color: #7c3aed; letter-spacing: 0.1em; margin-bottom: 4px; }
+    
+      /* NLU bars */
+      .nlu-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+      .nlu-label { font-size: 10px; font-family: var(--mono); color: var(--text2); width: 90px; flex-shrink: 0; }
+      .nlu-bar-bg { flex: 1; height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; }
+      .nlu-bar-fill { height: 100%; border-radius: 2px; background: var(--accent); transition: width 0.5s; }
+      .nlu-pct { font-size: 9px; font-family: var(--mono); color: var(--text3); width: 32px; text-align: right; }
+    
+      /* obsidian log */
+      .obs-entry { padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 11px; }
+      .obs-role { font-family: var(--mono); font-size: 9px; color: var(--text3); margin-bottom: 2px; letter-spacing: 0.05em; }
+      .obs-content { color: var(--text2); line-height: 1.4; }
+    
+      /* input add */
+      .add-input {
+        width: 100%;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--border);
+        border-radius: 5px;
+        padding: 6px 10px;
+        color: var(--text);
+        font-family: var(--mono);
+        font-size: 11px;
+        outline: none;
+        margin-top: 8px;
+      }
+      .add-input:focus { border-color: var(--border-accent); }
+    
+      /* btn */
+      .small-btn {
+        font-size: 10px;
+        font-family: var(--mono);
+        padding: 4px 10px;
+        border-radius: 4px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--text2);
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .small-btn:hover { border-color: var(--accent); color: var(--accent); }
+      .small-btn.primary { background: var(--accent); color: #000; border-color: var(--accent); }
+    
+      /* msg bus */
+      .bus-msg {
+        padding: 6px 10px;
+        border-radius: 5px;
+        border: 1px solid var(--border);
+        margin-bottom: 4px;
+        font-size: 11px;
+        animation: fadeIn 0.3s;
+      }
+      .bus-msg .bm-from { font-family: var(--mono); font-size: 9px; color: var(--text3); margin-bottom: 2px; }
+      .bus-type {
+        font-size: 8px; font-family: var(--mono);
+        padding: 1px 5px; border-radius: 2px;
+        margin-left: 4px;
+      }
+      .bus-type.agent { background: rgba(74,158,255,0.1); color: var(--accent); }
+      .bus-type.system { background: rgba(255,255,255,0.05); color: var(--text3); }
+      .bus-type.alert { background: rgba(248,113,113,0.1); color: var(--red); }
+    
+      /* ─── AMBIENT PERCEPTION INDICATORS ─────────────────── */
+      #ambient-bar {
+        display: flex;
+        gap: 8px;
+        padding: 0 16px 6px;
+        font-size: 9px;
+        font-family: var(--mono);
+        color: var(--text3);
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+      .amb-item { display: flex; align-items: center; gap: 4px; }
+      .amb-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--text3); }
+      .amb-dot.active { background: var(--green); }
+    
+    </style>
+    </head>
+    <body>
+    
+    <!-- ─── GAZE OVERLAY ──────────────────────────────────── -->
+    <canvas id="gaze-overlay"></canvas>
+    
+    <!-- ─── MODE TRANSITION ───────────────────────────────── -->
+    <div id="mode-transition">
+      <div class="mode-spinner"></div>
+      <div id="mode-transition-text">Spinning down crew...</div>
+    </div>
+    
+    <!-- ─── SKILL REGISTRY PANEL ─────────────────────────── -->
+    <div id="skill-panel">
+      <div class="skill-panel-header">
+        <div>
+          <div style="font-weight:700;font-size:13px;">Skill Registry</div>
+          <div style="font-size:10px;font-family:var(--mono);color:var(--text3);margin-top:2px;" id="skill-compute-note">Mode: FULL CREW — all skills active</div>
+        </div>
+        <button class="close-btn" onclick="toggleSkillPanel()">×</button>
+      </div>
+      <div style="flex:1;overflow-y:auto;">
+        <div id="skill-list"></div>
+        <div style="padding:16px;">
+          <div class="section-label">Add Skill Library</div>
+          <input class="add-input" placeholder="paste repo URL or manifest block..." id="skill-url-input">
+          <div style="display:flex;gap:6px;margin-top:8px;">
+            <button class="small-btn primary" onclick="addSkill()">Install → DORMANT</button>
+            <button class="small-btn" onclick="toggleSkillPanel()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- ─── CONVERSATION CARD ─────────────────────────────── -->
+    <div id="conv-card">
+      <div class="conv-header">
+        <span style="font-family:var(--mono);letter-spacing:0.05em;">APEX — conversation</span>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <span id="conv-project-tag" style="font-size:9px;color:var(--accent);"></span>
+          <button class="close-btn" onclick="closeConv()">×</button>
+        </div>
+      </div>
+      <div id="conv-messages"></div>
+      <div class="conv-input-row">
+        <textarea id="conv-input" placeholder="speak to apex... (Enter to send)" rows="1"></textarea>
+        <button class="conv-send" onclick="sendMessage()">SEND</button>
+      </div>
+    </div>
+    
+    <!-- ─── TOP BAR ───────────────────────────────────────── -->
+    <div id="topbar">
+      <div class="logo">APEX STUDIO</div>
+      <div style="font-size:9px;font-family:var(--mono);color:var(--text3);">V5 · 2027</div>
+      <div class="spacer"></div>
+    
+      <!-- Ambient perception -->
+      <div style="display:flex;gap:6px;align-items:center;font-size:9px;font-family:var(--mono);color:var(--text3);">
+        <span id="amb-focus">FOCUSED</span>
+        <span id="amb-idle" style="display:none;color:var(--amber);">IDLE 3m</span>
+      </div>
+    
+      <!-- Compute pill -->
+      <div id="compute-pill">
+        <button class="compute-btn active" onclick="setCompute('full')" id="btn-full">FULL CREW</button>
+        <button class="compute-btn" onclick="setCompute('solo')" id="btn-solo">SOLO</button>
+        <button class="compute-btn" onclick="setCompute('dark')" id="btn-dark">DARK</button>
+      </div>
+    
+      <div id="sse-dot"></div>
+      <div class="top-badge mock" id="mode-badge">MOCK</div>
+      <div style="font-size:9px;font-family:var(--mono);color:var(--text3);">SPACE=PTT</div>
+    </div>
+    
+    <!-- ─── WAKE INDICATOR (outside main) ─────────────────── -->
+    <div id="wake-indicator" style="position:fixed;top:56px;right:16px;z-index:50;display:flex;align-items:center;gap:6px;font-size:10px;font-family:var(--mono);color:var(--text3);">
+      <div id="wake-dot"></div>
+      <span id="wake-label">awaiting wake word</span>
+    </div>
+    
+    <!-- ─── MAIN ──────────────────────────────────────────── -->
+    <div id="main">
+    
+      <!-- ═══ LEFT PANEL ══════════════════════════════════════ -->
+      <div id="left-panel">
+        <div class="panel-tabs">
+          <button class="ptab active" onclick="leftTab(this,'lmcp')">MCP</button>
+          <button class="ptab" onclick="leftTab(this,'lcrm')">CRM</button>
+          <button class="ptab" onclick="leftTab(this,'lskills')">SKILLS</button>
+          <button class="ptab" onclick="leftTab(this,'lexternal')">SIGNALS</button>
+          <button class="ptab" onclick="leftTab(this,'lmemory')">MEMORY</button>
+        </div>
+    
+        <!-- MCP -->
+        <div class="panel-content" id="lmcp">
+          <div class="section-label">Protocol Servers</div>
+          <div id="mcp-servers"></div>
+          <div class="section-label">Inspector Log</div>
+          <div id="inspector-log"></div>
+          <input class="add-input" placeholder="+ add MCP server URL..." style="margin-top:8px;">
+        </div>
+    
+        <!-- CRM -->
+        <div class="panel-content" id="lcrm" style="display:none;">
+          <div class="section-label">Pipeline</div>
+          <div class="pipeline-row" id="pipeline-row"></div>
+          <div class="section-label" style="margin-top:14px;">Contacts</div>
+          <div id="crm-contacts"></div>
+        </div>
+    
+        <!-- SKILLS -->
+        <div class="panel-content" id="lskills" style="display:none;">
+          <div class="section-label">Quick Registry</div>
+          <div id="left-skill-list"></div>
+          <button class="small-btn" style="width:100%;margin-top:8px;justify-content:center;" onclick="toggleSkillPanel()">Open Full Registry →</button>
+        </div>
+    
+        <!-- EXTERNAL SIGNALS -->
+        <div class="panel-content" id="lexternal" style="display:none;">
+          <div class="section-label">Live Signals</div>
+          <div id="external-signals"></div>
+        </div>
+    
+        <!-- SPATIAL MEMORY GRAPH -->
+        <div class="panel-content" id="lmemory" style="display:none;">
+          <div class="section-label">Spatial Memory Graph</div>
+          <div id="memory-graph-nodes"></div>
+          <div class="section-label">Entity Relationships</div>
+          <div id="memory-rels"></div>
+          <div class="section-label">Confidence Decay</div>
+          <div id="memory-decay"></div>
+        </div>
+      </div>
+    
+      <!-- ═══ CENTER ══════════════════════════════════════════ -->
+      <div id="center">
+    
+        <!-- ORB AREA -->
+        <div id="orb-area">
+          <div id="wake-indicator-inner" style="position:absolute;top:8px;right:12px;display:flex;align-items:center;gap:6px;font-size:10px;font-family:var(--mono);color:var(--text3);">
+          </div>
+          <canvas id="orb-canvas"></canvas>
+          <div id="orb-state-label">IDLE · watching</div>
+          <div id="ptt-hint">[ SPACE ] push to talk · [ click ] converse · [ right-click ] skills</div>
+        </div>
+    
+        <!-- AMBIENT PERCEPTION BAR -->
+        <div id="ambient-bar">
+          <div class="amb-item"><div class="amb-dot active" id="amb-focus-dot"></div><span>tab focused</span></div>
+          <div class="amb-item"><div class="amb-dot" id="amb-idle-dot"></div><span>idle</span></div>
+          <div class="amb-item"><div class="amb-dot" id="amb-scroll-dot"></div><span>scrolling</span></div>
+          <div class="amb-item" style="margin-left:auto;"><div class="amb-dot active"></div><span>quiet hours: 11pm–7am</span></div>
+        </div>
+    
+        <!-- COMPOUND CONTEXT BANNER -->
+        <div id="compound-banner">
+          <div class="cb-label">COMPOUND CONTEXT</div>
+          <span id="compound-text"></span>
+        </div>
+    
+        <!-- CENTER TABS -->
+        <div id="center-tabs">
+          <button class="ctab active" onclick="centerTab(this,'stream')">STREAM</button>
+          <button class="ctab" onclick="centerTab(this,'kanban')">KANBAN</button>
+          <button class="ctab" onclick="centerTab(this,'msgbus')">MSG BUS</button>
+          <button class="ctab" onclick="centerTab(this,'orch')">ORCH</button>
+          <button class="ctab" onclick="centerTab(this,'prov')">PROVENANCE</button>
+          <button class="ctab" onclick="centerTab(this,'replay')">REPLAY</button>
+        </div>
+    
+        <!-- STREAM -->
+        <div id="stream">
+          <div class="stream-section active" id="stream-section">
+            <div id="project-stream"></div>
+          </div>
+          <div class="stream-section" id="kanban-section">
+            <div id="kanban-view" class="active" style="display:flex;"></div>
+          </div>
+          <div class="stream-section" id="msgbus-section">
+            <div id="msg-bus-feed"></div>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <input class="add-input" style="flex:1;margin-top:0;" placeholder="broadcast to all agents..." id="bus-input">
+              <button class="small-btn primary" onclick="broadcastMsg()">BROADCAST</button>
+            </div>
+          </div>
+          <div class="stream-section" id="orch-section">
+            <div id="orch-view"></div>
+          </div>
+          <div class="stream-section" id="prov-section">
+            <div id="prov-view"></div>
+          </div>
+          <div class="stream-section" id="replay-section">
+            <div id="replay-view"></div>
+          </div>
+        </div>
+      </div>
+    
+      <!-- ═══ RIGHT PANEL ══════════════════════════════════════ -->
+      <div id="right-panel">
+        <div class="panel-tabs">
+          <button class="ptab active" onclick="rightTab(this,'ragents')">AGENTS</button>
+          <button class="ptab" onclick="rightTab(this,'rhealth')">HEALTH</button>
+          <button class="ptab" onclick="rightTab(this,'rsse')">SSE</button>
+          <button class="ptab" onclick="rightTab(this,'robs')">OBSIDIAN</button>
+          <button class="ptab" onclick="rightTab(this,'rprefs')">PREFS</button>
+          <button class="ptab" onclick="rightTab(this,'rneg')">NEGOTIATION</button>
+        </div>
+    
+        <div class="panel-content" id="ragents">
+          <div class="section-label">Active Agents</div>
+          <div id="agents-list"></div>
+        </div>
+        <div class="panel-content" id="rhealth" style="display:none;">
+          <div class="section-label">Health Sub-Agent</div>
+          <div id="health-feed"></div>
+        </div>
+        <div class="panel-content" id="rsse" style="display:none;">
+          <div class="section-label">SSE Event Stream</div>
+          <div id="sse-feed" style="max-height:500px;overflow-y:auto;"></div>
+        </div>
+        <div class="panel-content" id="robs" style="display:none;">
+          <div class="section-label">Obsidian Log</div>
+          <div id="obs-log"></div>
+        </div>
+        <div class="panel-content" id="rprefs" style="display:none;">
+          <div class="section-label">Preference Profile</div>
+          <div id="prefs-view"></div>
+          <div class="section-label">24h Activity Pattern</div>
+          <div class="activity-bar" id="activity-bar"></div>
+          <div style="display:flex;justify-content:space-between;font-size:9px;font-family:var(--mono);color:var(--text3);margin-top:4px;">
+            <span>12am</span><span>6am</span><span>12pm</span><span>6pm</span><span>12am</span>
+          </div>
+        </div>
+        <div class="panel-content" id="rneg" style="display:none;">
+          <div class="section-label">Agent Negotiation Bus</div>
+          <div id="negotiation-feed"></div>
+        </div>
+      </div>
+    </div>
+    
+    <script type="module">
+    import * as THREE from 'three';
+    
+    // ═══════════════════════════════════════════════════════════
+    // STATE
+    // ═══════════════════════════════════════════════════════════
+    const state = {
+      compute: 'full',         // full | solo | dark
+      orbState: 'idle',        // idle | active | speaking | alert | dark
+      convOpen: false,
+      skillOpen: false,
+      lastOrbSpoke: 0,
+      lastUserSpoke: 0,
+      speechQueue: [],
+      isSpeaking: false,
+      mouseX: 0, mouseY: 0,   // for gaze tracking
+      isListening: false,       // push-to-talk
+      ambientIdle: false,
+      ambientScrolling: false,
+      lastScrollTime: 0,
+      lastActivityTime: Date.now(),
+    };
+    
+    // Speech recognition
+    let recognition = null;
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SR();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.onresult = (e) => {
+        const transcript = e.results[0][0].transcript;
+        openConv();
+        document.getElementById('conv-input').value = transcript;
+        sendMessage();
+      };
+      recognition.onend = () => {
+        state.isListening = false;
+        updateWakeIndicator();
+        setOrbState(state.compute === 'dark' ? 'dark' : 'idle');
+      };
+    }
+    
+    // ═══════════════════════════════════════════════════════════
+    // MOCK DATA
+    // ═══════════════════════════════════════════════════════════
+    const MOCK_PROJECTS = [
+      {
+        id: 'p1', name: 'HyperForge', weight: 0.87, health: 'amber',
+        status: 'running', agents: ['NanoClaw','OrchestratorPrime'],
+        why: null, done: false,
+        updates: [
+          { agent:'NanoClaw', action:'substrate.py refactored — dependency graph updated', time:'2m ago', tools:['kb_search','file_write'], blake3:'blake3:a4f2c891...' },
+          { agent:'OrchestratorPrime', action:'intent classified: dependency_check (0.94)', time:'8m ago', tools:['classify'], blake3:null },
+        ]
+      },
+      {
+        id: 'p2', name: 'Snowball Folio', weight: 0.61, health: 'green',
+        status: 'idle', agents: ['DesignAgent'],
+        why: null, done: false,
+        updates: [
+          { agent:'DesignAgent', action:'Marcello archetype tokens compiled — 3 files changed', time:'1hr ago', tools:['figma_export','file_write'], blake3:'blake3:c891f2a4...' },
+        ]
+      },
+      {
+        id: 'p3', name: 'MedCore Package', weight: 0.44, health: 'green',
+        status: 'idle', agents: ['ReportAgent'],
+        why: 'dependency drift',
+        done: false,
+        updates: []
+      },
+      {
+        id: 'p4', name: 'NexusLogix Demo', weight: 0.23, health: 'green',
+        status: 'idle', agents: [],
+        why: null, done: false,
+        updates: []
+      },
+      {
+        id: 'p5', name: 'BrambleThundery', weight: 0.18, health: 'green',
+        status: 'done', agents: [],
+        why: null, done: true,
+        updates: []
+      },
+    ];
+    
+    const MOCK_AGENTS = [
+      { id:'a1', name:'NanoClaw', status:'running', task:'substrate.py dependency analysis', tokens:14200, calls:38 },
+      { id:'a2', name:'OrchestratorPrime', status:'running', task:'routing intent queue — 2 pending', tokens:8800, calls:22 },
+      { id:'a3', name:'DesignAgent', status:'idle', task:'waiting for archetype trigger', tokens:3100, calls:9 },
+      { id:'a4', name:'HealthBot', status:'running', task:'ACTIVE project cron — 3 projects checked', tokens:1200, calls:67 },
+      { id:'a5', name:'TrendScraper', status:'idle', task:'scheduled: next run in 4hr', tokens:2400, calls:12 },
+    ];
+    
+    const MOCK_SKILLS = [
+      { id:'s1', name:'brand-audit-v2', mode:'live', repo:'wondelai/skills', lastRun:'2hr ago', success:94, cost:'$0.04', health:'green', compiled:false },
+      { id:'s2', name:'archetype-gen', mode:'compiled', repo:'snowball/design', lastRun:'1hr ago', success:100, cost:'$0.00', health:'green', compiled:true },
+      { id:'s3', name:'competitor-scan', mode:'compiled', repo:'snowball/intel', lastRun:'6hr ago', success:97, cost:'$0.00', health:'green', compiled:true },
+      { id:'s4', name:'kb-ingest', mode:'dormant', repo:'antfu/skills', lastRun:'3 days ago', success:88, cost:'—', health:'amber', compiled:false },
+      { id:'s5', name:'seo-analyzer', mode:'dormant', repo:'marketing-skills', lastRun:'never', success:0, cost:'—', health:'green', compiled:false },
+    ];
+    
+    const MOCK_MCP_SERVERS = [
+      { name:'filesystem', url:'localhost:3001', status:'connected', tools:['read_file','write_file','list_dir','search'], latency:'4ms', calls:142 },
+      { name:'kb-search', url:'localhost:3002', status:'connected', tools:['semantic_search','chunk_ingest','similarity'], latency:'28ms', calls:89 },
+      { name:'obsidian-sync', url:'localhost:3003', status:'connected', tools:['log_turn','read_vault','search_notes'], latency:'12ms', calls:34 },
+      { name:'stripe-agent', url:'localhost:3004', status:'error', tools:['get_customers','create_invoice','list_subs'], latency:'—', calls:0 },
+    ];
+    
+    const MOCK_CRM = [
+      { name:'Alex Rivera', co:'Studio Noir', signal:'hot', stage:1 },
+      { name:'Priya Chen', co:'Luxe Digital', signal:'warm', stage:2 },
+      { name:'Marcus Webb', co:'Webb & Co', signal:'cool', stage:0 },
+      { name:'Sofia Adler', co:'Adler Agency', signal:'hot', stage:3 },
+    ];
+    
+    const PIPELINE_STAGES = ['Lead','Qualified','Proposal','Closed'];
+    
+    const MOCK_HEALTH = [
+      { project:'HyperForge', status:'amber', reason:'anthropic SDK version behind declared requirement (0.28 vs 0.30)' },
+      { project:'MedCore Package', status:'amber', reason:'dependency drift — HIPAA schema validator updated upstream' },
+      { project:'Snowball Folio', status:'green', reason:'all checks passed — 3 dependencies healthy' },
+      { project:'NexusLogix Demo', status:'green', reason:'last checkpoint valid — no drift detected' },
+    ];
+    
+    const MOCK_EXTERNAL_SIGNALS = [
+      { source:'GitHub · anthropic-sdk', text:'v0.30.0 released — breaking changes in tool_use schema', type:'urgent', time:'1hr ago' },
+      { source:'HackerNews', text:'"Anthropic API outage" trending — 47 comments', type:'urgent', time:'3hr ago' },
+      { source:'Awwwards', text:'New SOTD: dark luxury portfolio — matches Marcello archetype pattern', type:'info', time:'6hr ago' },
+      { source:'Stripe Webhook', text:'Invoice INV-0041 overdue — MedCore client (Priya Chen)', type:'urgent', time:'2hr ago' },
+      { source:'Dezeen', text:'2027 design trends: spatial typography, negative space motion', type:'info', time:'1 day ago' },
+    ];
+    
+    const MOCK_MEMORY_GRAPH = {
+      nodes: [
+        { id:'n1', label:'HyperForge', type:'project' },
+        { id:'n2', label:'anthropic-sdk', type:'dep' },
+        { id:'n3', label:'NanoClaw', type:'agent' },
+        { id:'n4', label:'substrate.py', type:'entity' },
+        { id:'n5', label:'Snowball Folio', type:'project' },
+        { id:'n6', label:'DesignAgent', type:'agent' },
+        { id:'n7', label:'figma-tokens', type:'dep' },
+        { id:'n8', label:'Chad', type:'entity' },
+      ],
+      rels: [
+        { from:'HyperForge', rel:'depends_on', to:'anthropic-sdk', confidence:0.95 },
+        { from:'NanoClaw', rel:'last_touched', to:'substrate.py', confidence:1.0 },
+        { from:'HyperForge', rel:'owns', to:'substrate.py', confidence:0.98 },
+        { from:'Chad', rel:'usually_checks', to:'HyperForge', confidence:0.82, note:'Tues 9am pattern' },
+        { from:'Snowball Folio', rel:'depends_on', to:'figma-tokens', confidence:0.90 },
+        { from:'DesignAgent', rel:'assigned_to', to:'Snowball Folio', confidence:1.0 },
+      ]
+    };
+    
+    const PROACTIVE_PHRASES = [
+      "HyperForge dependency shifted. SDK at 0.28, upstream at 0.30.",
+      "Snowball Folio build finished. Ink engine compiled clean.",
+      "Haven't touched HyperForge in two days. Checkpoint still valid.",
+      "Three tasks queued. NanoClaw flagged drift in the substrate.",
+      "MedCore health check: amber. HIPAA schema updated upstream.",
+      "HealthBot completed ACTIVE project sweep. One amber, rest green.",
+      "Competitor scan finished. Awwwards SOTD matches Marcello archetype.",
+      "Stripe webhook: MedCore invoice overdue. Worth a look.",
+    ];
+    
+    const MOCK_NEGOTIATION = [
+      { from:'NanoClaw → HyperForge Agent', msg:'dependency check needed before proceeding with substrate refactor', type:'agent-to-agent', time:'4m ago' },
+      { from:'HyperForge Agent → NanoClaw', msg:'acknowledged — running anthropic-sdk version check now', type:'agent-to-agent', time:'3m ago' },
+      { from:'NanoClaw → Orchestrator', msg:'cleared — SDK mismatch found, surfacing to stream', type:'orch', time:'2m ago' },
+      { from:'System', msg:'HyperForge card resurfaced with [health: amber]', type:'system', time:'2m ago' },
+      { from:'OrchestratorPrime → DesignAgent', msg:'archetype-gen skill compiled — you can replay without LLM call', type:'agent-to-agent', time:'1hr ago' },
+    ];
+    
+    const MOCK_PROVENANCE = [
+      { file:'substrate.py', written:'NanoClaw Agent (job_041)', verified:'HealthBot (cron_019)', hash_chain:['blake3:a4f2...','blake3:c891...','blake3:f2a4...'], last_human:'Chad, 3 days ago' },
+      { file:'marcello-tokens.css', written:'DesignAgent (job_038)', verified:'HealthBot (cron_017)', hash_chain:['blake3:b3e1...','blake3:d920...'], last_human:'Chad, 1 day ago' },
+      { file:'orchestrator.py', written:'Chad (direct)', verified:'NanoClaw (job_022)', hash_chain:['blake3:9f1a...','blake3:4c82...','blake3:e71b...'], last_human:'Chad, today' },
+    ];
+    
+    const MOCK_REPLAY = [
+      { ts:'00:00', action:'brand-audit-v2 triggered (COMPILED mode)', output:'reading cached last run...', type:'system' },
+      { ts:'00:04', action:'Load design DNA from archetype DB', output:'Marcello · 8 tokens loaded', type:'step' },
+      { ts:'00:12', action:'Fetch client site snapshot', output:'https://client.io — 14 components captured', type:'step' },
+      { ts:'00:31', action:'Run style divergence check', output:'3 violations found: spacing, typography weight, motion timing', type:'step' },
+      { ts:'00:44', action:'Generate audit report', output:'audit_2027_05_28.md — 1.2KB written', type:'step' },
+      { ts:'00:48', action:'Skill complete — no LLM call needed', output:'total: 4.2s · $0.00', type:'system' },
+    ];
+    
+    const MOCK_OBS = [
+      { role:'user', intent:'dependency_check', content:'what's the status on HyperForge?', tools:[], time:'4m ago' },
+      { role:'assistant', intent:'dependency_check', content:'HyperForge dependency shifted. SDK at 0.28, upstream at 0.30.', tools:['kb_search'], time:'4m ago' },
+      { role:'user', intent:'skill_trigger', content:'run brand audit on Snowball Folio', tools:[], time:'1hr ago' },
+      { role:'assistant', intent:'skill_trigger', content:'Snowball Folio build finished. Ink engine compiled clean.', tools:['brand-audit-v2'], time:'1hr ago' },
+    ];
+    
+    const MOCK_ORCH_JOBS = [
+      { id:'job_041', tools:'kb_search,file_write', status:'done', intent:'dependency_check', user:'Chad' },
+      { id:'job_040', tools:'brand-audit-v2', status:'done', intent:'skill_trigger', user:'Chad' },
+      { id:'job_039', tools:'classify', status:'done', intent:'status_check', user:'Chad' },
+      { id:'job_042', tools:'anthropic_sdk_check', status:'running', intent:'health_check', user:'HealthBot' },
+    ];
+    
+    const MOCK_PREFS = {
+      active_hours: '9am–10pm',
+      style: 'colleague',
+      sentiment: 0.82,
+      top_topics: ['HyperForge','design tokens','SDK updates'],
+      quiet_hours: '11pm–7am',
+    };
+    
+    const COMPOUND_INSIGHTS = [
+      "HyperForge's substrate depends on anthropic-sdk. NanoClaw uses that substrate. Snowball's export pipeline depends on NanoClaw. SDK slip = three projects slip.",
+      "Priya Chen (Luxe Digital) is hot. MedCore invoice overdue. Connecting these might unlock the close.",
+      "Chad's 9am Tuesday pattern: always checks HyperForge first. Health bot could pre-run at 8:45am.",
+      "Brand audit compiled skill fires without LLM. Dark mode cost: $0.00. This is the whole point.",
+    ];
+    
+    // ═══════════════════════════════════════════════════════════
+    // THREE.JS — MORPHABLE 3D FACE ORB
+    // ═══════════════════════════════════════════════════════════
+    const canvas = document.getElementById('orb-canvas');
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true });
+    renderer.setSize(140, 140);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+    
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
+    camera.position.z = 2.8;
+    
+    // ── HEAD ──
+    const headGeo = new THREE.SphereGeometry(1, 64, 64);
+    const headMat = new THREE.MeshStandardMaterial({
+      color: 0x0d1a2e,
+      roughness: 0.3,
+      metalness: 0.6,
+      emissive: new THREE.Color(0x4a9eff),
+      emissiveIntensity: 0.08,
+    });
+    const head = new THREE.Mesh(headGeo, headMat);
+    scene.add(head);
+    
+    // ── INNER GLOW ──
+    const glowGeo = new THREE.SphereGeometry(0.92, 32, 32);
+    const glowMat = new THREE.MeshBasicMaterial({
+      color: 0x4a9eff,
+      transparent: true,
+      opacity: 0.06,
+      side: THREE.BackSide,
+    });
+    const glow = new THREE.Mesh(glowGeo, glowMat);
+    scene.add(glow);
+    
+    // ── EYES ──
+    function makeEye(x) {
+      const group = new THREE.Group();
+      // Sclera
+      const scleraGeo = new THREE.CircleGeometry(0.14, 32);
+      const scleraMat = new THREE.MeshBasicMaterial({ color:0xd0e8ff, transparent:true, opacity:0.85 });
+      const sclera = new THREE.Mesh(scleraGeo, scleraMat);
+      // Iris
+      const irisGeo = new THREE.CircleGeometry(0.09, 32);
+      const irisMat = new THREE.MeshBasicMaterial({ color:0x4a9eff, transparent:true, opacity:0.95 });
+      const iris = new THREE.Mesh(irisGeo, irisMat);
+      iris.position.z = 0.001;
+      // Pupil
+      const pupilGeo = new THREE.CircleGeometry(0.045, 32);
+      const pupilMat = new THREE.MeshBasicMaterial({ color:0x020408, transparent:true, opacity:1 });
+      const pupil = new THREE.Mesh(pupilGeo, pupilMat);
+      pupil.position.z = 0.002;
+      // Highlight
+      const hlGeo = new THREE.CircleGeometry(0.018, 16);
+      const hlMat = new THREE.MeshBasicMaterial({ color:0xffffff, transparent:true, opacity:0.9 });
+      const hl = new THREE.Mesh(hlGeo, hlMat);
+      hl.position.set(0.03, 0.03, 0.003);
+      // Eyelid
+      const lidGeo = new THREE.SphereGeometry(0.14, 16, 8, 0, Math.PI*2, 0, Math.PI/2);
+      const lidMat = new THREE.MeshBasicMaterial({ color:0x0d1a2e, transparent:true, opacity:0.95 });
+      const lid = new THREE.Mesh(lidGeo, lidMat);
+      lid.rotation.x = Math.PI;
+      lid.position.y = 0.01;
+      group.add(sclera, iris, pupil, hl, lid);
+      group.userData = { lid, iris, irisMat, pupilMat, pupil };
+      return group;
+    }
+    
+    const eyeL = makeEye(-1);
+    const eyeR = makeEye(1);
+    eyeL.position.set(-0.32, 0.18, 0.97);
+    eyeR.position.set(0.32, 0.18, 0.97);
+    scene.add(eyeL, eyeR);
+    
+    // ── BROWS ──
+    function makeBrow() {
+      const geo = new THREE.CapsuleGeometry(0.04, 0.22, 8, 8);
+      const mat = new THREE.MeshBasicMaterial({ color:0x8ab8e8, transparent:true, opacity:0.6 });
+      return new THREE.Mesh(geo, mat);
+    }
+    const browL = makeBrow();
+    const browR = makeBrow();
+    browL.position.set(-0.32, 0.38, 0.93);
+    browR.position.set(0.32, 0.38, 0.93);
+    browL.rotation.z = 0.15;
+    browR.rotation.z = -0.15;
+    scene.add(browL, browR);
+    
+    // ── NOSE ──
+    const noseGeo = new THREE.CapsuleGeometry(0.025, 0.12, 4, 4);
+    const noseMat = new THREE.MeshBasicMaterial({ color:0x4a7aaa, transparent:true, opacity:0.3 });
+    const nose = new THREE.Mesh(noseGeo, noseMat);
+    nose.position.set(0, -0.02, 0.98);
+    scene.add(nose);
+    
+    // ── MOUTH ──
+    const mouthGroup = new THREE.Group();
+    const mouthCurve = new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3(-0.22, -0.28, 0),
+      new THREE.Vector3(0, -0.22, 0),
+      new THREE.Vector3(0.22, -0.28, 0)
+    );
+    const mouthPts = mouthCurve.getPoints(20);
+    const mouthGeo = new THREE.TubeGeometry(
+      new THREE.CatmullRomCurve3(mouthPts), 20, 0.02, 8, false
+    );
+    const mouthMat = new THREE.MeshBasicMaterial({ color:0x6aacee, transparent:true, opacity:0.5 });
+    const mouthMesh = new THREE.Mesh(mouthGeo, mouthMat);
+    mouthMesh.position.z = 0.95;
+    mouthGroup.add(mouthMesh);
+    // Lower lip (morphs for speech)
+    const lipGeo = new THREE.SphereGeometry(0.06, 8, 4);
+    const lipMat = new THREE.MeshBasicMaterial({ color:0x4a9eff, transparent:true, opacity:0.4 });
+    const lowerLip = new THREE.Mesh(lipGeo, lipMat);
+    lowerLip.position.set(0, -0.3, 0.96);
+    lowerLip.scale.x = 3.5;
+    lowerLip.scale.y = 0.6;
+    mouthGroup.add(lowerLip);
+    scene.add(mouthGroup);
+    
+    // ── AURA RING ──
+    const auraGeo = new THREE.TorusGeometry(1.18, 0.015, 8, 100);
+    const auraMat = new THREE.MeshBasicMaterial({ color:0x4a9eff, transparent:true, opacity:0.25 });
+    const aura = new THREE.Mesh(auraGeo, auraMat);
+    scene.add(aura);
+    
+    // ── SPEAKING RINGS ──
+    const rings = [];
+    for(let i=0;i<3;i++){
+      const rGeo = new THREE.TorusGeometry(1.0, 0.008, 6, 64);
+      const rMat = new THREE.MeshBasicMaterial({ color:0x4a9eff, transparent:true, opacity:0 });
+      const ring = new THREE.Mesh(rGeo, rMat);
+      rings.push({ mesh:ring, progress:i/3, active:false });
+      scene.add(ring);
+    }
+    
+    // ── PARTICLES (FULL CREW) ──
+    const particleCount = 200;
+    const particleGeo = new THREE.BufferGeometry();
+    const particlePos = new Float32Array(particleCount * 3);
+    for(let i=0;i<particleCount;i++){
+      const phi = Math.acos(2*Math.random()-1);
+      const theta = Math.random()*Math.PI*2;
+      particlePos[i*3] = Math.sin(phi)*Math.cos(theta)*1.25;
+      particlePos[i*3+1] = Math.sin(phi)*Math.sin(theta)*1.25;
+      particlePos[i*3+2] = Math.cos(phi)*1.25;
+    }
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePos,3));
+    const particleMat = new THREE.PointsMaterial({ color:0x4a9eff, size:0.022, transparent:true, opacity:0 });
+    const particles = new THREE.Points(particleGeo, particleMat);
+    scene.add(particles);
+    
+    // ── LIGHTS ──
+    const ambLight = new THREE.AmbientLight(0x111133, 0.8);
+    scene.add(ambLight);
+    const pointLight = new THREE.PointLight(0x4a9eff, 1.5, 8);
+    pointLight.position.set(2, 2, 3);
+    scene.add(pointLight);
+    const fillLight = new THREE.PointLight(0x7c3aed, 0.4, 6);
+    fillLight.position.set(-2, -1, 2);
+    scene.add(fillLight);
+    
+    // ── STATE TARGETS ──
+    const orbTargets = {
+      idle:     { emissive:0x4a9eff, emissiveInt:0.08, glowOp:0.06, scale:1.0, auraOp:0.25, particleOp:0, browAngle:0, lidScale:1.0, lipOpen:0, irisScale:1.0, label:'IDLE · watching' },
+      active:   { emissive:0xf59e0b, emissiveInt:0.18, glowOp:0.12, scale:1.0, auraOp:0.4, particleOp:0.6, browAngle:0.05, lidScale:1.18, lipOpen:0, irisScale:1.1, label:'ACTIVE · agent running' },
+      speaking: { emissive:0x4a9eff, emissiveInt:0.28, glowOp:0.18, scale:1.02, auraOp:0.6, particleOp:0.3, browAngle:0.08, lidScale:1.12, lipOpen:1, irisScale:1.15, label:'SPEAKING · transmitting' },
+      alert:    { emissive:0xf59e0b, emissiveInt:0.22, glowOp:0.15, scale:1.0, auraOp:0.5, particleOp:0, browAngle:-0.18, lidScale:0.82, lipOpen:0, irisScale:0.9, label:'ALERT · attention needed' },
+      dark:     { emissive:0x112244, emissiveInt:0.02, glowOp:0.01, scale:0.98, auraOp:0.06, particleOp:0, browAngle:-0.05, lidScale:0.42, lipOpen:0, irisScale:0.6, label:'DARK · compiled only' },
+    };
+    
+    let orbCurrent = { ...orbTargets.idle };
+    let blinkTimer = 0;
+    let blinkState = 0;
+    let breathPhase = 0;
+    let alertAsymmetry = 0;
+    let lipSyncPhase = 0;
+    let gazeOffsetX = 0;
+    let gazeOffsetY = 0;
+    const clock = new THREE.Clock();
+    
+    // ── GAZE TRACKING ──
+    document.addEventListener('mousemove', (e) => {
+      state.mouseX = e.clientX;
+      state.mouseY = e.clientY;
+      state.lastActivityTime = Date.now();
+      // Map mouse to subtle eye offset
+      const orbRect = canvas.getBoundingClientRect();
+      const orbCX = orbRect.left + orbRect.width/2;
+      const orbCY = orbRect.top + orbRect.height/2;
+      const dx = (e.clientX - orbCX) / window.innerWidth;
+      const dy = (e.clientY - orbCY) / window.innerHeight;
+      gazeOffsetX = dx * 0.08;
+      gazeOffsetY = -dy * 0.06;
+      state.ambientScrolling = false;
+    });
+    
+    document.addEventListener('scroll', () => {
+      state.lastScrollTime = Date.now();
+      state.lastActivityTime = Date.now();
+    }, true);
+    
+    // ── LERP ──
+    function lerp(a, b, t) { return a + (b-a)*t; }
+    function lerpColor(ca, cb, t) {
+      const a = new THREE.Color(ca), b = new THREE.Color(cb);
+      return new THREE.Color().lerpColors(a, b, t);
+    }
+    
+    // ── ANIMATE ──
+    function animate() {
+      requestAnimationFrame(animate);
+      const dt = clock.getDelta();
+      const t = clock.getElapsedTime();
+      const lerpSpeed = dt * 3;
+    
+      const target = orbTargets[state.orbState] || orbTargets.idle;
+    
+      // lerp emissive
+      orbCurrent.emissiveInt = lerp(orbCurrent.emissiveInt, target.emissiveInt, lerpSpeed);
+      orbCurrent.glowOp = lerp(orbCurrent.glowOp, target.glowOp, lerpSpeed);
+      orbCurrent.auraOp = lerp(orbCurrent.auraOp, target.auraOp, lerpSpeed);
+      orbCurrent.particleOp = lerp(orbCurrent.particleOp, target.particleOp, lerpSpeed);
+      orbCurrent.lidScale = lerp(orbCurrent.lidScale, target.lidScale, lerpSpeed);
+      orbCurrent.irisScale = lerp(orbCurrent.irisScale, target.irisScale, lerpSpeed);
+      orbCurrent.lipOpen = lerp(orbCurrent.lipOpen, target.lipOpen, lerpSpeed);
+      orbCurrent.browAngle = lerp(orbCurrent.browAngle, target.browAngle, lerpSpeed);
+    
+      headMat.emissive.set(target.emissive);
+      headMat.emissiveIntensity = orbCurrent.emissiveInt;
+      glowMat.opacity = orbCurrent.glowOp;
+      glowMat.color.set(target.emissive);
+      auraMat.opacity = orbCurrent.auraOp;
+      auraMat.color.set(target.emissive);
+      particleMat.opacity = orbCurrent.particleOp;
+      particleMat.color.set(target.emissive);
+    
+      // breathing
+      const breathFreq = state.orbState === 'active' ? 2.5 : state.orbState === 'dark' ? 0.12 : 0.7;
+      breathPhase += dt * breathFreq;
+      const breath = 1 + Math.sin(breathPhase) * 0.03;
+      head.scale.setScalar(breath);
+    
+      // ALERT irregular pulse
+      if (state.orbState === 'alert') {
+        alertAsymmetry = Math.sin(t * 7.3) * 0.15;
+        headMat.emissiveIntensity = orbCurrent.emissiveInt + Math.abs(Math.sin(t*4)) * 0.08;
+      }
+    
+      // gaze: eye positioning follows mouse subtly
+      eyeL.position.x = -0.32 + gazeOffsetX;
+      eyeL.position.y = 0.18 + gazeOffsetY;
+      eyeR.position.x = 0.32 + gazeOffsetX;
+      eyeR.position.y = 0.18 + gazeOffsetY;
+    
+      // BLINK
+      blinkTimer += dt;
+      const blinkInterval = 3.5 + Math.random() * 0.01;
+      if (blinkTimer > blinkInterval && blinkState === 0) {
+        blinkState = 1; blinkTimer = 0;
+      }
+      if (blinkState === 1) {
+        [eyeL, eyeR].forEach(eye => {
+          eye.userData.lid.scale.y = lerp(eye.userData.lid.scale.y, 2.8, dt*18);
+        });
+        if (eyeL.userData.lid.scale.y > 2.6) blinkState = 2;
+      } else if (blinkState === 2) {
+        [eyeL, eyeR].forEach(eye => {
+          eye.userData.lid.scale.y = lerp(eye.userData.lid.scale.y, orbCurrent.lidScale, dt*14);
+        });
+        if (eyeL.userData.lid.scale.y < orbCurrent.lidScale + 0.1) blinkState = 0;
+      } else {
+        [eyeL, eyeR].forEach(eye => {
+          eye.userData.lid.scale.y = lerp(eye.userData.lid.scale.y, orbCurrent.lidScale, dt*5);
+        });
+      }
+    
+      // IRIS/PUPIL dilation (by compute load)
+      const dilation = state.compute === 'full' ? 1.1 : state.compute === 'dark' ? 0.7 : 0.9;
+      [eyeL, eyeR].forEach(eye => {
+        const scale = orbCurrent.irisScale * dilation;
+        eye.userData.iris.scale.setScalar(scale);
+        eye.userData.pupil.scale.setScalar(scale * 0.5);
+      });
+    
+      // ALERT asymmetric eye
+      if (state.orbState === 'alert') {
+        eyeL.userData.irisMat.color.setHex(0xf59e0b);
+        eyeR.userData.irisMat.color.setHex(0x4a9eff);
+      } else {
+        [eyeL, eyeR].forEach(e => e.userData.irisMat.color.setHex(0x4a9eff));
+      }
+    
+      // BROWS
+      browL.rotation.z = 0.15 + orbCurrent.browAngle;
+      browR.rotation.z = -0.15 - orbCurrent.browAngle;
+    
+      // LIP SYNC
+      if (state.orbState === 'speaking' && state.isSpeaking) {
+        lipSyncPhase += dt * 8;
+        const lipOpen = orbCurrent.lipOpen * (0.5 + Math.abs(Math.sin(lipSyncPhase)) * 0.5);
+        lowerLip.position.y = -0.3 - lipOpen * 0.12;
+        lowerLip.scale.y = 0.6 + lipOpen * 0.4;
+      } else {
+        lowerLip.position.y = lerp(lowerLip.position.y, -0.3, dt*4);
+        lowerLip.scale.y = lerp(lowerLip.scale.y, 0.6, dt*4);
+      }
+    
+      // SPEAKING RINGS
+      if (state.orbState === 'speaking') {
+        rings.forEach((r, i) => {
+          r.progress += dt * 0.5;
+          if (r.progress > 1) r.progress = 0;
+          const s = 1 + r.progress * 1.2;
+          r.mesh.scale.setScalar(s);
+          r.mesh.material.opacity = (1 - r.progress) * 0.5;
+          r.mesh.material.color.set(0x4a9eff);
+        });
+      } else {
+        rings.forEach(r => { r.mesh.material.opacity *= 0.92; });
+      }
+    
+      // AURA rotate
+      aura.rotation.z += dt * 0.3;
+      aura.rotation.x = Math.sin(t*0.5) * 0.2;
+    
+      // PARTICLES animate
+      if (state.compute === 'full') {
+        const pos = particleGeo.attributes.position;
+        for(let i=0;i<particleCount;i++){
+          const r = 1.25 + Math.sin(t*0.8 + i*0.3) * 0.06;
+          const phi = Math.acos(Math.cos(i/particleCount * Math.PI * 2 + t*0.1));
+          const theta = (i/particleCount)*Math.PI*2 + t*0.15;
+          pos.array[i*3] = Math.sin(phi)*Math.cos(theta)*r;
+          pos.array[i*3+1] = Math.sin(phi)*Math.sin(theta)*r;
+          pos.array[i*3+2] = Math.cos(phi)*r;
+        }
+        pos.needsUpdate = true;
+      }
+    
+      renderer.render(scene, camera);
+    }
+    animate();
+    
+    // ═══════════════════════════════════════════════════════════
+    // ORB STATE MANAGEMENT
+    // ═══════════════════════════════════════════════════════════
+    window.setOrbState = function(newState) {
+      state.orbState = newState;
+      document.getElementById('orb-state-label').textContent = (orbTargets[newState]||orbTargets.idle).label;
+    };
+    
+    // ═══════════════════════════════════════════════════════════
+    // COMPUTE MODE
+    // ═══════════════════════════════════════════════════════════
+    window.setCompute = function(mode) {
+      const messages = { full:'Waking full crew...', solo:'Spinning up reserve agent...', dark:'Spinning down crew. Compiled skills remain active.' };
+      const overlay = document.getElementById('mode-transition');
+      document.getElementById('mode-transition-text').textContent = messages[mode];
+      overlay.classList.add('show');
+      setTimeout(() => {
+        state.compute = mode;
+        overlay.classList.remove('show');
+        ['full','solo','dark'].forEach(m => {
+          document.getElementById('btn-'+m).classList.remove('active','solo','dark-mode');
+        });
+        const btn = document.getElementById('btn-'+mode);
+        btn.classList.add('active');
+        if(mode==='solo') btn.classList.add('solo');
+        if(mode==='dark') btn.classList.add('dark-mode');
+        setOrbState(mode==='dark' ? 'dark' : 'idle');
+        updateSkillModes();
+        // compound context
+        if(mode==='dark') showCompound("Dark mode active. COMPILED skills fire on schedule. No LLM calls unless you speak to apex.");
+      }, 2000);
+    };
+    
+    // ═══════════════════════════════════════════════════════════
+    // RENDER UI COMPONENTS
+    // ═══════════════════════════════════════════════════════════
+    
+    function renderProjects() {
+      const sorted = [...MOCK_PROJECTS].sort((a,b) => b.weight - a.weight);
+      const el = document.getElementById('project-stream');
+      el.innerHTML = '';
+      sorted.forEach(p => {
+        if(p.done) {
+          el.innerHTML += `
+            <div class="card sunk" onclick="expandProject('${p.id}')">
+              <div class="health-dot green"></div>
+              <span style="flex:1;font-size:11px;font-family:var(--mono);">${p.name}</span>
+              <span class="weight-score">${p.weight.toFixed(2)}</span>
+              <span style="font-size:10px;font-family:var(--mono);color:var(--text3);">last touch: 5 days ago</span>
+            </div>`;
+        } else {
+          const whyTag = p.why ? `<span class="why-tag">${p.why}</span>` : '';
+          const agentChips = p.agents.map(a => `<span class="agent-chip ${a==='NanoClaw'?'active':''}">${a}</span>`).join('');
+          const updates = p.updates.map(u => `
+            <div style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:4px;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div class="card-left-bar" style="background:var(--accent);width:2px;height:20px;border-radius:1px;"></div>
+                <span style="font-size:11px;color:var(--text2);">${u.agent}</span>
+                <span style="font-size:10px;color:var(--text3);margin-left:auto;">${u.time}</span>
+              </div>
+              <div style="font-size:11px;color:var(--text);padding-left:10px;">${u.action}</div>
+              <div style="display:flex;gap:4px;padding-left:10px;flex-wrap:wrap;">
+                ${u.tools.map(t=>`<span class="tool-chip">${t}</span>`).join('')}
+                ${u.blake3 ? `<span class="blake3">${u.blake3}</span>` : ''}
+              </div>
+            </div>`).join('');
+          el.innerHTML += `
+            <div class="card project-card" style="border-left:3px solid ${p.health==='green'?'var(--green)':p.health==='amber'?'var(--amber)':'var(--red)'};">
+              <div class="card-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+                <div style="flex:1;">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                    <div class="health-dot ${p.health}"></div>
+                    <span class="project-name">${p.name}</span>
+                    ${whyTag}
+                    <span class="status-badge ${p.status}" style="margin-left:auto;">${p.status.toUpperCase()}</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:8px;">
+                    <span class="weight-score">weight: ${p.weight.toFixed(2)}</span>
+                    <div class="agent-chips">${agentChips}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body" style="display:none;">
+                ${updates || '<div style="font-size:11px;color:var(--text3);padding:8px 0;">No updates yet.</div>'}
+              </div>
+            </div>`;
+        }
+      });
+      // Alert card
+      el.innerHTML = `
+        <div class="card alert-card">
+          <div class="card-header">
+            <div style="flex:1;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                <div class="health-dot amber"></div>
+                <span class="project-name" style="font-size:13px;">HyperForge — SDK Drift</span>
+                <span class="why-tag" style="margin-left:auto;">[health: amber]</span>
+              </div>
+              <div style="font-size:11px;font-family:var(--mono);color:var(--text2);">anthropic SDK 0.28 declared — upstream at 0.30. Breaking changes in tool_use schema.</div>
+            </div>
+          </div>
+          <div class="alert-actions">
+            <button class="alert-btn act" onclick="openConv()">Act</button>
+            <button class="alert-btn">Snooze: 1hr</button>
+            <button class="alert-btn">Snooze: tomorrow</button>
+            <button class="alert-btn dismiss">Dismiss</button>
+          </div>
+        </div>` + el.innerHTML;
+    }
+    
+    function renderKanban() {
+      const cols = ['Backlog','In Progress','Review','Blocked','Done'];
+      const cards = [
+        { title:'Update anthropic-sdk to 0.30', col:1, priority:1, agent:'NanoClaw' },
+        { title:'Compile brand-audit-v2 skill', col:2, priority:2, agent:'DesignAgent' },
+        { title:'MedCore HIPAA schema check', col:0, priority:1, agent:'HealthBot' },
+        { title:'HyperForge substrate refactor', col:2, priority:1, agent:'NanoClaw' },
+        { title:'Snowball Folio export pipeline', col:3, priority:2, agent:'OrchestratorPrime' },
+        { title:'NexusLogix demo site', col:0, priority:3, agent:'' },
+        { title:'BrambleThundery archive', col:4, priority:3, agent:'' },
+        { title:'Competitor scan — Awwwards', col:1, priority:2, agent:'TrendScraper' },
+      ];
+      const board = document.getElementById('kanban-view');
+      board.innerHTML = '';
+      cols.forEach((col, ci) => {
+        const colCards = cards.filter(c => c.col === ci);
+        board.innerHTML += `
+          <div class="kanban-col">
+            <div class="kanban-col-header">
+              <span>${col.toUpperCase()}</span>
+              <span style="font-size:11px;color:var(--text2);">${colCards.length}</span>
+            </div>
+            ${colCards.map(c => `
+              <div class="kanban-card" draggable="true">
+                <div class="kcard-title">${c.title}</div>
+                <div class="kcard-meta">
+                  <div class="priority-dot p${c.priority}"></div>
+                  ${c.agent ? `<span class="agent-chip" style="font-size:9px;">${c.agent}</span>` : ''}
+                </div>
+              </div>`).join('')}
+          </div>`;
+      });
+    }
+    
+    function renderAgents() {
+      const el = document.getElementById('agents-list');
+      el.innerHTML = MOCK_AGENTS.map(a => `
+        <div class="agent-item">
+          <div class="agent-name">
+            ${a.status==='running' ? '<div class="agent-running-dot"></div>' : '<div style="width:6px;height:6px;border-radius:50%;background:var(--text3);"></div>'}
+            ${a.name}
+            <span style="font-size:9px;font-family:var(--mono);color:var(--text3);margin-left:auto;">${a.status.toUpperCase()}</span>
+          </div>
+          <div class="agent-task">${a.task}</div>
+          <div class="agent-stats">
+            <span>${a.tokens.toLocaleString()} tokens</span>
+            <span>${a.calls} calls</span>
+          </div>
+        </div>`).join('');
+    }
+    
+    function renderMCP() {
+      const el = document.getElementById('mcp-servers');
+      el.innerHTML = MOCK_MCP_SERVERS.map(s => `
+        <div class="server-item">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="health-dot ${s.status==='connected'?'green':'red'}"></div>
+            <div class="server-name">${s.name}</div>
+            <span style="font-size:9px;font-family:var(--mono);color:var(--text3);margin-left:auto;">${s.latency}</span>
+          </div>
+          <div class="server-meta">
+            <span>${s.url}</span>
+            <span>${s.calls} calls</span>
+          </div>
+          <div class="server-tools">
+            ${s.tools.map(t=>`<span class="tool-chip">${t}</span>`).join('')}
+          </div>
+        </div>`).join('');
+    }
+    
+    function renderCRM() {
+      const contacts = document.getElementById('crm-contacts');
+      contacts.innerHTML = MOCK_CRM.map(c => `
+        <div class="crm-contact">
+          <div class="crm-avatar">${c.name.split(' ').map(n=>n[0]).join('')}</div>
+          <div style="flex:1;">
+            <div class="crm-name">${c.name}</div>
+            <div style="font-size:10px;font-family:var(--mono);color:var(--text3);">${c.co}</div>
+          </div>
+          <span class="crm-signal ${c.signal}">${c.signal.toUpperCase()}</span>
+        </div>`).join('');
+    
+      const pipeline = document.getElementById('pipeline-row');
+      pipeline.innerHTML = PIPELINE_STAGES.map((s, i) => {
+        const count = MOCK_CRM.filter(c=>c.stage===i).length;
+        return `<div class="pipe-stage ${count>0?'active':''}"><span class="pipe-count">${count}</span>${s}</div>`;
+      }).join('');
+    }
+    
+    function renderSkills() {
+      const renderSkillList = (containerId) => {
+        const el = document.getElementById(containerId);
+        if (!el) return;
+        el.innerHTML = MOCK_SKILLS.map(s => `
+          <div class="skill-item" onclick="promoteSkill('${s.id}')">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="health-dot ${s.health}"></div>
+              <span style="font-size:12px;font-weight:600;font-family:var(--mono);">${s.name}</span>
+              <span class="skill-mode ${s.mode}" style="margin-left:auto;">${s.mode.toUpperCase()}${s.compiled?' 🔒':''}</span>
+            </div>
+            <div style="font-size:10px;color:var(--text3);font-family:var(--mono);display:flex;gap:10px;">
+              <span>${s.repo}</span><span>last: ${s.lastRun}</span><span>${s.success}% ok</span><span>${s.cost}</span>
+            </div>
+          </div>`).join('');
+      };
+      renderSkillList('skill-list');
+      renderSkillList('left-skill-list');
+      document.getElementById('skill-compute-note').textContent = `Mode: ${state.compute.toUpperCase()} — ${state.compute==='dark'?'COMPILED skills only':'all skills active'}`;
+    }
+    
+    function updateSkillModes() { renderSkills(); }
+    
+    function renderHealth() {
+      document.getElementById('health-feed').innerHTML = MOCK_HEALTH.map(h => `
+        <div class="health-item ${h.status}">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="health-dot ${h.status}"></div>
+            <strong>${h.project}</strong>
+            <span style="font-size:9px;font-family:var(--mono);padding:1px 6px;border-radius:3px;background:rgba(255,255,255,0.05);color:var(--text3);margin-left:auto;">${h.status.toUpperCase()}</span>
+          </div>
+          <div class="health-reason">${h.reason}</div>
+        </div>`).join('');
+    }
+    
+    function renderExternalSignals() {
+      document.getElementById('external-signals').innerHTML = MOCK_EXTERNAL_SIGNALS.map(s => `
+        <div class="signal-item ${s.type}">
+          <div class="signal-source">${s.source} · ${s.time}</div>
+          <div>${s.text}</div>
+        </div>`).join('');
+    }
+    
+    function renderMemoryGraph() {
+      const nodes = document.getElementById('memory-graph-nodes');
+      nodes.innerHTML = MOCK_MEMORY_GRAPH.nodes.map(n => 
+        `<span class="graph-node ${n.type}">${n.label}</span>`).join('');
+      
+      const rels = document.getElementById('memory-rels');
+      rels.innerHTML = MOCK_MEMORY_GRAPH.rels.map(r => `
+        <div style="font-size:10px;font-family:var(--mono);padding:4px 0;border-bottom:1px solid var(--border);color:var(--text2);">
+          <span style="color:var(--text3);">${r.from}</span>
+          <span class="graph-rel">—[${r.rel}]→</span>
+          <span style="color:var(--text3);">${r.to}</span>
+          <span style="margin-left:8px;color:var(--text3);font-size:9px;">${(r.confidence*100).toFixed(0)}%${r.note?' · '+r.note:''}</span>
+        </div>`).join('');
+    
+      document.getElementById('memory-decay').innerHTML = `
+        <div style="font-size:10px;font-family:var(--mono);color:var(--text3);line-height:2;">
+          <div>Chad→HyperForge pattern: <span style="color:var(--accent);">82% confidence</span> · decays 5%/day without touch</div>
+          <div>anthropic-sdk dep: <span style="color:var(--amber);">95% confidence</span> · volatile (releases often)</div>
+          <div>BrambleThundery relevance: <span style="color:var(--text3);">18% weight</span> · cooling</div>
+        </div>`;
+    }
+    
+    function renderNegotiation() {
+      document.getElementById('negotiation-feed').innerHTML = MOCK_NEGOTIATION.map(n => `
+        <div class="neg-msg ${n.type}">
+          <div class="neg-from">${n.from} · ${n.time}</div>
+          <div>${n.msg}</div>
+        </div>`).join('');
+    }
+    
+    function renderProvenance() {
+      document.getElementById('prov-view').innerHTML = MOCK_PROVENANCE.map(p => `
+        <div class="card" style="margin-bottom:10px;">
+          <div class="card-header" style="cursor:default;">
+            <div style="flex:1;">
+              <div style="font-size:12px;font-weight:700;font-family:var(--mono);margin-bottom:8px;">${p.file}</div>
+              <div class="prov-chain">
+                <div class="prov-step">Written by: <span class="prov-agent">${p.written}</span></div>
+                <div class="prov-step">Verified by: <span class="prov-agent">${p.verified}</span></div>
+                <div class="prov-step">Hash chain: <span class="prov-hash">${p.hash_chain.join(' → ')}</span></div>
+                <div class="prov-step">Last human: <span class="prov-human">${p.last_human}</span></div>
+              </div>
+            </div>
+          </div>
+        </div>`).join('');
+    }
+    
+    function renderReplay() {
+      document.getElementById('replay-view').innerHTML = `
+        <div style="margin-bottom:12px;display:flex;align-items:center;gap:10px;">
+          <div style="font-size:13px;font-weight:700;">brand-audit-v2</div>
+          <span class="skill-mode compiled">COMPILED 🔒</span>
+          <span style="font-size:10px;font-family:var(--mono);color:var(--text3);margin-left:auto;">last run: 2hr ago · 4.2s · $0.00</span>
+        </div>
+        <div style="border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+          ${MOCK_REPLAY.map(r => `
+            <div class="replay-step">
+              <div class="replay-ts">${r.ts}</div>
+              <div class="replay-dot" style="${r.type==='system'?'background:var(--amber);':''}"></div>
+              <div style="flex:1;">
+                <div style="font-size:11px;color:${r.type==='system'?'var(--amber)':'var(--text)'};">${r.action}</div>
+                <div style="font-size:10px;font-family:var(--mono);color:var(--text3);">${r.output}</div>
+              </div>
+            </div>`).join('')}
+        </div>
+        <div style="margin-top:12px;display:flex;gap:8px;">
+          <button class="small-btn primary" onclick="queueSpeech('Brand audit replay complete. No LLM call needed — compiled skill ran clean.')">▶ Replay Now</button>
+          <button class="small-btn">View Output File</button>
+        </div>`;
+    }
+    
+    function renderOrch() {
+      const steps = [
+        { n:1, label:'Observe — persist to memory + Obsidian + preferences', state:'done' },
+        { n:2, label:'Classify intent (NLU)', state:'done' },
+        { n:3, label:'Route to skill via Dialogue Manager', state:'done' },
+        { n:4, label:'Deferred? Spawn background job → return ack', state:'active' },
+        { n:5, label:'Persist reply + publish to SSE bus', state:'idle' },
+      ];
+      const intents = [
+        { label:'dependency_check', pct:94 },
+        { label:'skill_trigger', pct:73 },
+        { label:'status_check', pct:61 },
+        { label:'health_query', pct:45 },
+        { label:'conversation', pct:38 },
+      ];
+      document.getElementById('orch-view').innerHTML = `
+        <div class="section-label">Orchestrator Flow</div>
+        ${steps.map(s => `
+          <div class="orch-step ${s.state}">
+            <div class="step-num">${s.n}</div>
+            <div style="flex:1;font-size:11px;">${s.label}</div>
+            ${s.state==='active' ? '<span style="font-size:9px;font-family:var(--mono);color:var(--accent);">RUNNING</span>' : ''}
+            ${s.state==='done' ? '<span style="font-size:9px;font-family:var(--mono);color:var(--green);">DONE</span>' : ''}
+          </div>`).join('')}
+        <div class="section-label" style="margin-top:16px;">NLU Intent Confidence</div>
+        ${intents.map(i => `
+          <div class="nlu-bar-row">
+            <div class="nlu-label">${i.label}</div>
+            <div class="nlu-bar-bg"><div class="nlu-bar-fill" style="width:${i.pct}%;"></div></div>
+            <div class="nlu-pct">${i.pct}%</div>
+          </div>`).join('')}
+        <div class="section-label" style="margin-top:16px;">Job Queue</div>
+        ${MOCK_ORCH_JOBS.map(j => `
+          <div class="job-row">
+            <span style="font-family:var(--mono);font-size:10px;color:var(--text3);">${j.id}</span>
+            <span style="flex:1;font-size:11px;font-family:var(--mono);">${j.tools}</span>
+            <span class="job-status ${j.status}">${j.status.toUpperCase()}</span>
+          </div>`).join('')}`;
+    }
+    
+    function renderPrefs() {
+      document.getElementById('prefs-view').innerHTML = `
+        <div class="item-row"><span class="item-name">Active hours</span><span class="item-meta">${MOCK_PREFS.active_hours}</span></div>
+        <div class="item-row"><span class="item-name">Style</span><span class="item-meta">${MOCK_PREFS.style}</span></div>
+        <div class="item-row"><span class="item-name">Sentiment score</span><span class="item-meta">${MOCK_PREFS.sentiment}</span></div>
+        <div class="item-row"><span class="item-name">Quiet hours</span><span class="item-meta">${MOCK_PREFS.quiet_hours}</span></div>
+        <div style="margin-top:10px;"><div class="section-label">Top Topics</div>
+        ${MOCK_PREFS.top_topics.map(t=>`<span class="graph-node entity" style="margin:2px;font-size:9px;">${t}</span>`).join('')}</div>`;
+    
+      // 24h activity bar
+      const bar = document.getElementById('activity-bar');
+      bar.innerHTML = '';
+      const pattern = [0,0,0,0,0,0,0,0.1,0.3,0.9,0.8,0.7,0.6,0.5,0.7,0.8,0.9,0.7,0.6,0.8,0.9,0.4,0.1,0];
+      pattern.forEach((v, h) => {
+        const col = document.createElement('div');
+        col.className = 'act-bar-col';
+        col.style.height = Math.max(4, v*38) + 'px';
+        col.style.background = h >= 9 && h <= 22 ? 'var(--accent)' : 'var(--border)';
+        col.style.opacity = v > 0 ? '0.7' : '0.2';
+        col.title = `${h}:00 — ${Math.round(v*100)}% activity`;
+        bar.appendChild(col);
+      });
+    }
+    
+    function renderObs() {
+      document.getElementById('obs-log').innerHTML = MOCK_OBS.map(o => `
+        <div class="obs-entry">
+          <div class="obs-role">${o.role.toUpperCase()} · ${o.intent} · ${o.time} ${o.tools.length?'· tools:'+o.tools.join(','):''}</div>
+          <div class="obs-content">${o.content}</div>
+        </div>`).join('');
+    }
+    
+    function renderMsgBus() {
+      const msgs = [
+        { from:'NanoClaw', msg:'substrate analysis complete — 3 dependencies checked', type:'agent', time:'2m ago' },
+        { from:'System', msg:'compute mode: FULL CREW — all 5 agents active', type:'system', time:'5m ago' },
+        { from:'HealthBot', msg:'HyperForge amber: SDK mismatch detected', type:'alert', time:'8m ago' },
+        { from:'OrchestratorPrime', msg:'intent queue cleared — 2 jobs dispatched', type:'agent', time:'12m ago' },
+      ];
+      document.getElementById('msg-bus-feed').innerHTML = msgs.map(m => `
+        <div class="bus-msg">
+          <div class="bm-from">${m.from} · ${m.time}<span class="bus-type ${m.type}">${m.type.toUpperCase()}</span></div>
+          <div>${m.msg}</div>
+        </div>`).join('');
+    }
+    
+    // ═══════════════════════════════════════════════════════════
+    // SPEECH
+    // ═══════════════════════════════════════════════════════════
+    window.queueSpeech = function(text) {
+      if (state.speechQueue.length >= 3) {
+        state.speechQueue.shift();
+      }
+      state.speechQueue.push(text);
+      processSpeechQueue();
+    };
+    
+    function processSpeechQueue() {
+      if (state.isSpeaking || state.speechQueue.length === 0) return;
+      if (state.compute === 'dark') { state.speechQueue = []; return; }
+      const now = Date.now();
+      if (now - state.lastUserSpoke < 600000) return; // 10min cooldown
+      if (now - state.lastOrbSpoke < 1200000) return;  // 20min min gap
+      const text = state.speechQueue.shift();
+      speakNow(text);
+    }
+    
+    function speakNow(text) {
+      if (!('speechSynthesis' in window)) return;
+      if (state.compute === 'dark') return;
+      state.isSpeaking = true;
+      state.lastOrbSpoke = Date.now();
+      setOrbState('speaking');
+      const utt = new SpeechSynthesisUtterance(text);
+      utt.rate = 0.95; utt.pitch = 0.9; utt.volume = 0.85;
+      const voices = speechSynthesis.getVoices();
+      const neural = voices.find(v => v.localService && v.name.includes('Neural'));
+      if (neural) utt.voice = neural;
+      utt.onend = () => {
+        state.isSpeaking = false;
+        setOrbState(state.compute === 'dark' ? 'dark' : 'idle');
+        setTimeout(processSpeechQueue, 500);
+      };
+      speechSynthesis.speak(utt);
+      logSSE('assistant_reply', `Orb: "${text.substring(0,60)}..."`);
+    }
+    
+    // ═══════════════════════════════════════════════════════════
+    // CONVERSATION
+    // ═══════════════════════════════════════════════════════════
+    window.openConv = function() {
+      state.convOpen = true;
+      document.getElementById('conv-card').classList.add('open');
+      document.getElementById('conv-input').focus();
+    };
+    window.closeConv = function() {
+      state.convOpen = false;
+      document.getElementById('conv-card').classList.remove('open');
+      setOrbState(state.compute==='dark'?'dark':'idle');
+    };
+    
+    window.sendMessage = function() {
+      const input = document.getElementById('conv-input');
+      const text = input.value.trim();
+      if (!text) return;
+      state.lastUserSpoke = Date.now();
+      addMessage('user', text);
+      input.value = '';
+      input.style.height = '36px';
+      setOrbState('speaking');
+      // Simulate orchestrator + reply
+      setTimeout(() => {
+        const replies = [
+          "HyperForge dependency shifted. SDK at 0.28, upstream at 0.30. NanoClaw is running the fix.",
+          "Snowball Folio build is clean. Three files changed — archetype tokens compiled.",
+          "Three tasks queued. HealthBot flagged MedCore amber. Worth a look before the Priya call.",
+          "NanoClaw cleared the substrate check. All four dependent projects back to green.",
+          "Brand audit complete. Marcello tokens align. One spacing violation — line 47 of globals.css.",
+        ];
+        const reply = replies[Math.floor(Math.random()*replies.length)];
+        addMessage('assistant', reply);
+        speakNow(reply);
+        logObs('user', text, 'conversation', []);
+        logObs('assistant', reply, 'conversation', ['classify','route']);
+        // animate orchestrator
+        animateOrch();
+      }, 900);
+    };
+    
+    function addMessage(role, text) {
+      const msgs = document.getElementById('conv-messages');
+      const time = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+      msgs.innerHTML += `
+        <div class="msg ${role}">
+          <div class="msg-meta">${role === 'user' ? 'you' : 'apex'} · ${time}</div>
+          <div class="msg-text">${text}</div>
+        </div>`;
+      msgs.scrollTop = msgs.scrollHeight;
+    }
+    
+    function animateOrch() {
+      // Flash the orch step active states
+      setOrbState('active');
+    }
+    
+    // ═══════════════════════════════════════════════════════════
+    // SSE SIMULATION (15s intervals)
+    // ═══════════════════════════════════════════════════════════
+    const SSE_EVENTS = [
+      { type:'agent_update', msg:'NanoClaw: substrate.py dependency graph updated — 3 edges resolved' },
+      { type:'health_check', msg:'HealthBot: HyperForge cron — amber. SDK version mismatch persists.' },
+      { type:'job_complete', msg:'OrchestratorPrime: job_042 done — anthropic_sdk_check returned 0.30 available' },
+      { type:'agent_update', msg:'DesignAgent: Marcello token compile finished — no drift detected' },
+      { type:'external_signal', msg:'GitHub: anthropic-sdk v0.30.1 pushed — patch release, no breaking changes' },
+      { type:'health_check', msg:'HealthBot: MedCore cron — amber. HIPAA schema validator updated upstream.' },
+      { type:'agent_update', msg:'TrendScraper: Awwwards SOTD matches Marcello archetype — adding to trend feed' },
+    ];
+    
+    let sseIndex = 0;
+    function logSSE(type, msg) {
+      const feed = document.getElementById('sse-feed');
+      const time = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      const entry = document.createElement('div');
+      entry.className = `sse-event ${type}`;
+      entry.innerHTML = `<span class="sse-ts">${time}</span><span class="sse-ts">[${type}]</span> ${msg}`;
+      feed.insertBefore(entry, feed.firstChild);
+      if (feed.children.length > 50) feed.removeChild(feed.lastChild);
+    }
+    
+    setInterval(() => {
+      const ev = SSE_EVENTS[sseIndex % SSE_EVENTS.length];
+      sseIndex++;
+      logSSE(ev.type, ev.msg);
+      if (ev.type === 'health_check') setOrbState('alert');
+      else if (ev.type === 'agent_update') setOrbState('active');
+      setTimeout(() => {
+        if (!state.isSpeaking) setOrbState(state.compute==='dark'?'dark':'idle');
+      }, 3000);
+    }, 15000);
+    
+    // PROACTIVE SPEECH (30s mock)
+    let phraseIndex = 0;
+    setInterval(() => {
+      if (state.compute === 'dark') return;
+      const now = Date.now();
+      if (now - state.lastUserSpoke < 600000) return;
+      if (now - state.lastOrbSpoke < 600000) return;
+      const phrase = PROACTIVE_PHRASES[phraseIndex % PROACTIVE_PHRASES.length];
+      phraseIndex++;
+      queueSpeech(phrase);
+      // rotate compound insight
+      showCompound(COMPOUND_INSIGHTS[phraseIndex % COMPOUND_INSIGHTS.length]);
+    }, 30000);
+    
+    function logObs(role, content, intent, tools) {
+      const log = document.getElementById('obs-log');
+      const time = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+      log.innerHTML = `<div class="obs-entry">
+        <div class="obs-role">${role.toUpperCase()} · ${intent} · ${time}${tools.length?' · tools:'+tools.join(','):''}</div>
+        <div class="obs-content">${content}</div>
+      </div>` + log.innerHTML;
+    }
+    
+    function showCompound(text) {
+      const banner = document.getElementById('compound-banner');
+      document.getElementById('compound-text').textContent = text;
+      banner.classList.add('show');
+      setTimeout(() => banner.classList.remove('show'), 12000);
+    }
+    
+    // ═══════════════════════════════════════════════════════════
+    // PUSH TO TALK + WAKE WORD
+    // ═══════════════════════════════════════════════════════════
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && !e.target.matches('input,textarea') && recognition && !state.isListening) {
+        e.preventDefault();
+        state.isListening = true;
+        updateWakeIndicator();
+        setOrbState('speaking');
+        try { recognition.start(); } catch(ex) {}
+      }
+    });
+    document.addEventListener('keyup', (e) => {
+      if (e.code === 'Space' && recognition) {
+        try { recognition.stop(); } catch(ex) {}
+      }
+    });
+    
+    function updateWakeIndicator() {
+      const dot = document.getElementById('wake-dot');
+      const label = document.getElementById('wake-label');
+      if (state.isListening) {
+        dot.classList.add('listening');
+        label.textContent = 'listening...';
+        label.style.color = 'var(--red)';
+      } else {
+        dot.classList.remove('listening');
+        label.textContent = 'awaiting wake word';
+        label.style.color = 'var(--text3)';
+      }
+    }
+    
+    // WAKE WORD simulation ("hey apex" typed)
+    document.addEventListener('keypress', (e) => {
+      // simple: pressing 'W' triggers wake in demo
+      if (e.key === 'w' && !e.target.matches('input,textarea')) {
+        openConv();
+        queueSpeech("Listening. What do you need?");
+      }
+    });
+    
+    // ═══════════════════════════════════════════════════════════
+    // AMBIENT PERCEPTION
+    // ═══════════════════════════════════════════════════════════
+    setInterval(() => {
+      const now = Date.now();
+      const idleMs = now - state.lastActivityTime;
+      const isIdle = idleMs > 180000; // 3 min
+      const isScrolling = now - state.lastScrollTime < 2000;
+    
+      document.getElementById('amb-idle-dot').classList.toggle('active', isIdle);
+      document.getElementById('amb-scroll-dot').classList.toggle('active', isScrolling);
+      document.getElementById('amb-focus-dot').classList.add('active');
+    
+      if (isIdle && !state.ambientIdle) {
+        state.ambientIdle = true;
+        // Fade orb slightly when idle
+        if (!state.isSpeaking) {
+          document.getElementById('orb-state-label').textContent = 'IDLE · user away';
+        }
+      } else if (!isIdle && state.ambientIdle) {
+        state.ambientIdle = false;
+        document.getElementById('orb-state-label').textContent = (orbTargets[state.orbState]||orbTargets.idle).label;
+      }
+    }, 5000);
+    
+    // ═══════════════════════════════════════════════════════════
+    // SKILL PANEL
+    // ═══════════════════════════════════════════════════════════
+    window.toggleSkillPanel = function() {
+      state.skillOpen = !state.skillOpen;
+      document.getElementById('skill-panel').classList.toggle('open', state.skillOpen);
+    };
+    window.promoteSkill = function(id) {
+      const s = MOCK_SKILLS.find(s=>s.id===id);
+      if (!s) return;
+      if (s.mode === 'live') { s.mode = 'compiled'; s.compiled = true; }
+      else if (s.mode === 'dormant') { s.mode = 'live'; }
+      renderSkills();
+      queueSpeech(`${s.name} promoted to ${s.mode.toUpperCase()}.`);
+    };
+    window.addSkill = function() {
+      const url = document.getElementById('skill-url-input').value.trim();
+      if (!url) return;
+      MOCK_SKILLS.push({ id:'s'+(MOCK_SKILLS.length+1), name:url.split('/').pop()||'new-skill', mode:'dormant', repo:url, lastRun:'never', success:0, cost:'—', health:'green', compiled:false });
+      document.getElementById('skill-url-input').value = '';
+      renderSkills();
+      queueSpeech("New skill installed. Set to DORMANT until you activate it.");
+    };
+    
+    // ═══════════════════════════════════════════════════════════
+    // BROADCAST
+    // ═══════════════════════════════════════════════════════════
+    window.broadcastMsg = function() {
+      const input = document.getElementById('bus-input');
+      const text = input.value.trim();
+      if (!text) return;
+      const feed = document.getElementById('msg-bus-feed');
+      const time = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+      feed.innerHTML = `<div class="bus-msg">
+        <div class="bm-from">Chad · ${time}<span class="bus-type system">BROADCAST</span></div>
+        <div>${text}</div>
+      </div>` + feed.innerHTML;
+      input.value = '';
+      logSSE('assistant_reply', `Broadcast: "${text}"`);
+    };
+    
+    // ═══════════════════════════════════════════════════════════
+    // ORB CLICK / LONG PRESS
+    // ═══════════════════════════════════════════════════════════
+    let pressTimer;
+    canvas.addEventListener('mousedown', () => { pressTimer = setTimeout(toggleSkillPanel, 600); });
+    canvas.addEventListener('mouseup', () => clearTimeout(pressTimer));
+    canvas.addEventListener('contextmenu', (e) => { e.preventDefault(); toggleSkillPanel(); });
+    canvas.addEventListener('click', () => {
+      if (!state.skillOpen) {
+        state.convOpen ? closeConv() : openConv();
+      }
+    });
+    
+    // cancel speech on click
+    canvas.addEventListener('click', () => {
+      if (state.isSpeaking) {
+        speechSynthesis.cancel();
+        state.isSpeaking = false;
+        setOrbState(state.compute==='dark'?'dark':'idle');
+      }
+    });
+    
+    // ═══════════════════════════════════════════════════════════
+    // CONV INPUT AUTORESIZE
+    // ═══════════════════════════════════════════════════════════
+    document.getElementById('conv-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+      if (e.key === 'Escape') closeConv();
+    });
+    document.getElementById('conv-input').addEventListener('input', (e) => {
+      e.target.style.height = '36px';
+      e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
+    });
+    
+    // ═══════════════════════════════════════════════════════════
+    // TAB SWITCHING
+    // ═══════════════════════════════════════════════════════════
+    window.leftTab = function(btn, id) {
+      document.querySelectorAll('#left-panel .panel-content').forEach(el => el.style.display='none');
+      document.querySelectorAll('#left-panel .ptab').forEach(b => b.classList.remove('active'));
+      document.getElementById(id).style.display='block';
+      btn.classList.add('active');
+    };
+    window.rightTab = function(btn, id) {
+      document.querySelectorAll('#right-panel .panel-content').forEach(el => el.style.display='none');
+      document.querySelectorAll('#right-panel .ptab').forEach(b => b.classList.remove('active'));
+      document.getElementById(id).style.display='block';
+      btn.classList.add('active');
+    };
+    window.centerTab = function(btn, id) {
+      document.querySelectorAll('.stream-section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.ctab').forEach(b => b.classList.remove('active'));
+      document.getElementById(id+'-section').classList.add('active');
+      btn.classList.add('active');
+      // Render specific views
+      if(id==='kanban') renderKanban();
+      if(id==='msgbus') renderMsgBus();
+      if(id==='orch') renderOrch();
+      if(id==='prov') renderProvenance();
+      if(id==='replay') renderReplay();
+    };
+    
+    window.expandProject = function(id) {};
+    
+    // ═══════════════════════════════════════════════════════════
+    // INIT
+    // ═══════════════════════════════════════════════════════════
+    renderProjects();
+    renderKanban();
+    renderAgents();
+    renderMCP();
+    renderCRM();
+    renderSkills();
+    renderHealth();
+    renderExternalSignals();
+    renderMemoryGraph();
+    renderNegotiation();
+    renderPrefs();
+    renderObs();
+    
+    // Initial SSE logs
+    ['boot: APEX STUDIO V5 — 2027 build loaded',
+     'orchestrator: handle() ready — awaiting requests',
+     'health-bot: starting ACTIVE project sweep',
+     'sse: mock mode — events every 15s',
+     'compute: FULL CREW — 5 agents active',
+    ].forEach((msg, i) => setTimeout(() => logSSE('assistant_reply', msg), i * 300));
+    
+    // Initial compound insight after 5s
+    setTimeout(() => showCompound(COMPOUND_INSIGHTS[0]), 5000);
+    
+    // Initial proactive speech after 8s
+    setTimeout(() => queueSpeech(PROACTIVE_PHRASES[0]), 8000);
+    
+    </script>
+    </body>
+    </html>

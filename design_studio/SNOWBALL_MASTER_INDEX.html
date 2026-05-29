@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snowball Design Intelligence — Master Suite</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+    :root {
+      --void: #060608; --obsidian: #0d0d12; --graphite: #1a1a24;
+      --steel: #2a2a38; --smoke: #6b6b8a; --silver: #a0a0c0;
+      --pearl: #d4d4e8; --white: #f0f0f8;
+      --gold: #c9a84c; --gold-light: #e4c97e; --gold-dim: #8a6f2e;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family:'Inter',sans-serif; background:var(--void); color:var(--pearl);
+      min-height:100vh; padding:48px 40px;
+    }
+    body::before {
+      content:''; position:fixed; inset:0;
+      background-image:linear-gradient(rgba(201,168,76,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.025) 1px,transparent 1px);
+      background-size:80px 80px; pointer-events:none; z-index:0;
+    }
+    .wrap { max-width:1200px; margin:0 auto; position:relative; z-index:1; }
+    
+    /* Header */
+    .header { text-align:center; margin-bottom:64px; }
+    .logo-row { display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:24px; }
+    .logo-mark { width:56px; height:56px; background:linear-gradient(135deg,var(--gold),var(--gold-dim)); border-radius:14px; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-size:32px; font-weight:600; color:var(--void); box-shadow:0 0 60px rgba(201,168,76,0.25); }
+    .logo-text .logo-name { font-family:'Space Grotesk',sans-serif; font-size:28px; font-weight:700; color:var(--white); letter-spacing:-0.01em; }
+    .logo-text .logo-sub { font-size:11px; color:var(--gold); letter-spacing:0.2em; text-transform:uppercase; margin-top:2px; }
+    .header-line { width:80px; height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); margin:24px auto; }
+    .header p { font-size:15px; color:var(--smoke); max-width:560px; margin:0 auto; line-height:1.7; }
+    
+    /* Category Label */
+    .cat-label { font-size:10px; color:var(--gold); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:20px; display:flex; align-items:center; gap:12px; }
+    .cat-label::after { content:''; flex:1; height:1px; background:rgba(201,168,76,0.15); }
+    
+    /* Apps Grid */
+    .apps-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:48px; }
+    
+    .app-card {
+      background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.07);
+      border-radius:16px; overflow:hidden; cursor:pointer; transition:all 0.3s;
+      text-decoration:none; display:block;
+    }
+    .app-card:hover { border-color:rgba(201,168,76,0.3); transform:translateY(-3px); box-shadow:0 20px 60px rgba(0,0,0,0.4); }
+    
+    .app-preview {
+      height:140px; display:flex; align-items:center; justify-content:center;
+      font-size:36px; position:relative; overflow:hidden;
+    }
+    .app-preview::after {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.6));
+    }
+    
+    .app-badge {
+      position:absolute; top:12px; right:12px; z-index:1;
+      padding:3px 8px; border-radius:10px; font-size:9px; font-weight:600;
+      letter-spacing:0.08em; text-transform:uppercase;
+    }
+    .badge-new { background:rgba(85,224,160,0.15); color:#55e0a0; border:1px solid rgba(85,224,160,0.3); }
+    .badge-tool { background:rgba(201,168,76,0.12); color:var(--gold); border:1px solid rgba(201,168,76,0.25); }
+    .badge-site { background:rgba(85,136,224,0.12); color:#5588e0; border:1px solid rgba(85,136,224,0.3); }
+    
+    .app-info { padding:18px 20px; }
+    .app-name { font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:600; color:var(--white); margin-bottom:4px; }
+    .app-desc { font-size:12px; color:var(--smoke); line-height:1.5; margin-bottom:12px; }
+    .app-open-btn {
+      display:inline-flex; align-items:center; gap:6px;
+      padding:7px 14px; border-radius:8px;
+      border:1px solid rgba(201,168,76,0.25); background:rgba(201,168,76,0.06);
+      color:var(--gold-light); font-size:12px; font-weight:500;
+      cursor:pointer; transition:all 0.2s; font-family:'Inter',sans-serif;
+    }
+    .app-open-btn:hover { background:rgba(201,168,76,0.12); border-color:var(--gold); }
+    
+    /* Sites Grid */
+    .sites-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:48px; }
+    
+    .site-card {
+      border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,0.07);
+      cursor:pointer; transition:all 0.25s; text-decoration:none; display:block;
+    }
+    .site-card:hover { border-color:rgba(201,168,76,0.3); transform:translateY(-2px); }
+    .site-preview { height:90px; display:flex; align-items:center; justify-content:center; font-size:24px; }
+    .site-info { padding:10px 12px; background:rgba(0,0,0,0.3); }
+    .site-name { font-size:12px; font-weight:600; color:var(--pearl); }
+    .site-arch { font-size:10px; color:var(--smoke); margin-top:2px; }
+    .site-score { font-size:10px; color:var(--gold); margin-top:4px; }
+    
+    /* Docs Grid */
+    .docs-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:48px; }
+    .doc-card {
+      padding:18px 20px; background:rgba(255,255,255,0.02);
+      border:1px solid rgba(255,255,255,0.07); border-radius:12px;
+      cursor:pointer; transition:all 0.2s; text-decoration:none; display:block;
+    }
+    .doc-card:hover { border-color:rgba(201,168,76,0.25); background:rgba(201,168,76,0.03); }
+    .doc-icon { font-size:24px; margin-bottom:10px; }
+    .doc-name { font-size:13px; font-weight:600; color:var(--pearl); margin-bottom:4px; }
+    .doc-desc { font-size:11px; color:var(--smoke); line-height:1.5; }
+    .doc-tag { display:inline-block; margin-top:10px; padding:2px 8px; border-radius:10px; background:rgba(201,168,76,0.08); color:var(--gold); font-size:10px; border:1px solid rgba(201,168,76,0.15); }
+    
+    /* Deploy CTA */
+    .deploy-cta {
+      text-align:center; padding:40px;
+      background:rgba(201,168,76,0.04); border:1px solid rgba(201,168,76,0.15);
+      border-radius:20px; margin-bottom:40px;
+    }
+    .deploy-cta h2 { font-family:'Cormorant Garamond',serif; font-size:36px; font-weight:300; color:var(--white); margin-bottom:12px; }
+    .deploy-cta h2 em { font-style:italic; color:var(--gold-light); }
+    .deploy-cta p { font-size:14px; color:var(--smoke); margin-bottom:28px; line-height:1.6; }
+    .deploy-steps { display:flex; justify-content:center; gap:32px; margin-bottom:28px; }
+    .deploy-step { text-align:center; }
+    .deploy-num { width:36px; height:36px; border-radius:50%; background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.3); display:flex; align-items:center; justify-content:center; color:var(--gold); font-size:14px; font-weight:600; margin:0 auto 8px; }
+    .deploy-step-text { font-size:12px; color:var(--silver); max-width:120px; line-height:1.4; }
+    .deploy-btns { display:flex; gap:12px; justify-content:center; }
+    .deploy-btn { padding:12px 28px; border-radius:10px; font-family:'Inter',sans-serif; font-size:14px; font-weight:500; cursor:pointer; transition:all 0.2s; text-decoration:none; }
+    .deploy-btn.primary { background:linear-gradient(135deg,var(--gold),var(--gold-dim)); color:var(--void); border:none; }
+    .deploy-btn.primary:hover { box-shadow:0 8px 32px rgba(201,168,76,0.3); transform:translateY(-1px); }
+    .deploy-btn.secondary { background:transparent; border:1px solid rgba(255,255,255,0.1); color:var(--silver); }
+    .deploy-btn.secondary:hover { border-color:rgba(201,168,76,0.3); color:var(--gold-light); }
+    
+    /* Footer */
+    .footer { text-align:center; padding-top:24px; border-top:1px solid rgba(255,255,255,0.05); }
+    .footer p { font-size:12px; color:var(--smoke); }
+    .footer strong { color:var(--gold); }
+    </style>
+    </head>
+    <body>
+    <div class="wrap">
+    
+      <!-- Header -->
+      <div class="header">
+        <div class="logo-row">
+          <div class="logo-mark">S</div>
+          <div class="logo-text">
+            <div class="logo-name">Snowball Design Intelligence</div>
+            <div class="logo-sub">The Full Suite · v1.0</div>
+          </div>
+        </div>
+        <div class="header-line"></div>
+        <p>Every tool, site, document, and asset needed to build, sell, and scale the Snowball luxury design platform. Open any file below — all deploy-ready.</p>
+      </div>
+    
+      <!-- CORE APPS -->
+      <div class="cat-label">Core Applications</div>
+      <div class="apps-grid">
+        <a href="snowball_intelligence_app.html" class="app-card" target="_blank">
+          <div class="app-preview" style="background:linear-gradient(135deg,#060608,#1a1a24,#060608)">
+            ◈ <span class="app-badge badge-new">New</span>
+          </div>
+          <div class="app-info">
+            <div class="app-name">Snowball Intelligence</div>
+            <div class="app-desc">The mini AI design tool — site builder, brand identity, copy engine, style audit, and proposal generator. Your Snowball-flavored Claude.</div>
+            <button class="app-open-btn">Open App →</button>
+          </div>
+        </a>
+    
+        <a href="snowball_client_intake.html" class="app-card" target="_blank">
+          <div class="app-preview" style="background:linear-gradient(135deg,#0d0d12,#1a1a2e)">
+            ◉ <span class="app-badge badge-tool">Tool</span>
+          </div>
+          <div class="app-info">
+            <div class="app-name">Client Intake</div>
+            <div class="app-desc">5-step commission brief. Clients spend 3 minutes, you get everything needed to build their $5K site. Auto-calculates investment range.</div>
+            <button class="app-open-btn">Open Tool →</button>
+          </div>
+        </a>
+    
+        <a href="snowball_dashboard.html" class="app-card" target="_blank">
+          <div class="app-preview" style="background:linear-gradient(135deg,#0a0a12,#12121e)">
+            ◍ <span class="app-badge badge-tool">Tool</span>
+          </div>
+          <div class="app-info">
+            <div class="app-name">Design System Dashboard</div>
+            <div class="app-desc">Manage all 8 archetypes, track client pipeline, component library, revenue chart, luxury scores, and activity feed.</div>
+            <button class="app-open-btn">Open Dashboard →</button>
+          </div>
+        </a>
+      </div>
+    
+      <!-- DEMO SITES -->
+      <div class="cat-label">Demo Sites — Deploy Any at $3K–$5K</div>
+      <div class="sites-grid">
+        <a href="snowball_hero_site.html" class="site-card" target="_blank">
+          <div class="site-preview" style="background:linear-gradient(135deg,#060608,#1a1a24)">◈</div>
+          <div class="site-info">
+            <div class="site-name">Snowball Hero</div>
+            <div class="site-arch">Dark Precision · Marcello DNA</div>
+            <div class="site-score">★ 98/100 Luxury Score</div>
+          </div>
+        </a>
+        <a href="aurora_design_site.html" class="site-card" target="_blank">
+          <div class="site-preview" style="background:linear-gradient(135deg,#f5f0e8,#c8a87a)">◉</div>
+          <div class="site-info">
+            <div class="site-name">Aurora Design</div>
+            <div class="site-arch">Fluid Elegance · Pininfarina DNA</div>
+            <div class="site-score">★ 97/100 Luxury Score</div>
+          </div>
+        </a>
+        <a href="vortex_design_site.html" class="site-card" target="_blank">
+          <div class="site-preview" style="background:linear-gradient(135deg,#0a0a0a,#200808)">◎</div>
+          <div class="site-info">
+            <div class="site-name">Vortex Design</div>
+            <div class="site-arch">Avant-Garde · Zagato DNA</div>
+            <div class="site-score">★ 96/100 Luxury Score</div>
+          </div>
+        </a>
+        <a href="prism_design_site.html" class="site-card" target="_blank">
+          <div class="site-preview" style="background:linear-gradient(135deg,#0a0f1a,#1a2a4a)">◍</div>
+          <div class="site-info">
+            <div class="site-name">Prism Design</div>
+            <div class="site-arch">Wedge Futurist · Bertone DNA</div>
+            <div class="site-score">★ 95/100 Luxury Score</div>
+          </div>
+        </a>
+        <a href="mark_brand_site.html" class="site-card" target="_blank">
+          <div class="site-preview" style="background:linear-gradient(135deg,#f0e6d6,#c4956a)">◌</div>
+          <div class="site-info">
+            <div class="site-name">Mark Brand</div>
+            <div class="site-arch">Brand Identity · Wearbrand DNA</div>
+            <div class="site-score">★ 94/100 Luxury Score</div>
+          </div>
+        </a>
+        <a href="apex_transport_site.html" class="site-card" target="_blank">
+          <div class="site-preview" style="background:linear-gradient(135deg,#0a0f1e,#1a2240)">⬡</div>
+          <div class="site-info">
+            <div class="site-name">Apex Transport</div>
+            <div class="site-arch">Transport Luxury · PriestmanGoode DNA</div>
+            <div class="site-score">★ 95/100 Luxury Score</div>
+          </div>
+        </a>
+        <a href="oracle_design_site.html" class="site-card" target="_blank">
+          <div class="site-preview" style="background:linear-gradient(135deg,#030305,#080f04)">✦</div>
+          <div class="site-info">
+            <div class="site-name">Oracle Design</div>
+            <div class="site-arch">Future Concept · Seymourpowell DNA</div>
+            <div class="site-score">★ 92/100 Luxury Score</div>
+          </div>
+        </a>
+        <div class="site-card" style="border-style:dashed; display:flex; align-items:center; justify-content:center; min-height:160px; opacity:0.4; cursor:default">
+          <div style="text-align:center; padding:20px">
+            <div style="font-size:28px; margin-bottom:8px">+</div>
+            <div style="font-size:12px; color:var(--smoke)">8th Archetype<br>Coming Soon</div>
+          </div>
+        </div>
+      </div>
+    
+      <!-- DOCUMENTS -->
+      <div class="cat-label">Business Documents</div>
+      <div class="docs-grid">
+        <a href="Snowball_Design_Intelligence_Blueprint.pdf" class="doc-card" target="_blank">
+          <div class="doc-icon">📘</div>
+          <div class="doc-name">Master Blueprint</div>
+          <div class="doc-desc">Complete 33K-word platform strategy. 8 brand DNA audits, tech stack, component library, monetization, 90-day roadmap.</div>
+          <span class="doc-tag">PDF · 33,596 chars</span>
+        </a>
+        <a href="Snowball_Client_Proposal_5K.pdf" class="doc-card" target="_blank">
+          <div class="doc-icon">📄</div>
+          <div class="doc-name">$5K Client Proposal</div>
+          <div class="doc-desc">Ready-to-send luxury design proposal. Closes $3.5K–$8.5K deals. Includes scope, investment framing, and single-action CTA.</div>
+          <span class="doc-tag">PDF · Send Today</span>
+        </a>
+        <a href="Snowball_Sales_One_Pager.docx" class="doc-card" target="_blank">
+          <div class="doc-icon">⚡</div>
+          <div class="doc-name">Sales One-Pager</div>
+          <div class="doc-desc">Cold email scripts, objection handling table, 3-step close sequence, and where to find luxury design studio clients.</div>
+          <span class="doc-tag">DOCX · Close Ready</span>
+        </a>
+      </div>
+    
+      <!-- Deploy CTA -->
+      <div class="deploy-cta">
+        <h2>Deploy your first site <em>today</em></h2>
+        <p>Every file above is deploy-ready. No build tools, no dependencies, no waiting.<br>Drag any .html file to Netlify Drop and have a live URL in under 60 seconds.</p>
+        <div class="deploy-steps">
+          <div class="deploy-step">
+            <div class="deploy-num">1</div>
+            <div class="deploy-step-text">Go to netlify.com/drop</div>
+          </div>
+          <div class="deploy-step">
+            <div class="deploy-num">2</div>
+            <div class="deploy-step-text">Drag any .html file onto the page</div>
+          </div>
+          <div class="deploy-step">
+            <div class="deploy-num">3</div>
+            <div class="deploy-step-text">Live URL — send to client immediately</div>
+          </div>
+        </div>
+        <div class="deploy-btns">
+          <a href="https://app.netlify.com/drop" target="_blank" class="deploy-btn primary">⚡ Open Netlify Drop</a>
+          <a href="snowball_hero_site.html" target="_blank" class="deploy-btn secondary">Preview Hero Site First</a>
+        </div>
+      </div>
+    
+      <div class="footer">
+        <p>Built by <strong>Snowball Design Intelligence</strong> · 10 files · 200,000+ characters of luxury design · 100% original · 0% copyright exposure</p>
+      </div>
+    </div>
+    </body>
+    </html>

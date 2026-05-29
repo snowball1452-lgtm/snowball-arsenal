@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:#0A0F1E;}
+.slide{width:1920px;height:1080px;position:relative;overflow:hidden;page-break-after:always;}
+
+/* SLIDE 1 - TITLE */
+.slide-1{background:linear-gradient(135deg,#0A0F1E 0%,#0D1A3A 50%,#0A0F1E 100%);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;}
+.slide-1-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(201,168,76,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.04) 1px,transparent 1px);background-size:80px 80px;}
+.slide-1-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:900px;height:900px;background:radial-gradient(circle,rgba(37,99,235,0.12) 0%,transparent 70%);}
+.slide-1-badge{display:inline-flex;align-items:center;gap:12px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);padding:10px 28px;border-radius:100px;margin-bottom:40px;position:relative;z-index:2;}
+.slide-1-badge span{font-size:16px;color:#C9A84C;font-weight:600;letter-spacing:3px;text-transform:uppercase;}
+.slide-1 h1{font-family:'Playfair Display',serif;font-size:110px;font-weight:900;line-height:1.0;color:#F8FAFC;position:relative;z-index:2;margin-bottom:16px;}
+.slide-1 h1 em{font-style:normal;color:#C9A84C;}
+.slide-1-tagline{font-size:28px;color:rgba(248,250,252,0.6);letter-spacing:4px;text-transform:uppercase;font-weight:300;position:relative;z-index:2;margin-bottom:60px;}
+.slide-1-divider{width:120px;height:2px;background:linear-gradient(90deg,transparent,#C9A84C,transparent);margin:0 auto 40px;position:relative;z-index:2;}
+.slide-1-sub{font-size:22px;color:rgba(248,250,252,0.4);position:relative;z-index:2;letter-spacing:2px;}
+
+/* SLIDE 2 - PROBLEM */
+.slide-2{background:#0D1526;display:flex;flex-direction:column;justify-content:center;padding:80px 100px;}
+.slide-2-label{font-size:14px;color:#C9A84C;letter-spacing:4px;text-transform:uppercase;font-weight:600;margin-bottom:20px;}
+.slide-2 h2{font-family:'Playfair Display',serif;font-size:72px;font-weight:700;color:#F8FAFC;margin-bottom:16px;line-height:1.1;}
+.slide-2 h2 em{font-style:normal;color:#C9A84C;}
+.slide-2-sub{font-size:22px;color:rgba(248,250,252,0.5);margin-bottom:70px;max-width:900px;}
+.slide-2-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;}
+.problem-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:50px 44px;position:relative;overflow:hidden;}
+.problem-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#C9A84C,#E8D5A3);}
+.problem-stat{font-family:'Playfair Display',serif;font-size:88px;font-weight:900;color:#C9A84C;line-height:1;margin-bottom:16px;}
+.problem-stat-label{font-size:20px;font-weight:700;color:#F8FAFC;margin-bottom:12px;}
+.problem-stat-desc{font-size:16px;color:rgba(248,250,252,0.5);line-height:1.6;}
+
+/* SLIDE 3 - SOLUTION */
+.slide-3{background:linear-gradient(160deg,#0A0F1E 0%,#0D1A3A 100%);display:flex;flex-direction:column;justify-content:center;padding:80px 100px;}
+.slide-3-label{font-size:14px;color:#C9A84C;letter-spacing:4px;text-transform:uppercase;font-weight:600;margin-bottom:20px;}
+.slide-3 h2{font-family:'Playfair Display',serif;font-size:72px;font-weight:700;color:#F8FAFC;margin-bottom:16px;}
+.slide-3-sub{font-size:22px;color:rgba(248,250,252,0.5);margin-bottom:70px;}
+.solution-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;}
+.solution-card{background:rgba(255,255,255,0.02);border:1px solid rgba(201,168,76,0.15);border-radius:16px;padding:50px 44px;transition:all 0.3s;}
+.solution-num{font-family:'Playfair Display',serif;font-size:72px;font-weight:900;color:rgba(201,168,76,0.12);line-height:1;margin-bottom:20px;}
+.solution-icon{width:64px;height:64px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:24px;}
+.solution-card h3{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:#F8FAFC;margin-bottom:14px;}
+.solution-card p{font-size:17px;color:rgba(248,250,252,0.55);line-height:1.7;margin-bottom:20px;}
+.solution-price{font-size:20px;font-weight:700;color:#C9A84C;}
+.solution-price span{font-size:14px;color:rgba(248,250,252,0.4);font-weight:400;}
+
+/* SLIDE 4 - MARKET */
+.slide-4{background:#0A0F1E;display:flex;flex-direction:column;justify-content:center;padding:80px 100px;}
+.slide-4-label{font-size:14px;color:#C9A84C;letter-spacing:4px;text-transform:uppercase;font-weight:600;margin-bottom:20px;}
+.slide-4 h2{font-family:'Playfair Display',serif;font-size:72px;font-weight:700;color:#F8FAFC;margin-bottom:16px;}
+.slide-4-sub{font-size:22px;color:rgba(248,250,252,0.5);margin-bottom:70px;}
+.market-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;}
+.market-stat-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:44px 36px;text-align:center;}
+.market-big{font-family:'Playfair Display',serif;font-size:80px;font-weight:900;color:#C9A84C;line-height:1;margin-bottom:12px;}
+.market-label{font-size:17px;font-weight:700;color:#F8FAFC;margin-bottom:8px;}
+.market-desc{font-size:14px;color:rgba(248,250,252,0.45);line-height:1.6;}
+.market-source{font-size:12px;color:rgba(201,168,76,0.5);margin-top:12px;letter-spacing:1px;}
+
+/* SLIDE 5 - WHO WE SERVE */
+.slide-5{background:linear-gradient(135deg,#0D1526 0%,#0A0F1E 100%);display:flex;flex-direction:column;justify-content:center;padding:80px 100px;}
+.slide-5-label{font-size:14px;color:#C9A84C;letter-spacing:4px;text-transform:uppercase;font-weight:600;margin-bottom:20px;}
+.slide-5 h2{font-family:'Playfair Display',serif;font-size:72px;font-weight:700;color:#F8FAFC;margin-bottom:16px;}
+.slide-5-sub{font-size:22px;color:rgba(248,250,252,0.5);margin-bottom:60px;}
+.icp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;}
+.icp-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:48px 44px;position:relative;}
+.icp-tag{display:inline-block;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);padding:6px 18px;border-radius:100px;font-size:13px;color:#C9A84C;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:24px;}
+.icp-card h3{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:#F8FAFC;margin-bottom:16px;}
+.icp-details{list-style:none;}
+.icp-details li{font-size:16px;color:rgba(248,250,252,0.55);padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;}
+.icp-details li strong{color:#F8FAFC;font-weight:600;}
+.icp-budget{font-family:'Playfair Display',serif;font-size:36px;font-weight:700;color:#C9A84C;margin-top:20px;}
+.icp-budget-label{font-size:13px;color:rgba(248,250,252,0.4);letter-spacing:1px;text-transform:uppercase;}
+
+/* SLIDE 6 - PROCESS */
+.slide-6{background:#0A0F1E;display:flex;flex-direction:column;justify-content:center;padding:80px 100px;}
+.slide-6-label{font-size:14px;color:#C9A84C;letter-spacing:4px;text-transform:uppercase;font-weight:600;margin-bottom:20px;}
+.slide-6 h2{font-family:'Playfair Display',serif;font-size:72px;font-weight:700;color:#F8FAFC;margin-bottom:16px;}
+.slide-6-sub{font-size:22px;color:rgba(248,250,252,0.5);margin-bottom:70px;}
+.process-track{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;}
+.process-track::before{content:'';position:absolute;top:52px;left:12%;right:12%;height:2px;background:linear-gradient(90deg,#C9A84C,rgba(201,168,76,0.2),#C9A84C);opacity:0.4;}
+.process-item{text-align:center;padding:0 30px;}
+.process-circle{width:104px;height:104px;border-radius:50%;background:linear-gradient(135deg,#C9A84C,#A8722A);display:flex;align-items:center;justify-content:center;margin:0 auto 28px;font-family:'Playfair Display',serif;font-size:40px;font-weight:700;color:#0A0F1E;position:relative;z-index:2;box-shadow:0 0 40px rgba(201,168,76,0.25);}
+.process-item h3{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:#F8FAFC;margin-bottom:14px;}
+.process-item p{font-size:16px;color:rgba(248,250,252,0.5);line-height:1.7;}
+.process-time{display:inline-block;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);padding:4px 14px;border-radius:100px;font-size:13px;color:#C9A84C;font-weight:600;margin-top:14px;}
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: TITLE -->
+<section class="slide slide-1">
+  <div class="slide-1-grid"></div>
+  <div class="slide-1-glow"></div>
+  <div class="slide-1-badge"><span>SaaS and FinTech Documentation Specialists</span></div>
+  <h1>Vault<em>Edge</em><br/>Capital Solutions</h1>
+  <div class="slide-1-tagline">Enterprise Documentation. Delivered in 48 Hours.</div>
+  <div class="slide-1-divider"></div>
+  <div class="slide-1-sub">Capabilities Briefing 2025</div>
+</section>
+
+<!-- SLIDE 2: PROBLEM -->
+<section class="slide slide-2">
+  <div class="slide-2-label">The Problem</div>
+  <h2>Documentation Delays<br/>Are <em>Killing Deals</em></h2>
+  <div class="slide-2-sub">67% of enterprise SaaS deals are delayed or lost due to missing compliance documentation.</div>
+  <div class="slide-2-cards">
+    <div class="problem-card">
+      <div class="problem-stat">67%</div>
+      <div class="problem-stat-label">of Enterprise Deals Stalled</div>
+      <div class="problem-stat-desc">Due to missing or insufficient compliance and onboarding documentation during procurement review.</div>
+    </div>
+    <div class="problem-card">
+      <div class="problem-stat">$50K</div>
+      <div class="problem-stat-label">Average Consulting Cost</div>
+      <div class="problem-stat-desc">Traditional boutique compliance firms charge $15,000 to $50,000 for the packages we deliver in 48 hours.</div>
+    </div>
+    <div class="problem-card">
+      <div class="problem-stat">6.2mo</div>
+      <div class="problem-stat-label">Average Sales Cycle</div>
+      <div class="problem-stat-desc">Reduced to 3.1 months for companies with complete enterprise documentation stacks ready at first contact.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 3: SOLUTION -->
+<section class="slide slide-3">
+  <div class="slide-3-label">Our Solution</div>
+  <h2>Three Assets. One Package.</h2>
+  <div class="slide-3-sub">Everything an enterprise buyer needs — delivered in 48 hours, at a fraction of traditional cost.</div>
+  <div class="solution-grid">
+    <div class="solution-card">
+      <div class="solution-num">01</div>
+      <div class="solution-icon">📋</div>
+      <h3>Compliance Report</h3>
+      <p>30+ page deep-dive covering SEC, FINRA, CFPB, BSA/AML, GDPR, PCI DSS v4.0, and state-specific regulations tailored to your exact service line.</p>
+      <div class="solution-price">$1,500 <span>standalone</span></div>
+    </div>
+    <div class="solution-card">
+      <div class="solution-num">02</div>
+      <div class="solution-icon">📊</div>
+      <h3>Capabilities Deck</h3>
+      <p>12 to 15 slide professionally designed presentation built for board rooms, investor meetings, and enterprise procurement officers.</p>
+      <div class="solution-price">$1,000 <span>standalone</span></div>
+    </div>
+    <div class="solution-card">
+      <div class="solution-num">03</div>
+      <div class="solution-icon">🎬</div>
+      <h3>Explainer Video</h3>
+      <p>60 to 90 second cinematic explainer with professional voiceover narrating your workflow, compliance posture, or product offering.</p>
+      <div class="solution-price">$2,000 <span>standalone</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 4: MARKET -->
+<section class="slide slide-4">
+  <div class="slide-4-label">Market Opportunity</div>
+  <h2>A $7.3 Billion Market.<br/>Massively Underserved.</h2>
+  <div class="slide-4-sub">The compliance documentation gap in SaaS and FinTech represents one of the largest unmet needs in enterprise technology.</div>
+  <div class="market-grid">
+    <div class="market-stat-card">
+      <div class="market-big">$7.3B</div>
+      <div class="market-label">Compliance Software Market</div>
+      <div class="market-desc">Global compliance software and documentation market by 2029, growing at 16.4% CAGR.</div>
+      <div class="market-source">SOURCE: GARTNER 2025</div>
+    </div>
+    <div class="market-stat-card">
+      <div class="market-big">26K+</div>
+      <div class="market-label">Active FinTech Startups</div>
+      <div class="market-desc">Operating globally in 2025 with combined valuations exceeding $1.2 trillion.</div>
+      <div class="market-source">SOURCE: CB INSIGHTS 2025</div>
+    </div>
+    <div class="market-stat-card">
+      <div class="market-big">40%</div>
+      <div class="market-label">Lack Enterprise Docs</div>
+      <div class="market-desc">Of funded FinTech companies lack enterprise-grade go-to-market documentation despite having capital to acquire it.</div>
+      <div class="market-source">SOURCE: IDC SURVEY 2024</div>
+    </div>
+    <div class="market-stat-card">
+      <div class="market-big">2.4x</div>
+      <div class="market-label">More Deals Closed</div>
+      <div class="market-desc">Companies with professional onboarding packages close 2.4x more enterprise deals than those without.</div>
+      <div class="market-source">SOURCE: FORRESTER 2024</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 5: WHO WE SERVE -->
+<section class="slide slide-5">
+  <div class="slide-5-label">Ideal Clients</div>
+  <h2>Who We Serve</h2>
+  <div class="slide-5-sub">Three high-value client profiles with urgent documentation needs and proven willingness to pay.</div>
+  <div class="icp-grid">
+    <div class="icp-card">
+      <div class="icp-tag">Primary ICP</div>
+      <h3>Series B+ FinTech Companies</h3>
+      <ul class="icp-details">
+        <li><span>Revenue</span><strong>$5M to $50M ARR</strong></li>
+        <li><span>Headcount</span><strong>50 to 500 employees</strong></li>
+        <li><span>Decision Maker</span><strong>CRO / General Counsel</strong></li>
+        <li><span>Pain</span><strong>Scaling enterprise sales</strong></li>
+      </ul>
+      <div class="icp-budget">$500K</div>
+      <div class="icp-budget-label">Annual compliance budget</div>
+    </div>
+    <div class="icp-card">
+      <div class="icp-tag">Secondary ICP</div>
+      <h3>Regional Banks Modernizing</h3>
+      <ul class="icp-details">
+        <li><span>Asset Size</span><strong>$500M to $10B</strong></li>
+        <li><span>Focus</span><strong>Digital transformation</strong></li>
+        <li><span>Decision Maker</span><strong>CIO / Chief Risk Officer</strong></li>
+        <li><span>Pain</span><strong>Vendor onboarding docs</strong></li>
+      </ul>
+      <div class="icp-budget">$2M</div>
+      <div class="icp-budget-label">Annual tech vendor spend</div>
+    </div>
+    <div class="icp-card">
+      <div class="icp-tag">Tertiary ICP</div>
+      <h3>Enterprise SaaS Entering FS</h3>
+      <ul class="icp-details">
+        <li><span>Revenue</span><strong>$20M+ ARR</strong></li>
+        <li><span>Focus</span><strong>Financial services entry</strong></li>
+        <li><span>Decision Maker</span><strong>CCO / General Counsel</strong></li>
+        <li><span>Pain</span><strong>Regulatory complexity</strong></li>
+      </ul>
+      <div class="icp-budget">$1M</div>
+      <div class="icp-budget-label">Compliance buildout budget</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 6: PROCESS -->
+<section class="slide slide-6">
+  <div class="slide-6-label">How It Works</div>
+  <h2>From Brief to Delivered<br/>in 48 Hours</h2>
+  <div class="slide-6-sub">A streamlined four-step process that eliminates months of back-and-forth and delivers enterprise-grade assets fast.</div>
+  <div class="process-track">
+    <div class="process-item">
+      <div class="process-circle">1</div>
+      <h3>Discovery Call</h3>
+      <p>30-minute brief covering your service line, regulatory environment, target buyers, and existing documentation gaps.</p>
+      <div class="process-time">30 minutes</div>
+    </div>
+    <div class="process-item">
+      <div class="process-circle">2</div>
+      <h3>Research and Build</h3>
+      <p>Our AI-powered pipeline runs deep regulatory research and builds all three assets simultaneously with real-time data.</p>
+      <div class="process-time">24 hours</div>
+    </div>
+    <div class="process-item">
+      <div class="process-circle">3</div>
+      <h3>Review and Refine</h3>
+      <p>You review the complete draft package. One full round of revisions is included with every engagement at every tier.</p>
+      <div class="process-time">12 hours</div>
+    </div>
+    <div class="process-item">
+      <div class="process-circle">4</div>
+      <h3>Deliver and Deploy</h3>
+      <p>Final files delivered via secure link. PDF, DOCX, PPTX, and MP4 formats — ready for immediate enterprise deployment.</p>
+      <div class="process-time">12 hours</div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

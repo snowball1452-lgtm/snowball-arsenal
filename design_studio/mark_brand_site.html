@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARK — Brand Identity Studio</title>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
+    
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --sand: #F2EDE4;
+      --warm: #E8E0D0;
+      --ink: #1C1916;
+      --rust: #B85C2A;
+      --olive: #5C6B3A;
+      --slate: #3A4A5C;
+      --grey: #8A8278;
+      --light-grey: #C8C0B0;
+    }
+    
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--sand);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+    
+    .cursor {
+      width: 8px; height: 8px;
+      background: var(--rust);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+    }
+    .cursor-follow {
+      width: 32px; height: 32px;
+      border: 1.5px solid var(--rust);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: all 0.18s ease;
+      opacity: 0.5;
+    }
+    
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 1.8rem 5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(242,237,228,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--warm);
+    }
+    .nav-logo {
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.3rem;
+      letter-spacing: 0.05em;
+      color: var(--ink);
+    }
+    .nav-tagline {
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--grey);
+    }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--grey);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-contact {
+      font-size: 0.7rem;
+      padding: 0.6rem 1.5rem;
+      border: 1px solid var(--ink);
+      color: var(--ink);
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      transition: all 0.3s;
+    }
+    .nav-contact:hover { background: var(--ink); color: var(--sand); }
+    
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      padding: 12rem 5rem 6rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      position: relative;
+      overflow: hidden;
+      background: var(--sand);
+    }
+    .hero-bg-text {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Instrument Serif', serif;
+      font-size: 28vw;
+      color: rgba(28,25,22,0.03);
+      white-space: nowrap;
+      pointer-events: none;
+      user-select: none;
+      font-style: italic;
+    }
+    .hero-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 3rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .hero-label::before {
+      content: '';
+      width: 30px; height: 1px;
+      background: var(--rust);
+    }
+    .hero-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(4rem, 10vw, 9rem);
+      font-weight: 400;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      margin-bottom: 4rem;
+    }
+    .hero-title .italic { font-style: italic; color: var(--rust); }
+    .hero-bottom {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 4rem;
+      align-items: end;
+      border-top: 1px solid var(--light-grey);
+      padding-top: 3rem;
+    }
+    .hero-desc {
+      font-size: 0.8rem;
+      line-height: 1.8;
+      color: var(--grey);
+      grid-column: 2;
+    }
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--ink);
+      text-decoration: none;
+      border-bottom: 1px solid var(--ink);
+      padding-bottom: 0.3rem;
+      transition: gap 0.3s;
+      grid-column: 3;
+      justify-self: end;
+    }
+    .hero-cta:hover { gap: 1.5rem; }
+    
+    /* CLIENTS STRIP */
+    .clients {
+      padding: 3rem 5rem;
+      background: var(--warm);
+      display: flex;
+      align-items: center;
+      gap: 6rem;
+      border-top: 1px solid var(--light-grey);
+      border-bottom: 1px solid var(--light-grey);
+      overflow: hidden;
+    }
+    .clients-label {
+      font-size: 0.55rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--grey);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .clients-track {
+      display: flex;
+      gap: 6rem;
+      animation: scroll 20s linear infinite;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .client-name {
+      font-family: 'Instrument Serif', serif;
+      font-size: 1rem;
+      color: var(--light-grey);
+      font-style: italic;
+      flex-shrink: 0;
+      transition: color 0.3s;
+    }
+    
+    /* INTRO */
+    .intro {
+      padding: 10rem 5rem;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 10rem;
+      align-items: start;
+    }
+    .intro-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--grey);
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--light-grey);
+    }
+    .intro-content {}
+    .intro-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 400;
+      line-height: 1.25;
+      margin-bottom: 3rem;
+    }
+    .intro-title em { font-style: italic; color: var(--rust); }
+    .intro-body {
+      font-size: 0.8rem;
+      line-height: 2;
+      color: var(--grey);
+      column-count: 2;
+      column-gap: 3rem;
+      margin-bottom: 3rem;
+    }
+    .intro-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .tag {
+      padding: 0.4rem 1rem;
+      border: 1px solid var(--light-grey);
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--grey);
+      transition: all 0.3s;
+    }
+    .tag:hover { border-color: var(--rust); color: var(--rust); }
+    
+    /* WORK */
+    .work {
+      padding: 6rem 5rem;
+      background: var(--warm);
+    }
+    .work-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 4rem;
+    }
+    .work-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 400;
+    }
+    .work-link {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--rust);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rust);
+      padding-bottom: 0.2rem;
+    }
+    .work-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+    .work-item {
+      background: var(--sand);
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .work-visual {
+      height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Instrument Serif', serif;
+      font-size: 5rem;
+      font-style: italic;
+      transition: transform 0.6s ease;
+      overflow: hidden;
+    }
+    .work-item:hover .work-visual { transform: scale(1.03); }
+    .work-visual-1 { background: linear-gradient(135deg, #1C1916, #2C2420); color: rgba(184,92,42,0.3); }
+    .work-visual-2 { background: linear-gradient(135deg, #3A4A5C, #2A3444); color: rgba(242,237,228,0.15); }
+    .work-visual-3 { background: linear-gradient(135deg, #5C6B3A, #4A5830); color: rgba(242,237,228,0.15); }
+    .work-info { padding: 1.5rem; }
+    .work-name {
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.1rem;
+      margin-bottom: 0.3rem;
+    }
+    .work-cat {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--grey);
+    }
+    
+    /* SERVICES */
+    .services { padding: 10rem 5rem; }
+    .services-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 400;
+      margin-bottom: 5rem;
+      max-width: 600px;
+      line-height: 1.2;
+    }
+    .services-title em { font-style: italic; color: var(--rust); }
+    .services-list {}
+    .service-row {
+      display: grid;
+      grid-template-columns: 60px 1fr 1fr 80px;
+      gap: 3rem;
+      align-items: center;
+      padding: 2.5rem 0;
+      border-bottom: 1px solid var(--light-grey);
+      cursor: default;
+      transition: padding-left 0.3s;
+    }
+    .service-row:hover { padding-left: 1rem; }
+    .service-row:hover .service-num { color: var(--rust); }
+    .service-num {
+      font-size: 0.65rem;
+      color: var(--light-grey);
+      font-family: 'DM Sans', sans-serif;
+      letter-spacing: 0.1em;
+      transition: color 0.3s;
+    }
+    .service-name {
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.3rem;
+    }
+    .service-desc {
+      font-size: 0.7rem;
+      line-height: 1.8;
+      color: var(--grey);
+    }
+    .service-arrow {
+      font-size: 1rem;
+      color: var(--light-grey);
+      text-align: right;
+      transition: color 0.3s;
+    }
+    .service-row:hover .service-arrow { color: var(--rust); }
+    
+    /* CTA */
+    .cta-section {
+      padding: 12rem 5rem;
+      background: var(--ink);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-section::before {
+      content: 'MARK';
+      position: absolute;
+      font-family: 'Instrument Serif', serif;
+      font-size: 40vw;
+      font-style: italic;
+      color: rgba(242,237,228,0.02);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .cta-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 2rem;
+    }
+    .cta-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      font-weight: 400;
+      color: var(--sand);
+      line-height: 1.1;
+      margin-bottom: 3rem;
+    }
+    .cta-title em { font-style: italic; color: var(--rust); }
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1.2rem 3rem;
+      border: 1px solid var(--rust);
+      color: var(--sand);
+      text-decoration: none;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      transition: all 0.4s;
+    }
+    .cta-btn:hover { background: var(--rust); }
+    
+    footer {
+      background: var(--ink);
+      padding: 3rem 5rem;
+      border-top: 1px solid rgba(242,237,228,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-logo {
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.1rem;
+      color: var(--sand);
+      font-style: italic;
+    }
+    .footer-copy { font-size: 0.55rem; color: rgba(242,237,228,0.2); letter-spacing: 0.1em; }
+    
+    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    
+    @media (max-width: 768px) {
+      nav { padding: 1.5rem 1.5rem; }
+      .nav-links, .nav-tagline { display: none; }
+      .hero { padding: 8rem 1.5rem 4rem; }
+      .hero-bottom { grid-template-columns: 1fr; gap: 2rem; }
+      .hero-desc { grid-column: 1; }
+      .hero-cta { grid-column: 1; justify-self: start; }
+      .intro { grid-template-columns: 1fr; gap: 3rem; padding: 6rem 1.5rem; }
+      .intro-body { column-count: 1; }
+      .work { padding: 6rem 1.5rem; }
+      .work-grid { grid-template-columns: 1fr; }
+      .services { padding: 6rem 1.5rem; }
+      .service-row { grid-template-columns: 1fr; gap: 0.5rem; }
+      .service-num, .service-arrow { display: none; }
+      .cta-section { padding: 8rem 1.5rem; }
+      footer { flex-direction: column; gap: 1.5rem; text-align: center; padding: 2rem 1.5rem; }
+      .clients { padding: 2rem 1.5rem; gap: 3rem; }
+    }
+    </style>
+    </head>
+    <body>
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-follow" id="follow"></div>
+    
+    <nav>
+      <div class="nav-logo">Mark</div>
+      <div class="nav-tagline">Brand Identity Studio</div>
+      <ul class="nav-links">
+        <li><a href="#intro">About</a></li>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#services">Services</a></li>
+      </ul>
+      <a href="#contact" class="nav-contact">Commission</a>
+    </nav>
+    
+    <section class="hero">
+      <div class="hero-bg-text">Mark</div>
+      <div class="hero-label">Brand Identity Studio — Est. 2024</div>
+      <h1 class="hero-title">
+        Identity<br>that <span class="italic">endures</span>
+      </h1>
+      <div class="hero-bottom">
+        <div></div>
+        <p class="hero-desc">Mark crafts brand identities that outlast trends. For design studios, luxury goods, and the businesses that understand that a great brand is the best investment they will ever make.</p>
+        <a href="#work" class="hero-cta">See our work →</a>
+      </div>
+    </section>
+    
+    <div class="clients">
+      <span class="clients-label">Past Clients</span>
+      <div class="clients-track">
+        <span class="client-name">Velaris Motors</span>
+        <span class="client-name">Obsidian Interiors</span>
+        <span class="client-name">Meridian Aviation</span>
+        <span class="client-name">Phantom Dynamics</span>
+        <span class="client-name">Eclipse Watches</span>
+        <span class="client-name">Vanta Yachts</span>
+        <span class="client-name">Velaris Motors</span>
+        <span class="client-name">Obsidian Interiors</span>
+        <span class="client-name">Meridian Aviation</span>
+        <span class="client-name">Phantom Dynamics</span>
+        <span class="client-name">Eclipse Watches</span>
+        <span class="client-name">Vanta Yachts</span>
+      </div>
+    </div>
+    
+    <section class="intro" id="intro">
+      <div class="intro-label reveal">About the Studio</div>
+      <div class="intro-content">
+        <h2 class="intro-title reveal">A brand is not what you <em>say</em> it is. It is what they <em>feel</em> when they encounter you.</h2>
+        <p class="intro-body reveal">Mark was founded on a single principle: that the most valuable thing a business can own is a strong identity. Not a logo. Not a colour palette. An identity — a coherent, resonant, enduring presence that compounds in value with every impression it makes. We work with clients who are ready to invest in that kind of permanence. Our process is rigorous, our standards are absolute, and our output is designed to outlast every trend that comes and goes.</p>
+        <div class="intro-tags reveal">
+          <span class="tag">Brand Strategy</span>
+          <span class="tag">Identity Systems</span>
+          <span class="tag">Visual Language</span>
+          <span class="tag">Digital Presence</span>
+          <span class="tag">Print & Collateral</span>
+          <span class="tag">Spatial Identity</span>
+        </div>
+      </div>
+    </section>
+    
+    <section class="work" id="work">
+      <div class="work-header reveal">
+        <h2 class="work-title">Selected Work</h2>
+        <a href="#" class="work-link">All projects</a>
+      </div>
+      <div class="work-grid">
+        <div class="work-item reveal">
+          <div class="work-visual work-visual-1">M</div>
+          <div class="work-info">
+            <div class="work-name">Velaris Motors</div>
+            <div class="work-cat">Brand Architecture · 2024</div>
+          </div>
+        </div>
+        <div class="work-item reveal">
+          <div class="work-visual work-visual-2">A</div>
+          <div class="work-info">
+            <div class="work-name">Obsidian Interiors</div>
+            <div class="work-cat">Identity System · 2024</div>
+          </div>
+        </div>
+        <div class="work-item reveal">
+          <div class="work-visual work-visual-3">R</div>
+          <div class="work-info">
+            <div class="work-name">Meridian Aviation</div>
+            <div class="work-cat">Brand + Digital · 2023</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section class="services" id="services">
+      <h2 class="services-title reveal">The work we do<br>best is the work<br>that <em>lasts</em></h2>
+      <div class="services-list">
+        <div class="service-row reveal">
+          <span class="service-num">01</span>
+          <span class="service-name">Brand Strategy</span>
+          <span class="service-desc">Positioning, naming, voice, and the strategic foundation that every visual decision is built upon.</span>
+          <span class="service-arrow">→</span>
+        </div>
+        <div class="service-row reveal">
+          <span class="service-num">02</span>
+          <span class="service-name">Visual Identity</span>
+          <span class="service-desc">Logo marks, type hierarchies, colour systems, and the full grammar of your visual language.</span>
+          <span class="service-arrow">→</span>
+        </div>
+        <div class="service-row reveal">
+          <span class="service-num">03</span>
+          <span class="service-name">Digital Presence</span>
+          <span class="service-desc">Websites and digital experiences designed to the same standard as your physical brand.</span>
+          <span class="service-arrow">→</span>
+        </div>
+        <div class="service-row reveal">
+          <span class="service-num">04</span>
+          <span class="service-name">Print & Collateral</span>
+          <span class="service-desc">Business cards, stationery, packaging, and printed materials that make the right impression every time.</span>
+          <span class="service-arrow">→</span>
+        </div>
+        <div class="service-row reveal">
+          <span class="service-num">05</span>
+          <span class="service-name">Brand Guidelines</span>
+          <span class="service-desc">The complete rulebook that protects and extends your brand across every application, forever.</span>
+          <span class="service-arrow">→</span>
+        </div>
+      </div>
+    </section>
+    
+    <section class="cta-section" id="contact">
+      <div class="cta-label reveal">Begin Here</div>
+      <h2 class="cta-title reveal">Ready to build<br>something <em>enduring?</em></h2>
+      <a href="mailto:studio@markidentity.com" class="cta-btn reveal">Commission a project →</a>
+    </section>
+    
+    <footer>
+      <div class="footer-logo">Mark</div>
+      <p class="footer-copy">&copy; 2024 Mark Brand Identity Studio. All rights reserved.</p>
+      <p class="footer-copy">studio@markidentity.com</p>
+    </footer>
+    
+    <script>
+    const cursor = document.getElementById('cursor');
+    const follow = document.getElementById('follow');
+    let mx = 0, my = 0, fx = 0, fy = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+    });
+    function anim() {
+      fx += (mx - fx) * 0.12; fy += (my - fy) * 0.12;
+      follow.style.left = fx + 'px'; follow.style.top = fy + 'px';
+      requestAnimationFrame(anim);
+    }
+    anim();
+    const reveals = document.querySelectorAll('.reveal');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach((e, i) => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 70); });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => obs.observe(el));
+    </script>
+    </body>
+    </html>

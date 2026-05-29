@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: #0a0f1e; }
+.slide {
+  width: 1920px;
+  height: 1080px;
+  position: relative;
+  overflow: hidden;
+  page-break-after: always;
+}
+
+/* SLIDE 7 - ROI */
+.slide-7 {
+  background: #080c18;
+  display: flex;
+  align-items: center;
+  padding: 80px 100px;
+  gap: 80px;
+}
+.slide-7 .left-col { flex: 1; }
+.slide-7 .right-col { flex: 1.3; }
+.eyebrow { font-size: 22px; font-weight: 700; color: #f97316; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 16px; }
+.slide-7 h2 { font-family: 'Rajdhani', sans-serif; font-size: 68px; font-weight: 700; color: #ffffff; margin-bottom: 48px; line-height: 1.1; }
+.roi-stat { margin-bottom: 36px; padding-left: 28px; border-left: 5px solid #f97316; }
+.roi-stat .num { font-family: 'Rajdhani', sans-serif; font-size: 80px; font-weight: 700; color: #f97316; line-height: 1; }
+.roi-stat .label { font-size: 24px; color: rgba(255,255,255,0.7); margin-top: 6px; }
+.roi-chart-wrap { background: rgba(255,255,255,0.04); border-radius: 24px; padding: 44px; border: 1px solid rgba(255,255,255,0.08); }
+.roi-chart-title { font-size: 26px; font-weight: 600; color: rgba(255,255,255,0.8); margin-bottom: 28px; }
+
+/* SLIDE 8 - ROADMAP */
+.slide-8 {
+  background: linear-gradient(160deg, #0a0f1e, #0d1a2e);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 100px;
+}
+.slide-8 h2 { font-family: 'Rajdhani', sans-serif; font-size: 72px; font-weight: 700; color: #ffffff; margin-bottom: 64px; }
+.timeline-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 36px;
+  position: relative;
+}
+.timeline-grid::before {
+  content: '';
+  position: absolute;
+  top: 52px; left: 16.67%; right: 16.67%;
+  height: 3px;
+  background: linear-gradient(90deg, #f97316, #fb923c, #f97316);
+  z-index: 0;
+}
+.phase-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 24px;
+  padding: 48px 40px;
+  position: relative;
+  z-index: 1;
+}
+.phase-card.active {
+  border-color: rgba(249,115,22,0.5);
+  background: rgba(249,115,22,0.06);
+}
+.phase-num {
+  width: 64px; height: 64px;
+  background: linear-gradient(135deg, #f97316, #fb923c);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 30px; font-weight: 700; color: white;
+  margin-bottom: 28px;
+}
+.phase-period {
+  font-size: 18px; font-weight: 700;
+  color: #f97316; text-transform: uppercase;
+  letter-spacing: 3px; margin-bottom: 12px;
+}
+.phase-title {
+  font-size: 34px; font-weight: 700;
+  color: #ffffff; margin-bottom: 24px;
+}
+.phase-items { list-style: none; }
+.phase-items li {
+  font-size: 20px; color: rgba(255,255,255,0.65);
+  padding: 8px 0;
+  padding-left: 24px;
+  position: relative;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.phase-items li::before {
+  content: '';
+  position: absolute; left: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 8px; height: 8px;
+  background: #f97316; border-radius: 50%;
+}
+
+/* SLIDE 9 - DELIVERABLES TABLE */
+.slide-9 {
+  background: #0d1117;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 100px;
+}
+.slide-9 h2 { font-family: 'Rajdhani', sans-serif; font-size: 72px; font-weight: 700; color: #ffffff; margin-bottom: 52px; }
+.deliverables-table { width: 100%; border-collapse: separate; border-spacing: 0 12px; }
+.deliverables-table thead tr th {
+  font-size: 18px; font-weight: 700;
+  color: #f97316; text-transform: uppercase;
+  letter-spacing: 3px; padding: 0 28px 16px;
+  text-align: left;
+  border-bottom: 2px solid rgba(249,115,22,0.3);
+}
+.deliverables-table tbody tr {
+  background: rgba(255,255,255,0.04);
+}
+.deliverables-table tbody tr:nth-child(odd) {
+  background: rgba(249,115,22,0.05);
+}
+.deliverables-table tbody tr td {
+  font-size: 22px; color: rgba(255,255,255,0.8);
+  padding: 22px 28px;
+}
+.deliverables-table tbody tr td:first-child {
+  font-weight: 700; color: #ffffff;
+  border-radius: 12px 0 0 12px;
+}
+.deliverables-table tbody tr td:last-child {
+  border-radius: 0 12px 12px 0;
+}
+.badge {
+  display: inline-block;
+  padding: 6px 18px;
+  border-radius: 20px;
+  font-size: 18px; font-weight: 600;
+}
+.badge-orange { background: rgba(249,115,22,0.2); color: #fb923c; }
+.badge-green { background: rgba(34,197,94,0.15); color: #4ade80; }
+.badge-blue { background: rgba(59,130,246,0.15); color: #93c5fd; }
+
+/* SLIDE 10 - NUMBERS THAT CLOSE */
+.slide-10 {
+  background: linear-gradient(135deg, #080c18, #0f1728);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 100px;
+}
+.slide-10 h2 { font-family: 'Rajdhani', sans-serif; font-size: 72px; font-weight: 700; color: #ffffff; margin-bottom: 60px; }
+.close-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+.close-card {
+  background: linear-gradient(135deg, #101624, #161e30);
+  border-radius: 24px;
+  padding: 48px 40px;
+  border-top: 4px solid #f97316;
+}
+.close-card .c-num { font-family: 'Rajdhani', sans-serif; font-size: 88px; font-weight: 700; color: #f97316; line-height: 1; margin-bottom: 12px; }
+.close-card .c-label { font-size: 26px; font-weight: 700; color: #ffffff; margin-bottom: 12px; }
+.close-card .c-desc { font-size: 20px; color: rgba(255,255,255,0.55); line-height: 1.6; }
+.close-grid-bottom {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-top: 28px;
+}
+.close-mini {
+  background: rgba(255,255,255,0.04);
+  border-radius: 16px;
+  padding: 28px 32px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.close-mini .m-icon { color: #f97316; }
+.close-mini .m-text { font-size: 20px; color: rgba(255,255,255,0.7); }
+.close-mini .m-text strong { color: #ffffff; display: block; font-size: 22px; margin-bottom: 4px; }
+
+/* SLIDE 11 - WHY NEXUSLOGIX */
+.slide-11 {
+  background: linear-gradient(160deg, #0a0f1e, #0d1a2e);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 100px;
+}
+.slide-11 h2 { font-family: 'Rajdhani', sans-serif; font-size: 72px; font-weight: 700; color: #ffffff; margin-bottom: 60px; }
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+}
+.why-card {
+  background: rgba(255,255,255,0.04);
+  border-radius: 24px;
+  padding: 44px;
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.why-card .w-icon {
+  width: 64px; height: 64px; flex-shrink: 0;
+  background: linear-gradient(135deg, #f97316, #fb923c);
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+}
+.why-card .w-content h3 { font-size: 30px; font-weight: 700; color: #ffffff; margin-bottom: 12px; }
+.why-card .w-content p { font-size: 21px; color: rgba(255,255,255,0.6); line-height: 1.6; }
+
+/* SLIDE 12 - CLOSING CTA */
+.slide-12 {
+  background: linear-gradient(135deg, #0a0f1e 0%, #0d2137 50%, #0a1628 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 80px 140px;
+  position: relative;
+}
+.slide-12 .bg-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0.15;
+}
+.slide-12 .content { position: relative; z-index: 2; }
+.slide-12 .eyebrow-cta {
+  font-size: 22px; font-weight: 700;
+  color: #f97316; letter-spacing: 6px;
+  text-transform: uppercase; margin-bottom: 32px;
+}
+.slide-12 h2 {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 100px; font-weight: 700;
+  color: #ffffff; margin-bottom: 24px; line-height: 1;
+}
+.slide-12 h2 span { color: #f97316; }
+.slide-12 .sub {
+  font-size: 32px; color: rgba(255,255,255,0.65);
+  margin-bottom: 64px; max-width: 1200px;
+}
+.cta-row {
+  display: flex; gap: 32px; justify-content: center; flex-wrap: wrap;
+  margin-bottom: 64px;
+}
+.cta-btn {
+  display: inline-flex; align-items: center; gap: 14px;
+  padding: 24px 52px;
+  border-radius: 60px;
+  font-size: 26px; font-weight: 700;
+  text-decoration: none;
+}
+.cta-primary { background: linear-gradient(135deg, #f97316, #fb923c); color: white; }
+.cta-secondary { background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.2); }
+.contact-row {
+  display: flex; gap: 60px; justify-content: center;
+}
+.contact-item {
+  display: flex; align-items: center; gap: 14px;
+  font-size: 22px; color: rgba(255,255,255,0.55);
+}
+.contact-item strong { color: rgba(255,255,255,0.85); }
+.slide-12 .bottom-strip {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #f97316, #fb923c, #fdba74, #f97316);
+}
+</style>
+</head>
+<body>
+
+<!-- SLIDE 7: ROI -->
+<section class="slide slide-7">
+  <div class="left-col">
+    <div class="eyebrow">The Return</div>
+    <h2>The ROI of Structured Compliance</h2>
+    <div class="roi-stat">
+      <div class="num">1,190%</div>
+      <div class="label">Maximum ROI on compliance investment</div>
+    </div>
+    <div class="roi-stat">
+      <div class="num">$3.5M</div>
+      <div class="label">Annual risk exposure eliminated</div>
+    </div>
+    <div class="roi-stat">
+      <div class="num">90</div>
+      <div class="label">Days to full compliance implementation</div>
+    </div>
+  </div>
+  <div class="right-col">
+    <div class="roi-chart-wrap">
+      <div class="roi-chart-title">Risk Exposure vs. Compliance Investment (Annual, USD)</div>
+      <canvas id="roiChart" style="height:500px"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 8: ROADMAP -->
+<section class="slide slide-8">
+  <div class="eyebrow">Implementation</div>
+  <h2>Your 90-Day Compliance Roadmap</h2>
+  <div class="timeline-grid">
+    <div class="phase-card active">
+      <div class="phase-num">1</div>
+      <div class="phase-period">Days 1 - 30</div>
+      <div class="phase-title">Foundation</div>
+      <ul class="phase-items">
+        <li>Audit existing documentation</li>
+        <li>Identify compliance gaps</li>
+        <li>File FMCSA registrations</li>
+        <li>Implement carrier vetting workflow</li>
+      </ul>
+    </div>
+    <div class="phase-card active">
+      <div class="phase-num">2</div>
+      <div class="phase-period">Days 31 - 60</div>
+      <div class="phase-title">Documentation Build</div>
+      <ul class="phase-items">
+        <li>Build DQ file templates</li>
+        <li>Driver onboarding process</li>
+        <li>ELD provider integration</li>
+        <li>Broker-Carrier Agreement build</li>
+      </ul>
+    </div>
+    <div class="phase-card active">
+      <div class="phase-num">3</div>
+      <div class="phase-period">Days 61 - 90</div>
+      <div class="phase-title">Technology and Training</div>
+      <ul class="phase-items">
+        <li>Deploy TMS compliance module</li>
+        <li>Complete hazmat training docs</li>
+        <li>Full compliance audit</li>
+        <li>FMCSA review ready</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 9: DELIVERABLES TABLE -->
+<section class="slide slide-9">
+  <div class="eyebrow">What You Receive</div>
+  <h2>Deliverables and Turnaround</h2>
+  <table class="deliverables-table">
+    <thead>
+      <tr>
+        <th>Deliverable</th>
+        <th>Format</th>
+        <th>Turnaround</th>
+        <th>Revisions</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>30+ Page Compliance Report</td>
+        <td><span class="badge badge-blue">PDF + DOCX</span></td>
+        <td>48 hours</td>
+        <td>2 rounds included</td>
+        <td>$2,500</td>
+      </tr>
+      <tr>
+        <td>Capabilities Pitch Deck</td>
+        <td><span class="badge badge-orange">PPTX + PDF</span></td>
+        <td>24 hours</td>
+        <td>2 rounds included</td>
+        <td>$1,500</td>
+      </tr>
+      <tr>
+        <td>60-Second Explainer Video</td>
+        <td><span class="badge badge-green">MP4 HD</span></td>
+        <td>72 hours</td>
+        <td>1 round included</td>
+        <td>$2,000</td>
+      </tr>
+      <tr>
+        <td>Complete Enterprise Bundle</td>
+        <td><span class="badge badge-orange">All Formats</span></td>
+        <td>72 hours</td>
+        <td>Unlimited</td>
+        <td>$4,500</td>
+      </tr>
+      <tr>
+        <td>Monthly Retainer (Updates)</td>
+        <td><span class="badge badge-blue">All Formats</span></td>
+        <td>Rolling</td>
+        <td>Included</td>
+        <td>$1,500/mo</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- SLIDE 10: NUMBERS THAT CLOSE -->
+<section class="slide slide-10">
+  <div class="eyebrow">Impact Metrics</div>
+  <h2>The Numbers That Close Deals</h2>
+  <div class="close-grid">
+    <div class="close-card">
+      <div class="c-num">67%</div>
+      <div class="c-label">Fraud Reduction</div>
+      <div class="c-desc">Decrease in carrier fraud incidents for operators with structured onboarding programs</div>
+    </div>
+    <div class="close-card">
+      <div class="c-num">$430K+</div>
+      <div class="c-label">Net Annual Benefit</div>
+      <div class="c-desc">Conservative net benefit after compliance investment costs for mid-market operators</div>
+    </div>
+    <div class="close-card">
+      <div class="c-num">21 Days</div>
+      <div class="c-label">Avg Ransomware Downtime</div>
+      <div class="c-desc">Revenue lost during average ransomware recovery for unprotected logistics operators</div>
+    </div>
+  </div>
+  <div class="close-grid-bottom">
+    <div class="close-mini">
+      <i data-lucide="shield" class="m-icon" style="width:32px;height:32px"></i>
+      <div class="m-text"><strong>100% DQ File Compliance</strong>Target KPI within 30 days of engagement</div>
+    </div>
+    <div class="close-mini">
+      <i data-lucide="clock" class="m-icon" style="width:32px;height:32px"></i>
+      <div class="m-text"><strong>48-Hour Delivery</strong>Full report and deck package turnaround</div>
+    </div>
+    <div class="close-mini">
+      <i data-lucide="refresh-cw" class="m-icon" style="width:32px;height:32px"></i>
+      <div class="m-text"><strong>Quarterly Updates</strong>Regulatory monitoring and document refresh</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 11: WHY NEXUSLOGIX -->
+<section class="slide slide-11">
+  <div class="eyebrow">Our Edge</div>
+  <h2>Why NexusLogix</h2>
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="w-icon"><i data-lucide="zap" style="width:32px;height:32px;color:white"></i></div>
+      <div class="w-content">
+        <h3>48-Hour Delivery</h3>
+        <p>Full compliance report and capabilities deck delivered in under 48 hours. No agency timelines. No waiting weeks for a first draft.</p>
+      </div>
+    </div>
+    <div class="why-card">
+      <div class="w-icon"><i data-lucide="globe" style="width:32px;height:32px;color:white"></i></div>
+      <div class="w-content">
+        <h3>Real-Time Web Research</h3>
+        <p>Every report is built using live regulatory data and current FMCSA standards — not templated content from 2022.</p>
+      </div>
+    </div>
+    <div class="why-card">
+      <div class="w-icon"><i data-lucide="file-check" style="width:32px;height:32px;color:white"></i></div>
+      <div class="w-content">
+        <h3>Print-Ready Formats</h3>
+        <p>All deliverables are enterprise-ready. PPTX, PDF, DOCX, and MP4 — formatted for board rooms, investor decks, and legal review.</p>
+      </div>
+    </div>
+    <div class="why-card">
+      <div class="w-icon"><i data-lucide="refresh-cw" style="width:32px;height:32px;color:white"></i></div>
+      <div class="w-content">
+        <h3>Retainer Model Available</h3>
+        <p>Convert any engagement to a monthly retainer for continuous regulatory monitoring, quarterly updates, and priority turnaround.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 12: CLOSING CTA -->
+<section class="slide slide-12">
+  <img class="bg-img" src="IMAGE_PLACEHOLDER:generated_image_20260528_164241_1.png" alt="">
+  <div class="content">
+    <div class="eyebrow-cta">NexusLogix Advisory Group</div>
+    <h2>BUILD YOUR<br><span>COMPLIANCE STACK</span><br>TODAY</h2>
+    <p class="sub">Enterprise-grade logistics documentation delivered in 48 hours. No agency. No waiting. Just results.</p>
+    <div class="cta-row">
+      <a href="#" class="cta-btn cta-primary">
+        <i data-lucide="rocket" style="width:28px;height:28px"></i>
+        Start Your Package
+      </a>
+      <a href="#" class="cta-btn cta-secondary">
+        <i data-lucide="calendar" style="width:28px;height:28px"></i>
+        Book a Discovery Call
+      </a>
+    </div>
+    <div class="contact-row">
+      <div class="contact-item">
+        <i data-lucide="mail" style="width:24px;height:24px;color:#f97316"></i>
+        <span><strong>hello@nexuslogix.com</strong></span>
+      </div>
+      <div class="contact-item">
+        <i data-lucide="phone" style="width:24px;height:24px;color:#f97316"></i>
+        <span><strong>(800) 639-8749</strong></span>
+      </div>
+      <div class="contact-item">
+        <i data-lucide="globe" style="width:24px;height:24px;color:#f97316"></i>
+        <span><strong>www.nexuslogix.com</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-strip"></div>
+</section>
+
+<script>
+lucide.createIcons();
+new Chart(document.getElementById('roiChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Risk Exposure\n(No Program)', 'Compliance\nInvestment', 'Net Benefit'],
+    datasets: [{
+      data: [3500000, 270000, 430000],
+      backgroundColor: ['#ef4444', '#f97316', '#4ade80'],
+      borderRadius: 10,
+      borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: { color: 'rgba(255,255,255,0.08)' },
+        ticks: { color: 'rgba(255,255,255,0.6)', font: { size: 18 }, callback: v => '$' + (v/1000).toFixed(0) + 'K' }
+      },
+      x: {
+        grid: { display: false },
+        ticks: { color: 'rgba(255,255,255,0.7)', font: { size: 18 } }
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>

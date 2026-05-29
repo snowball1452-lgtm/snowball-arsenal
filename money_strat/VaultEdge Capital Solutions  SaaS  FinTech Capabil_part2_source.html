@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:#0A0F1E;}
+.slide{width:1920px;height:1080px;position:relative;overflow:hidden;page-break-after:always;}
+
+/* SLIDE 7 - REGULATORY COVERAGE */
+.slide-7{background:#0D1526;display:flex;flex-direction:column;justify-content:center;padding:80px 100px;}
+.s7-label{font-size:14px;color:#C9A84C;letter-spacing:4px;text-transform:uppercase;font-weight:600;margin-bottom:20px;}
+.slide-7 h2{font-family:'Playfair Display',serif;font-size:72px;font-weight:700;color:#F8FAFC;margin-bottom:16px;}
+.s7-sub{font-size:22px;color:rgba(248,250,252,0.5);margin-bottom:60px;}
+.reg-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;}
+.reg-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:36px 30px;text-align:center;transition:all 0.3s;}
+.reg-card:hover{border-color:rgba(201,168,76,0.3);background:rgba(201,168,76,0.04);}
+.reg-icon{font-size:36px;margin-bottom:14px;}
+.reg-name{font-size:22px;font-weight:700;color:#F8FAFC;margin-bottom:6px;}
+.reg-full{font-size:14px;color:rgba(248,250,252,0.45);margin-bottom:12px;line-height:1.4;}
+.reg-tag{display:inline-block;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);padding:4px 12px;border-radius:100px;font-size:12px;color:#C9A84C;font-weight:600;letter-spacing:1px;}
+
+/* SLIDE 8 - SAMPLE DELIVERABLE */
+.slide-8{background:linear-gradient(135deg,#0A0F1E 0%,#0D1A3A 100%);display:flex;align-items:center;padding:80px 100px;gap:80px;}
+.s8-left{flex:1;}
+.s8-label{font-size:14px;color:#C9A84C;letter-spacing:4px;text-transform:uppercase;font-weight:600;margin-bottom:20px;}
+.slide-8 h2{font-family:'Playfair Display',serif;font-size:72px;font-weight:700;color:#F8FAFC;margin-bottom:20px;line-height:1.1;}
+.slide-8 h2 em{font-style:normal;color:#C9A84C;}
+.s8-points{list-style:none;margin-top:32px;}
+.s8-points li{font-size:20px;color:rgba(248,250,252,0.7);padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:16px;}
+.s8-dot{width:8px;height:8px;background:#C9A84C;border-radius:50%;flex-shrink:0;}
+.s8-right{flex:1;display:flex;flex-direction:column;gap:24px;}
+.s8-preview{background:rgba(255,255,255,0.03);border:1px solid rgba(201,168,76,0.15);border-radius:16px;overflow:hidden;}
+.s8-preview img{width:100%;display:block;}
+.s8-preview-label{padding:16px 24px;font-size:15px;color:rgba(248,250,252,0.5);text-align:center;border-top:1px solid rgba(255,255,255,0.06);}
+
+/* SLIDE 9 - ROI */
+.slide-9{background:#0A0F1E;display:flex;flex-direction:column;justify-content:center;padding:80px 100px;}
+.s9-label{font-size:14px;color:#C9A84C;letter-spacing:4px;text-transform:uppercase;font-weight:600;margin-bottom:20px;}
+.slide-9 h2{font-family:'Playfair Display',serif;font-size:72px;font-weight:700;color:#F8FAFC;margin-bottom:16px;}
+.s9-sub{font-size:22px;color:rgba(248,250,252,0.5);margin-bottom:60px;}
+.roi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;}
+.roi-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:48px 44px;position:relative;overflow:hidden;}
+.roi-card.highlight{background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(201,168,76,0.02));border-color:rgba(201,168,76,0.3);}
+.roi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#C9A84C,transparent);}
+.roi-big{font-family:'Playfair Display',serif;font-size:100px;font-weight:900;color:#C9A84C;line-height:1;margin-bottom:14px;}
+.roi-label{font-size:22px;font-weight:700;color:#F8FAFC;margin-bottom:10px;}
+.roi-desc{font-size:16px;color:rgba(248,250,252,0.5);line-height:1.7;}
+
+/* SLIDE 10 - PRICING */
+.slide-10{background:linear-gradient(160deg,#0D1526 0%,#0A0F1E 100%);display:flex;flex-direction:column;justify-content:center;padding:80px 100px;}
+.s10-label{font-size:14px;color:#C9A84C;letter-spacing:4px;text-transform:uppercase;font-weight:600;margin-bottom:20px;}
+.slide-10 h2{font-family:'Playfair Display',serif;font-size:72px;font-weight:700;color:#F8FAFC;margin-bottom:16px;}
+.s10-sub{font-size:22px;color:rgba(248,250,252,0.5);margin-bottom:60px;}
+.pricing-row{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;}
+.p-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:44px 36px;position:relative;}
+.p-card.featured{background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(201,168,76,0.02));border-color:rgba(201,168,76,0.4);}
+.p-popular{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#C9A84C,#A8722A);color:#0A0F1E;font-size:11px;font-weight:700;letter-spacing:2px;padding:5px 18px;border-radius:100px;white-space:nowrap;}
+.p-tier{font-size:13px;color:#C9A84C;letter-spacing:2px;text-transform:uppercase;font-weight:600;margin-bottom:14px;}
+.p-price{font-family:'Playfair Display',serif;font-size:56px;font-weight:700;color:#F8FAFC;line-height:1;margin-bottom:6px;}
+.p-price span{font-size:16px;color:rgba(248,250,252,0.4);font-weight:400;}
+.p-desc{font-size:15px;color:rgba(248,250,252,0.5);margin-bottom:28px;line-height:1.6;}
+.p-list{list-style:none;}
+.p-list li{font-size:15px;color:rgba(248,250,252,0.6);padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;gap:10px;}
+.p-list li::before{content:'';width:6px;height:6px;background:#C9A84C;border-radius:50%;flex-shrink:0;}
+
+/* SLIDE 11 - TESTIMONIALS */
+.slide-11{background:#0A0F1E;display:flex;flex-direction:column;justify-content:center;padding:80px 100px;}
+.s11-label{font-size:14px;color:#C9A84C;letter-spacing:4px;text-transform:uppercase;font-weight:600;margin-bottom:20px;}
+.slide-11 h2{font-family:'Playfair Display',serif;font-size:72px;font-weight:700;color:#F8FAFC;margin-bottom:16px;}
+.s11-sub{font-size:22px;color:rgba(248,250,252,0.5);margin-bottom:60px;}
+.testimonial-row{display:grid;grid-template-columns:repeat(2,1fr);gap:40px;}
+.t-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:52px 52px;position:relative;}
+.t-card::before{content:'"';position:absolute;top:24px;left:44px;font-family:'Playfair Display',serif;font-size:120px;color:rgba(201,168,76,0.08);line-height:1;}
+.t-stars{color:#C9A84C;font-size:22px;letter-spacing:6px;margin-bottom:24px;}
+.t-text{font-size:22px;color:#F8FAFC;line-height:1.7;font-style:italic;margin-bottom:36px;position:relative;z-index:2;}
+.t-author{display:flex;align-items:center;gap:18px;}
+.t-avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#C9A84C,#1E3A5F);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;color:#0A0F1E;}
+.t-name{font-size:18px;font-weight:700;color:#F8FAFC;}
+.t-role{font-size:14px;color:rgba(248,250,252,0.45);}
+
+/* SLIDE 12 - CLOSING CTA */
+.slide-12{background:linear-gradient(135deg,#0D1A3A 0%,#1E3A5F 50%,#0D1A3A 100%);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;position:relative;overflow:hidden;}
+.slide-12-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:1000px;height:1000px;background:radial-gradient(circle,rgba(201,168,76,0.08) 0%,transparent 70%);}
+.slide-12-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(201,168,76,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.03) 1px,transparent 1px);background-size:80px 80px;}
+.s12-badge{display:inline-flex;align-items:center;gap:12px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);padding:10px 28px;border-radius:100px;margin-bottom:40px;position:relative;z-index:2;}
+.s12-badge span{font-size:15px;color:#C9A84C;font-weight:600;letter-spacing:3px;text-transform:uppercase;}
+.slide-12 h2{font-family:'Playfair Display',serif;font-size:100px;font-weight:900;color:#F8FAFC;line-height:1.05;position:relative;z-index:2;margin-bottom:24px;}
+.slide-12 h2 em{font-style:normal;color:#C9A84C;}
+.slide-12 p{font-size:24px;color:rgba(248,250,252,0.6);max-width:900px;line-height:1.7;position:relative;z-index:2;margin-bottom:60px;}
+.cta-row{display:flex;gap:28px;justify-content:center;position:relative;z-index:2;}
+.cta-gold{background:linear-gradient(135deg,#C9A84C,#A8722A);color:#0A0F1E;padding:22px 56px;border-radius:6px;font-weight:700;font-size:18px;letter-spacing:2px;text-transform:uppercase;}
+.cta-outline{background:transparent;color:#F8FAFC;padding:22px 56px;border-radius:6px;font-weight:600;font-size:18px;letter-spacing:2px;text-transform:uppercase;border:1px solid rgba(255,255,255,0.2);}
+.contact-strip{display:flex;gap:60px;margin-top:60px;position:relative;z-index:2;}
+.contact-item{text-align:center;}
+.contact-label{font-size:12px;color:rgba(248,250,252,0.3);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.contact-value{font-size:18px;color:#C9A84C;font-weight:600;}
+</style>
+</head>
+<body>
+
+<!-- SLIDE 7: REGULATORY COVERAGE -->
+<section class="slide slide-7">
+  <div class="s7-label">Regulatory Coverage</div>
+  <h2>Every Framework. Every Regulation. Covered.</h2>
+  <div class="s7-sub">Real-time regulatory sourcing across all major federal and international compliance frameworks.</div>
+  <div class="reg-grid">
+    <div class="reg-card"><div class="reg-icon">🏛️</div><div class="reg-name">SEC</div><div class="reg-full">Cybersecurity Risk Management Rules 2023, Reg S-P, Reg S-ID</div><div class="reg-tag">FEDERAL</div></div>
+    <div class="reg-card"><div class="reg-icon">📈</div><div class="reg-name">FINRA</div><div class="reg-full">Rule 4370, Rule 3110, Annual Compliance Certification</div><div class="reg-tag">FEDERAL</div></div>
+    <div class="reg-card"><div class="reg-icon">🏦</div><div class="reg-name">CFPB</div><div class="reg-full">TILA, EFTA, Fair Credit Reporting Act Integration</div><div class="reg-tag">FEDERAL</div></div>
+    <div class="reg-card"><div class="reg-icon">🔍</div><div class="reg-name">BSA / AML</div><div class="reg-full">CIP, SAR Filing, CTR Automation, OFAC Screening</div><div class="reg-tag">FEDERAL</div></div>
+    <div class="reg-card"><div class="reg-icon">🌐</div><div class="reg-name">GDPR</div><div class="reg-full">Article 30, DPA Templates, DPIA, 72-Hour Breach Notification</div><div class="reg-tag">INTERNATIONAL</div></div>
+    <div class="reg-card"><div class="reg-icon">💳</div><div class="reg-name">PCI DSS v4.0</div><div class="reg-full">Customized Approach, MFA Requirements, Pen Testing Mandates</div><div class="reg-tag">INDUSTRY</div></div>
+    <div class="reg-card"><div class="reg-icon">🛡️</div><div class="reg-name">SOC 2</div><div class="reg-full">Type II Readiness, Trust Services Criteria, Evidence Collection</div><div class="reg-tag">INDUSTRY</div></div>
+    <div class="reg-card"><div class="reg-icon">🗺️</div><div class="reg-name">State Laws</div><div class="reg-full">CCPA, CPRA, Virginia CDPA, Colorado CPA, Texas TDPSA</div><div class="reg-tag">ALL 50 STATES</div></div>
+  </div>
+</section>
+
+<!-- SLIDE 8: SAMPLE DELIVERABLE -->
+<section class="slide slide-8">
+  <div class="s8-left">
+    <div class="s8-label">Sample Deliverable</div>
+    <h2>Enterprise-Grade<br/><em>Quality</em> at<br/>Every Level</h2>
+    <ul class="s8-points">
+      <li><div class="s8-dot"></div>30 to 50 pages of research-backed compliance content</li>
+      <li><div class="s8-dot"></div>Real-time regulatory data — never outdated templates</li>
+      <li><div class="s8-dot"></div>Professional design indistinguishable from Big 4 output</li>
+      <li><div class="s8-dot"></div>PDF, DOCX, PPTX, and MP4 formats included</li>
+      <li><div class="s8-dot"></div>Delivered in 48 hours, not 3 to 6 months</li>
+      <li><div class="s8-dot"></div>One full revision round at every pricing tier</li>
+    </ul>
+  </div>
+  <div class="s8-right">
+    <div class="s8-preview">
+      <img src="IMAGE_PLACEHOLDER:generated_image_20260528_182053_1.png" alt="Sample Deliverable"/>
+      <div class="s8-preview-label">Sample compliance documentation package — enterprise ready</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 9: ROI -->
+<section class="slide slide-9">
+  <div class="s9-label">Return on Investment</div>
+  <h2>The Math Is Simple.<br/>The ROI Is Not.</h2>
+  <div class="s9-sub">One enterprise deal closed 30 days sooner pays for this engagement 10 to 50 times over.</div>
+  <div class="roi-grid">
+    <div class="roi-card">
+      <div class="roi-big">$105K</div>
+      <div class="roi-label">Annual Cost of Poor Documentation</div>
+      <div class="roi-desc">Expected annual loss from delayed deals, failed audits, extended sales cycles, and breach exposure without proper documentation infrastructure.</div>
+    </div>
+    <div class="roi-card highlight">
+      <div class="roi-big">2,233%</div>
+      <div class="roi-label">ROI on Enterprise Package</div>
+      <div class="roi-desc">At $4,500 investment vs. $105,000 annual expected loss from documentation gaps. The highest-returning compliance investment available at this price point.</div>
+    </div>
+    <div class="roi-card">
+      <div class="roi-big">3.1mo</div>
+      <div class="roi-label">Reduced Sales Cycle</div>
+      <div class="roi-desc">From 6.2 months to 3.1 months average enterprise sales cycle with complete documentation. That is 3 more deal cycles per year per rep.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 10: PRICING -->
+<section class="slide slide-10">
+  <div class="s10-label">Pricing</div>
+  <h2>Transparent. Fixed.<br/>No Surprises.</h2>
+  <div class="s10-sub">Four engagement tiers designed to match your stage, urgency, and documentation needs.</div>
+  <div class="pricing-row">
+    <div class="p-card">
+      <div class="p-tier">Starter</div>
+      <div class="p-price">$1,000<span>/project</span></div>
+      <div class="p-desc">Fast compliance snapshot for early-stage startups.</div>
+      <ul class="p-list">
+        <li>15-page compliance report</li>
+        <li>Key framework overview</li>
+        <li>Risk summary matrix</li>
+        <li>PDF delivery</li>
+      </ul>
+    </div>
+    <div class="p-card featured">
+      <div class="p-popular">MOST POPULAR</div>
+      <div class="p-tier">Pro</div>
+      <div class="p-price">$2,500<span>/project</span></div>
+      <div class="p-desc">Full report plus investor-ready capabilities deck.</div>
+      <ul class="p-list">
+        <li>30-page compliance report</li>
+        <li>12-slide capabilities deck</li>
+        <li>Brand customization</li>
+        <li>PDF and PPTX delivery</li>
+        <li>1 revision round</li>
+      </ul>
+    </div>
+    <div class="p-card">
+      <div class="p-tier">Enterprise</div>
+      <div class="p-price">$4,500<span>/project</span></div>
+      <div class="p-desc">Complete triple-asset package with explainer video.</div>
+      <ul class="p-list">
+        <li>30-page compliance report</li>
+        <li>15-slide capabilities deck</li>
+        <li>60s explainer video</li>
+        <li>All formats included</li>
+        <li>2 revision rounds</li>
+      </ul>
+    </div>
+    <div class="p-card">
+      <div class="p-tier">Retainer</div>
+      <div class="p-price">$2,000<span>/mo</span></div>
+      <div class="p-desc">Monthly compliance monitoring and updated assets.</div>
+      <ul class="p-list">
+        <li>Monthly regulatory updates</li>
+        <li>Quarterly full refresh</li>
+        <li>Priority 24hr delivery</li>
+        <li>Dedicated account manager</li>
+        <li>Unlimited revisions</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 11: TESTIMONIALS -->
+<section class="slide slide-11">
+  <div class="s11-label">Client Results</div>
+  <h2>What Our Clients Say</h2>
+  <div class="s11-sub">Enterprise buyers and funded startups who closed deals faster with VaultEdge documentation.</div>
+  <div class="testimonial-row">
+    <div class="t-card">
+      <div class="t-stars">★★★★★</div>
+      <div class="t-text">"We needed a complete SEC compliance brief and capabilities deck for our Series B investor due diligence in 72 hours. VaultEdge delivered a 42-page report and 14-slide deck that our lead investor called the most thorough they had seen from a Series B company at this stage."</div>
+      <div class="t-author">
+        <div class="t-avatar">MR</div>
+        <div><div class="t-name">Marcus R.</div><div class="t-role">CEO, FinTech Platform — New York, NY</div></div>
+      </div>
+    </div>
+    <div class="t-card">
+      <div class="t-stars">★★★★★</div>
+      <div class="t-text">"The capabilities deck alone closed our enterprise partnership with a top-10 regional bank. The quality was indistinguishable from what our previous Big 4 consulting firm charged $22,000 to produce. We are now on a monthly retainer and have not looked back."</div>
+      <div class="t-author">
+        <div class="t-avatar">SL</div>
+        <div><div class="t-name">Sarah L.</div><div class="t-role">CRO, B2B SaaS Company — Austin, TX</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 12: CLOSING CTA -->
+<section class="slide slide-12">
+  <div class="slide-12-glow"></div>
+  <div class="slide-12-grid"></div>
+  <div class="s12-badge"><span>Ready to Close More Enterprise Deals</span></div>
+  <h2>Let Us Build Your<br/><em>Documentation Stack</em><br/>in 48 Hours</h2>
+  <p>Book a free 30-minute discovery call. We scope your package and deliver a proposal within 4 hours — no retainer required to start.</p>
+  <div class="cta-row">
+    <div class="cta-gold">Book Discovery Call</div>
+    <div class="cta-outline">Download Sample Package</div>
+  </div>
+  <div class="contact-strip">
+    <div class="contact-item"><div class="contact-label">Email</div><div class="contact-value">hello@vaultedge.io</div></div>
+    <div class="contact-item"><div class="contact-label">Turnaround</div><div class="contact-value">48 Hours Guaranteed</div></div>
+    <div class="contact-item"><div class="contact-label">Starting At</div><div class="contact-value">$1,000 Per Project</div></div>
+    <div class="contact-item"><div class="contact-label">Website</div><div class="contact-value">vaultedge.io</div></div>
+  </div>
+</section>
+
+</body>
+</html>

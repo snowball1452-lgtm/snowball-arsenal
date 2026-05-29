@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snowball — Command Center</title>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Playfair+Display:wght@400;700;900&display=swap');
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --black:#030303;--gold:#C9A84C;--gold-light:#E8C97A;--white:#FAFAFA;
+      --gray:#888;--dark:#0A0A0A;--card:#111;--border:rgba(201,168,76,0.15);
+    }
+    body{background:var(--black);color:var(--white);font-family:'Inter',sans-serif;min-height:100vh}
+    
+    /* HEADER */
+    header{padding:24px 40px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:20px;position:sticky;top:0;background:rgba(3,3,3,0.96);backdrop-filter:blur(20px);z-index:100}
+    .logo{font-family:'Playfair Display',serif;font-size:24px;color:var(--gold);letter-spacing:3px;font-weight:900}
+    .logo-sub{font-size:9px;letter-spacing:4px;color:var(--gray);text-transform:uppercase;border-left:1px solid var(--border);padding-left:16px}
+    .header-spacer{flex:1}
+    .status-pill{background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.3);color:#4ade80;font-size:9px;letter-spacing:3px;text-transform:uppercase;padding:6px 14px;border-radius:20px}
+    .header-btn{padding:8px 20px;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px;border:1px solid var(--border);color:var(--gold);background:rgba(201,168,76,0.08);transition:all 0.2s;text-decoration:none;display:inline-block}
+    .header-btn:hover{background:rgba(201,168,76,0.15)}
+    .header-btn.primary{background:var(--gold);color:var(--black);font-weight:700;border-color:var(--gold)}
+    .header-btn.primary:hover{background:var(--gold-light)}
+    
+    /* HERO BANNER */
+    .hero-banner{padding:60px 40px;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+    .hero-banner::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(201,168,76,0.06) 0%,transparent 60%)}
+    .hero-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(201,168,76,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.03) 1px,transparent 1px);background-size:60px 60px}
+    .hero-content{position:relative;z-index:2;display:grid;grid-template-columns:1fr auto;align-items:center;gap:40px}
+    .hero-label{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+    .hero-title{font-family:'Playfair Display',serif;font-size:52px;font-weight:900;line-height:1.05;margin-bottom:16px}
+    .hero-title span{color:var(--gold)}
+    .hero-sub{font-size:15px;color:var(--gray);line-height:1.7;max-width:560px}
+    .hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)}
+    .hero-stat{background:var(--dark);padding:24px 28px}
+    .hero-stat-num{font-family:'Playfair Display',serif;font-size:36px;color:var(--gold);font-weight:900;line-height:1}
+    .hero-stat-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-top:6px}
+    
+    /* MAIN LAYOUT */
+    main{padding:40px;display:flex;flex-direction:column;gap:40px}
+    
+    /* SECTION */
+    .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+    .section-title{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold)}
+    .section-count{font-size:10px;color:var(--gray)}
+    
+    /* QUICK ACTIONS */
+    .quick-actions{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+    .qa-btn{background:var(--card);border:1px solid var(--border);padding:20px 16px;text-align:center;cursor:pointer;transition:all 0.2s;text-decoration:none;display:block;border-radius:2px}
+    .qa-btn:hover{border-color:rgba(201,168,76,0.4);background:rgba(201,168,76,0.05);transform:translateY(-2px)}
+    .qa-icon{font-size:24px;margin-bottom:10px}
+    .qa-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--white)}
+    .qa-sub{font-size:9px;color:var(--gray);margin-top:4px}
+    
+    /* DEMO SITES GRID */
+    .sites-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .site-card{background:var(--card);border:1px solid var(--border);overflow:hidden;cursor:pointer;transition:all 0.2s;border-radius:2px;text-decoration:none;display:block}
+    .site-card:hover{border-color:rgba(201,168,76,0.5);transform:translateY(-3px);box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+    .site-thumb{aspect-ratio:16/9;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+    .site-thumb-text{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;letter-spacing:2px;z-index:2;position:relative}
+    .site-thumb-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:20px 20px}
+    .site-info{padding:16px 20px;border-top:1px solid var(--border)}
+    .site-name{font-size:13px;color:var(--white);font-weight:600;margin-bottom:4px}
+    .site-arch{font-size:10px;color:var(--gold);letter-spacing:2px;text-transform:uppercase}
+    .site-inspired{font-size:10px;color:var(--gray);margin-top:3px}
+    .site-footer{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border-top:1px solid rgba(201,168,76,0.05)}
+    .site-status{font-size:9px;letter-spacing:2px;text-transform:uppercase}
+    .site-status.live{color:#4ade80}
+    .site-status.ready{color:var(--gold)}
+    .site-open{font-size:9px;color:var(--gray);letter-spacing:1px}
+    
+    /* TOOLS GRID */
+    .tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .tool-card{background:var(--card);border:1px solid var(--border);padding:28px;cursor:pointer;transition:all 0.2s;text-decoration:none;display:block;border-radius:2px;position:relative;overflow:hidden}
+    .tool-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent)}
+    .tool-card:hover{border-color:rgba(201,168,76,0.4);transform:translateY(-2px)}
+    .tool-icon{font-size:32px;margin-bottom:16px}
+    .tool-name{font-size:16px;color:var(--white);font-weight:700;margin-bottom:8px}
+    .tool-desc{font-size:12px;color:var(--gray);line-height:1.6;margin-bottom:20px}
+    .tool-tag{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:rgba(201,168,76,0.08);padding:4px 10px;border-radius:10px;display:inline-block}
+    
+    /* DOCS GRID */
+    .docs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .doc-card{background:var(--card);border:1px solid var(--border);padding:24px;cursor:pointer;transition:all 0.2s;text-decoration:none;display:block;border-radius:2px}
+    .doc-card:hover{border-color:rgba(201,168,76,0.4);transform:translateY(-2px)}
+    .doc-type{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+    .doc-name{font-size:14px;color:var(--white);font-weight:600;margin-bottom:8px;line-height:1.3}
+    .doc-desc{font-size:11px;color:var(--gray);line-height:1.5}
+    .doc-icon{font-size:28px;margin-bottom:16px}
+    
+    /* DEPLOY SECTION */
+    .deploy-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+    .deploy-card{background:var(--card);border:1px solid var(--border);padding:28px;border-radius:2px}
+    .deploy-step{font-family:'Playfair Display',serif;font-size:48px;color:rgba(201,168,76,0.15);font-weight:900;line-height:1;margin-bottom:12px}
+    .deploy-title{font-size:14px;color:var(--white);font-weight:700;margin-bottom:8px}
+    .deploy-desc{font-size:12px;color:var(--gray);line-height:1.6}
+    .deploy-link{font-size:11px;color:var(--gold);margin-top:12px;display:block;letter-spacing:1px}
+    
+    /* REVENUE TRACKER */
+    .revenue-bar{background:var(--card);border:1px solid var(--border);padding:28px;border-radius:2px;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:32px;align-items:center}
+    .rev-item{}
+    .rev-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gray);margin-bottom:8px}
+    .rev-value{font-family:'Playfair Display',serif;font-size:32px;font-weight:900;color:var(--white);line-height:1}
+    .rev-value.gold{color:var(--gold)}
+    .rev-value.green{color:#4ade80}
+    .rev-progress{height:3px;background:rgba(255,255,255,0.05);border-radius:2px;margin-top:12px;overflow:hidden}
+    .rev-progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:2px}
+    
+    /* FOOTER */
+    footer{padding:40px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;margin-top:20px}
+    .footer-brand .logo{font-size:20px;margin-bottom:8px}
+    .footer-brand p{font-size:12px;color:var(--gray);line-height:1.6;max-width:280px;margin-top:8px}
+    .footer-col-title{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+    .footer-link{font-size:12px;color:var(--gray);margin-bottom:8px;cursor:pointer;display:block;text-decoration:none;transition:color 0.2s}
+    .footer-link:hover{color:var(--white)}
+    .footer-bottom{padding:20px 40px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .footer-copy{font-size:11px;color:var(--gray)}
+    .footer-copy span{color:var(--gold)}
+    
+    /* RESPONSIVE */
+    @media(max-width:1200px){
+      .sites-grid{grid-template-columns:repeat(2,1fr)}
+      .quick-actions{grid-template-columns:repeat(3,1fr)}
+    }
+    @media(max-width:768px){
+      header{padding:16px 20px}
+      .logo-sub{display:none}
+      .hero-banner{padding:40px 20px}
+      .hero-title{font-size:32px}
+      .hero-content{grid-template-columns:1fr}
+      .hero-stats{grid-template-columns:repeat(2,1fr)}
+      main{padding:20px}
+      .sites-grid{grid-template-columns:1fr 1fr}
+      .tools-grid{grid-template-columns:1fr}
+      .docs-grid{grid-template-columns:1fr 1fr}
+      .deploy-grid{grid-template-columns:1fr}
+      .revenue-bar{grid-template-columns:1fr 1fr}
+      footer{grid-template-columns:1fr}
+      .footer-bottom{flex-direction:column;gap:12px;text-align:center}
+      .quick-actions{grid-template-columns:repeat(2,1fr)}
+    }
+    </style>
+    </head>
+    <body>
+    
+    <!-- HEADER -->
+    <header>
+      <div class="logo">SNOWBALL</div>
+      <div class="logo-sub">Design Intelligence — Command Center</div>
+      <div class="header-spacer"></div>
+      <div class="status-pill">All Systems Ready</div>
+      <a href="snowball_saas_tool.html" class="header-btn">Open Platform</a>
+      <a href="snowball_client_intake.html" class="header-btn primary">New Commission</a>
+    </header>
+    
+    <!-- HERO BANNER -->
+    <div class="hero-banner">
+      <div class="hero-grid-bg"></div>
+      <div class="hero-content">
+        <div>
+          <div class="hero-label">Snowball Design Intelligence — Full Suite</div>
+          <h1 class="hero-title">Everything you need<br>to close your first <span>$5,000</span></h1>
+          <p class="hero-sub">8 demo sites. 4 apps. 5 business documents. 1 pitch deck. Social media kit. Mobile optimization guide. All built. All ready. Deploy in 60 seconds.</p>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat"><div class="hero-stat-num">8</div><div class="hero-stat-label">Demo Sites</div></div>
+          <div class="hero-stat"><div class="hero-stat-num">4</div><div class="hero-stat-label">Apps Built</div></div>
+          <div class="hero-stat"><div class="hero-stat-num">$5K</div><div class="hero-stat-label">Per Sale</div></div>
+          <div class="hero-stat"><div class="hero-stat-num">0</div><div class="hero-stat-label">Days to Deploy</div></div>
+        </div>
+      </div>
+    </div>
+    
+    <main>
+    
+      <!-- REVENUE TRACKER -->
+      <div class="revenue-bar">
+        <div class="rev-item">
+          <div class="rev-label">Target (Month 1)</div>
+          <div class="rev-value gold">$20,000</div>
+          <div class="rev-progress"><div class="rev-progress-fill" style="width:0%"></div></div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-label">Closed Revenue</div>
+          <div class="rev-value green">$0</div>
+          <div class="rev-progress"><div class="rev-progress-fill" style="width:0%;background:#4ade80"></div></div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-label">Pipeline Value</div>
+          <div class="rev-value">$0</div>
+          <div class="rev-progress"><div class="rev-progress-fill" style="width:0%;background:#888"></div></div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-label">Avg Commission</div>
+          <div class="rev-value gold">$4,500</div>
+          <div class="rev-progress"><div class="rev-progress-fill" style="width:90%"></div></div>
+        </div>
+      </div>
+    
+      <!-- QUICK ACTIONS -->
+      <div>
+        <div class="section-header">
+          <div class="section-title">Quick Actions</div>
+        </div>
+        <div class="quick-actions">
+          <a href="snowball_saas_tool.html" class="qa-btn">
+            <div class="qa-icon">⚡</div>
+            <div class="qa-label">Platform</div>
+            <div class="qa-sub">Generate sites</div>
+          </a>
+          <a href="snowball_client_intake.html" class="qa-btn">
+            <div class="qa-icon">◈</div>
+            <div class="qa-label">Commission</div>
+            <div class="qa-sub">Client brief form</div>
+          </a>
+          <a href="snowball_dashboard.html" class="qa-btn">
+            <div class="qa-icon">◉</div>
+            <div class="qa-label">Dashboard</div>
+            <div class="qa-sub">Analytics + pipeline</div>
+          </a>
+          <a href="snowball_email_sequence.html" class="qa-btn">
+            <div class="qa-icon">◇</div>
+            <div class="qa-label">Outreach</div>
+            <div class="qa-sub">5-email sequence</div>
+          </a>
+          <a href="snowball_social_media_kit.html" class="qa-btn">
+            <div class="qa-icon">◎</div>
+            <div class="qa-label">Social Kit</div>
+            <div class="qa-sub">Post templates</div>
+          </a>
+          <a href="snowball_client_contract.html" class="qa-btn">
+            <div class="qa-icon">◻</div>
+            <div class="qa-label">Contract</div>
+            <div class="qa-sub">NDA + agreement</div>
+          </a>
+        </div>
+      </div>
+    
+      <!-- 8 DEMO SITES -->
+      <div>
+        <div class="section-header">
+          <div class="section-title">8 Demo Sites — All Deploy-Ready</div>
+          <div class="section-count">Drag any file to netlify.com/drop for instant live URL</div>
+        </div>
+        <div class="sites-grid">
+          <a href="snowball_hero_site.html" class="site-card">
+            <div class="site-thumb" style="background:linear-gradient(135deg,#030303 0%,#0a0a0a 100%)">
+              <div class="site-thumb-grid"></div>
+              <div class="site-thumb-text" style="color:#C9A84C">SNOWBALL</div>
+            </div>
+            <div class="site-info">
+              <div class="site-name">Snowball Hero Site</div>
+              <div class="site-arch">Dark Precision</div>
+              <div class="site-inspired">Inspired by Marcello Design X</div>
+            </div>
+            <div class="site-footer">
+              <div class="site-status live">Hero Asset</div>
+              <div class="site-open">Open →</div>
+            </div>
+          </a>
+          <a href="aurora_design_site.html" class="site-card">
+            <div class="site-thumb" style="background:linear-gradient(135deg,#1a0e05 0%,#0d0803 100%)">
+              <div class="site-thumb-grid"></div>
+              <div class="site-thumb-text" style="color:#D4A96A">AURORA</div>
+            </div>
+            <div class="site-info">
+              <div class="site-name">Aurora Design Studio</div>
+              <div class="site-arch">Fluid Elegance</div>
+              <div class="site-inspired">Inspired by Pininfarina</div>
+            </div>
+            <div class="site-footer">
+              <div class="site-status ready">Ready — $4,500</div>
+              <div class="site-open">Open →</div>
+            </div>
+          </a>
+          <a href="vortex_design_site.html" class="site-card">
+            <div class="site-thumb" style="background:linear-gradient(135deg,#0a0000 0%,#030303 100%)">
+              <div class="site-thumb-grid"></div>
+              <div class="site-thumb-text" style="color:#E53E3E">VORTEX</div>
+            </div>
+            <div class="site-info">
+              <div class="site-name">Vortex Industrial</div>
+              <div class="site-arch">Avant-Garde</div>
+              <div class="site-inspired">Inspired by Zagato</div>
+            </div>
+            <div class="site-footer">
+              <div class="site-status ready">Ready — $5,000</div>
+              <div class="site-open">Open →</div>
+            </div>
+          </a>
+          <a href="prism_design_site.html" class="site-card">
+            <div class="site-thumb" style="background:linear-gradient(135deg,#000511 0%,#030303 100%)">
+              <div class="site-thumb-grid"></div>
+              <div class="site-thumb-text" style="color:#3B82F6">PRISM</div>
+            </div>
+            <div class="site-info">
+              <div class="site-name">Prism Architecture</div>
+              <div class="site-arch">Wedge Futurist</div>
+              <div class="site-inspired">Inspired by Bertone</div>
+            </div>
+            <div class="site-footer">
+              <div class="site-status ready">Ready — $3,500</div>
+              <div class="site-open">Open →</div>
+            </div>
+          </a>
+          <a href="mark_brand_site.html" class="site-card">
+            <div class="site-thumb" style="background:linear-gradient(135deg,#0d0a07 0%,#030303 100%)">
+              <div class="site-thumb-grid"></div>
+              <div class="site-thumb-text" style="color:#D97706">MARK</div>
+            </div>
+            <div class="site-info">
+              <div class="site-name">Mark Brand Agency</div>
+              <div class="site-arch">Brand Identity</div>
+              <div class="site-inspired">Inspired by Wearbrand.io</div>
+            </div>
+            <div class="site-footer">
+              <div class="site-status ready">Ready — $4,500</div>
+              <div class="site-open">Open →</div>
+            </div>
+          </a>
+          <a href="apex_transport_site.html" class="site-card">
+            <div class="site-thumb" style="background:linear-gradient(135deg,#00050d 0%,#030303 100%)">
+              <div class="site-thumb-grid"></div>
+              <div class="site-thumb-text" style="color:#1D4ED8">APEX</div>
+            </div>
+            <div class="site-info">
+              <div class="site-name">Apex Transport</div>
+              <div class="site-arch">Transport Luxury</div>
+              <div class="site-inspired">Inspired by PriestmanGoode</div>
+            </div>
+            <div class="site-footer">
+              <div class="site-status ready">Ready — $5,000</div>
+              <div class="site-open">Open →</div>
+            </div>
+          </a>
+          <a href="oracle_design_site.html" class="site-card">
+            <div class="site-thumb" style="background:linear-gradient(135deg,#010a01 0%,#030303 100%)">
+              <div class="site-thumb-grid"></div>
+              <div class="site-thumb-text" style="color:#84CC16">ORACLE</div>
+            </div>
+            <div class="site-info">
+              <div class="site-name">Oracle Design</div>
+              <div class="site-arch">Future Concept</div>
+              <div class="site-inspired">Inspired by Seymourpowell</div>
+            </div>
+            <div class="site-footer">
+              <div class="site-status ready">Ready — $4,500</div>
+              <div class="site-open">Open →</div>
+            </div>
+          </a>
+          <a href="forma_italdesign_site.html" class="site-card">
+            <div class="site-thumb" style="background:linear-gradient(135deg,#011009 0%,#030303 100%)">
+              <div class="site-thumb-grid"></div>
+              <div class="site-thumb-text" style="color:#14B8A6">FORMA</div>
+            </div>
+            <div class="site-info">
+              <div class="site-name">Forma Studio</div>
+              <div class="site-arch">Technical Sculpture</div>
+              <div class="site-inspired">Inspired by Italdesign</div>
+            </div>
+            <div class="site-footer">
+              <div class="site-status ready">Ready — $4,500</div>
+              <div class="site-open">Open →</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    
+      <!-- PLATFORM TOOLS -->
+      <div>
+        <div class="section-header">
+          <div class="section-title">Platform Tools</div>
+          <div class="section-count">4 apps built</div>
+        </div>
+        <div class="tools-grid">
+          <a href="snowball_saas_tool.html" class="tool-card">
+            <div class="tool-icon">⚡</div>
+            <div class="tool-name">Design Intelligence Platform</div>
+            <div class="tool-desc">The full SaaS tool. Generate sites, browse 200+ components, manage projects, view analytics, configure settings. This is the product you sell.</div>
+            <span class="tool-tag">Core Product</span>
+          </a>
+          <a href="snowball_client_intake.html" class="tool-card">
+            <div class="tool-icon">◈</div>
+            <div class="tool-name">Client Commission Intake</div>
+            <div class="tool-desc">5-step guided brief form. Clients fill this out, it auto-calculates their commission tier ($3.5K-$8.5K) and sends you everything you need to build.</div>
+            <span class="tool-tag">Client-Facing</span>
+          </a>
+          <a href="snowball_dashboard.html" class="tool-card">
+            <div class="tool-icon">◉</div>
+            <div class="tool-name">Operations Dashboard</div>
+            <div class="tool-desc">Pipeline tracker, revenue analytics, archetype usage stats, component library browser. Your internal command center for running Snowball.</div>
+            <span class="tool-tag">Internal</span>
+          </a>
+          <a href="snowball_intelligence_app.html" class="tool-card">
+            <div class="tool-icon">◎</div>
+            <div class="tool-name">Intelligence Assistant</div>
+            <div class="tool-desc">Snowball-flavored AI chat interface. Design mode, archetype selector, brand analysis, copywriting assistant. The AI layer of the platform.</div>
+            <span class="tool-tag">AI Layer</span>
+          </a>
+          <a href="snowball_social_media_kit.html" class="tool-card">
+            <div class="tool-icon">◇</div>
+            <div class="tool-name">Social Media Kit</div>
+            <div class="tool-desc">6 post templates, LinkedIn banner, profile image variants, caption copy bank, hashtag sets, 7-day posting schedule, bio templates. Post today.</div>
+            <span class="tool-tag">Marketing</span>
+          </a>
+          <a href="snowball_mobile_optimization.html" class="tool-card">
+            <div class="tool-icon">◻</div>
+            <div class="tool-name">Mobile Optimization Guide</div>
+            <div class="tool-desc">Universal CSS patch for all 8 sites. Drop-in responsive code, breakpoint reference, mobile nav overlay, full optimization checklist.</div>
+            <span class="tool-tag">Technical</span>
+          </a>
+        </div>
+      </div>
+    
+      <!-- BUSINESS DOCUMENTS -->
+      <div>
+        <div class="section-header">
+          <div class="section-title">Business Documents</div>
+          <div class="section-count">All print-ready</div>
+        </div>
+        <div class="docs-grid">
+          <a href="Snowball_Design_Intelligence_Blueprint.pdf" class="doc-card">
+            <div class="doc-icon">◈</div>
+            <div class="doc-type">Strategy</div>
+            <div class="doc-name">Full Platform Blueprint</div>
+            <div class="doc-desc">33,000+ word complete strategy. Architecture, tech stack, monetization, 90-day roadmap.</div>
+          </a>
+          <a href="Snowball_Client_Proposal_5K.pdf" class="doc-card">
+            <div class="doc-icon">◇</div>
+            <div class="doc-type">Sales</div>
+            <div class="doc-name">$5K Client Proposal</div>
+            <div class="doc-desc">Send this to close deals. Professional proposal template with pricing tiers and deliverables.</div>
+          </a>
+          <a href="Snowball_Sales_One_Pager.docx" class="doc-card">
+            <div class="doc-icon">◎</div>
+            <div class="doc-type">Sales</div>
+            <div class="doc-name">Sales One-Pager</div>
+            <div class="doc-desc">Single page overview. Cold outreach follow-up, LinkedIn DM attachment, quick reference.</div>
+          </a>
+          <a href="snowball_email_sequence.html" class="doc-card">
+            <div class="doc-icon">◻</div>
+            <div class="doc-type">Outreach</div>
+            <div class="doc-name">5-Email Cold Sequence</div>
+            <div class="doc-desc">Full drip campaign. Subject lines, body copy, follow-ups, objection handling, close sequence.</div>
+          </a>
+          <a href="snowball_client_contract.html" class="doc-card">
+            <div class="doc-icon">◉</div>
+            <div class="doc-type">Legal</div>
+            <div class="doc-name">Client Contract + NDA</div>
+            <div class="doc-desc">8-clause service agreement with mutual NDA. Signature blocks. Print and sign.</div>
+          </a>
+          <a href="Snowball Design Intelligence Pitch Deck_complete.pptx" class="doc-card">
+            <div class="doc-icon">◈</div>
+            <div class="doc-type">Pitch</div>
+            <div class="doc-name">10-Slide Pitch Deck</div>
+            <div class="doc-desc">Investor and client deck. Problem, market, solution, revenue, competitive moat, roadmap.</div>
+          </a>
+        </div>
+      </div>
+    
+      <!-- DEPLOY GUIDE -->
+      <div>
+        <div class="section-header">
+          <div class="section-title">Deploy Any Site in 60 Seconds</div>
+        </div>
+        <div class="deploy-grid">
+          <div class="deploy-card">
+            <div class="deploy-step">01</div>
+            <div class="deploy-title">Choose Your Site</div>
+            <div class="deploy-desc">Pick any of the 8 demo sites above. The hero site (snowball_hero_site.html) is your primary showcase — deploy this first. Use the others as client demos.</div>
+            <span class="deploy-link">Open snowball_hero_site.html first</span>
+          </div>
+          <div class="deploy-card">
+            <div class="deploy-step">02</div>
+            <div class="deploy-title">Drag to Netlify Drop</div>
+            <div class="deploy-desc">Go to netlify.com/drop — drag your .html file onto the page. Netlify instantly hosts it and gives you a live URL. No account required. Completely free tier.</div>
+            <span class="deploy-link">netlify.com/drop</span>
+          </div>
+          <div class="deploy-card">
+            <div class="deploy-step">03</div>
+            <div class="deploy-title">Send to First Client</div>
+            <div class="deploy-desc">Copy the live URL. Open snowball_email_sequence.html, grab Email 01, find 10 targets on LinkedIn, and send. Your first $5K conversation starts today.</div>
+            <span class="deploy-link">Open email sequence</span>
+          </div>
+        </div>
+      </div>
+    
+    </main>
+    
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-brand">
+        <div class="logo">SNOWBALL</div>
+        <div class="logo-sub" style="font-size:9px;letter-spacing:3px;color:var(--gray);text-transform:uppercase;margin-top:4px">Design Intelligence Platform</div>
+        <p>A luxury design intelligence platform. 8 archetypes. Unlimited possibilities. Built to rival the best design studios in the world.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Demo Sites</div>
+        <a href="snowball_hero_site.html" class="footer-link">Dark Precision — Snowball Hero</a>
+        <a href="aurora_design_site.html" class="footer-link">Fluid Elegance — Aurora</a>
+        <a href="vortex_design_site.html" class="footer-link">Avant-Garde — Vortex</a>
+        <a href="prism_design_site.html" class="footer-link">Wedge Futurist — Prism</a>
+        <a href="mark_brand_site.html" class="footer-link">Brand Identity — Mark</a>
+        <a href="apex_transport_site.html" class="footer-link">Transport Luxury — Apex</a>
+        <a href="oracle_design_site.html" class="footer-link">Future Concept — Oracle</a>
+        <a href="forma_italdesign_site.html" class="footer-link">Technical Sculpture — Forma</a>
+      </div>
+      <div>
+        <div class="footer-col-title">Platform</div>
+        <a href="snowball_saas_tool.html" class="footer-link">Design Intelligence Platform</a>
+        <a href="snowball_client_intake.html" class="footer-link">Client Intake Form</a>
+        <a href="snowball_dashboard.html" class="footer-link">Operations Dashboard</a>
+        <a href="snowball_intelligence_app.html" class="footer-link">Intelligence Assistant</a>
+        <a href="snowball_social_media_kit.html" class="footer-link">Social Media Kit</a>
+        <a href="snowball_mobile_optimization.html" class="footer-link">Mobile Optimization</a>
+        <a href="snowball_email_sequence.html" class="footer-link">Email Outreach Sequence</a>
+        <a href="snowball_client_contract.html" class="footer-link">Client Contract + NDA</a>
+      </div>
+    </footer>
+    <div class="footer-bottom">
+      <div class="footer-copy">2026 <span>Snowball</span> Design Intelligence. All rights reserved.</div>
+      <div class="footer-copy">Built by <span>Chad Snowball</span> — The Snowball Platform</div>
+    </div>
+    
+    </body>
+    </html>

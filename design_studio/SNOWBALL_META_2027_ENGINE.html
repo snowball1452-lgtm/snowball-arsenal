@@ -1,0 +1,2093 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snowball — Meta 2027 Design Intelligence Engine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+    :root {
+      --void: #000000;
+      --deep: #080808;
+      --surface: #0f0f0f;
+      --panel: #141414;
+      --border: #1e1e1e;
+      --gold: #c9a84c;
+      --gold-bright: #f0c040;
+      --gold-dim: #7a6030;
+      --silver: #9ca3af;
+      --white: #ffffff;
+      --red: #ff3333;
+      --green: #00ff88;
+      --blue: #4488ff;
+      --teal: #00d4ff;
+      --font-display: "Bebas Neue", sans-serif;
+      --font-body: "Inter", sans-serif;
+      --font-mono: "JetBrains Mono", monospace;
+    }
+    
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    
+    body {
+      background: var(--void);
+      color: var(--white);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+      cursor: none;
+    }
+    
+    /* CURSOR */
+    #cursor {
+      width: 12px; height: 12px;
+      background: var(--gold);
+      border-radius: 50%;
+      position: fixed; top:0; left:0;
+      pointer-events: none;
+      z-index: 99999;
+      transition: transform 0.1s;
+      mix-blend-mode: difference;
+    }
+    #cursor-ring {
+      width: 36px; height: 36px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      position: fixed; top:0; left:0;
+      pointer-events: none;
+      z-index: 99998;
+      transition: all 0.15s ease;
+      opacity: 0.5;
+    }
+    
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 2px; }
+    ::-webkit-scrollbar-track { background: var(--void); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); }
+    
+    /* NAV */
+    nav {
+      position: fixed; top:0; left:0; right:0;
+      height: 60px;
+      background: rgba(0,0,0,0.9);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      z-index: 1000;
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 22px;
+      letter-spacing: 4px;
+      color: var(--gold);
+    }
+    .nav-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--gold-dim);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .nav-links {
+      display: flex; gap: 32px; list-style: none;
+    }
+    .nav-links a {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--silver);
+      text-decoration: none;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-status {
+      display: flex; align-items: center; gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--green);
+    }
+    .status-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.5); }
+    }
+    
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      position: relative;
+      padding: 120px 40px 80px;
+      overflow: hidden;
+      text-align: center;
+    }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px);
+      background-size: 80px 80px;
+      animation: gridDrift 20s linear infinite;
+    }
+    @keyframes gridDrift {
+      0% { transform: translate(0,0); }
+      100% { transform: translate(80px,80px); }
+    }
+    .hero-orb {
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: orbPulse 6s ease-in-out infinite;
+    }
+    @keyframes orbPulse {
+      0%, 100% { transform: translate(-50%,-50%) scale(1); opacity: 0.5; }
+      50% { transform: translate(-50%,-50%) scale(1.2); opacity: 1; }
+    }
+    .hero-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 6px;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      position: relative;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(60px, 12vw, 160px);
+      line-height: 0.9;
+      letter-spacing: 8px;
+      color: var(--white);
+      position: relative;
+      margin-bottom: 16px;
+    }
+    .hero-title span { color: var(--gold); }
+    .hero-subtitle {
+      font-family: var(--font-display);
+      font-size: clamp(20px, 4vw, 48px);
+      letter-spacing: 12px;
+      color: var(--silver);
+      margin-bottom: 48px;
+      position: relative;
+    }
+    .hero-desc {
+      max-width: 640px;
+      font-size: 16px;
+      line-height: 1.8;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 64px;
+      position: relative;
+    }
+    .hero-cta-group {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      justify-content: center;
+      position: relative;
+    }
+    .btn-primary {
+      padding: 16px 48px;
+      background: var(--gold);
+      color: var(--void);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-primary:hover {
+      background: var(--gold-bright);
+      transform: translateY(-2px);
+      box-shadow: 0 20px 60px rgba(201,168,76,0.3);
+    }
+    .btn-ghost {
+      padding: 16px 48px;
+      background: transparent;
+      color: var(--gold);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      border: 1px solid var(--gold);
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-ghost:hover {
+      background: rgba(201,168,76,0.1);
+      transform: translateY(-2px);
+    }
+    .hero-metrics {
+      position: relative;
+      display: flex; gap: 60px;
+      margin-top: 80px;
+      padding-top: 60px;
+      border-top: 1px solid var(--border);
+    }
+    .hero-metric-item { text-align: center; }
+    .hero-metric-value {
+      font-family: var(--font-display);
+      font-size: 48px;
+      color: var(--gold);
+      letter-spacing: 2px;
+    }
+    .hero-metric-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--silver);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+    
+    /* SECTION WRAPPER */
+    .section {
+      padding: 120px 80px;
+      position: relative;
+    }
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 6px;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1; max-width: 80px;
+      height: 1px;
+      background: var(--gold-dim);
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(40px, 6vw, 80px);
+      letter-spacing: 4px;
+      line-height: 1;
+      margin-bottom: 24px;
+    }
+    .section-desc {
+      font-size: 16px;
+      line-height: 1.8;
+      color: rgba(255,255,255,0.5);
+      max-width: 640px;
+      margin-bottom: 80px;
+    }
+    
+    /* MATRIX SECTION */
+    .matrix-section {
+      background: var(--deep);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      margin-top: 60px;
+    }
+    .matrix-cell {
+      background: var(--panel);
+      padding: 40px 32px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .matrix-cell:hover {
+      background: var(--surface);
+      transform: translateY(-4px);
+    }
+    .matrix-cell::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      transform: scaleX(0);
+      transition: transform 0.4s;
+    }
+    .matrix-cell:hover::before { transform: scaleX(1); }
+    .matrix-cell-number {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--gold-dim);
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+    }
+    .matrix-cell-title {
+      font-family: var(--font-display);
+      font-size: 28px;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+    .matrix-cell-brand {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--gold);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .matrix-cell-desc {
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.4);
+    }
+    .matrix-cell-tags {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-top: 20px;
+    }
+    .matrix-tag {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      color: var(--silver);
+      letter-spacing: 1px;
+    }
+    .matrix-cell:hover .matrix-tag {
+      border-color: var(--gold-dim);
+      color: var(--gold);
+    }
+    
+    /* ENGINE SECTION */
+    .engine-section { background: var(--void); }
+    .engine-diagram {
+      display: grid;
+      grid-template-columns: 1fr 2px 1fr 2px 1fr;
+      gap: 0;
+      margin-top: 60px;
+      align-items: stretch;
+    }
+    .engine-divider {
+      background: linear-gradient(180deg, transparent, var(--gold), transparent);
+    }
+    .engine-layer {
+      padding: 40px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      position: relative;
+    }
+    .engine-layer-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--gold);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .engine-layer-title {
+      font-family: var(--font-display);
+      font-size: 32px;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+    }
+    .engine-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .engine-item:last-child { border-bottom: none; }
+    .engine-item-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+    .engine-item-text {
+      font-size: 13px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.6);
+    }
+    .engine-item-text strong {
+      color: var(--white);
+      display: block;
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+    
+    /* BUILDER SECTION */
+    .builder-section {
+      background: var(--deep);
+      border-top: 1px solid var(--border);
+    }
+    .builder-interface {
+      margin-top: 60px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      overflow: hidden;
+    }
+    .builder-topbar {
+      display: flex; align-items: center;
+      padding: 16px 24px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      gap: 16px;
+    }
+    .builder-dots {
+      display: flex; gap: 8px;
+    }
+    .builder-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+    }
+    .builder-dot:nth-child(1) { background: #ff5f57; }
+    .builder-dot:nth-child(2) { background: #febc2e; }
+    .builder-dot:nth-child(3) { background: #28c840; }
+    .builder-topbar-title {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--silver);
+      letter-spacing: 2px;
+    }
+    .builder-body {
+      display: grid;
+      grid-template-columns: 260px 1fr 280px;
+      min-height: 600px;
+    }
+    .builder-sidebar {
+      border-right: 1px solid var(--border);
+      padding: 24px;
+    }
+    .builder-sidebar-section {
+      margin-bottom: 32px;
+    }
+    .builder-sidebar-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--gold);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .archetype-option {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 12px;
+      margin-bottom: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+    .archetype-option:hover,
+    .archetype-option.active {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.05);
+    }
+    .archetype-swatch {
+      width: 20px; height: 20px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .archetype-name {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--silver);
+      letter-spacing: 1px;
+    }
+    .archetype-option.active .archetype-name { color: var(--gold); }
+    
+    .builder-canvas {
+      background: var(--void);
+      position: relative;
+      overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+    .canvas-preview {
+      flex: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 40px;
+      gap: 24px;
+    }
+    .preview-hero-block {
+      width: 100%;
+      background: linear-gradient(135deg, #0a0a0a 0%, #111111 100%);
+      border: 1px solid var(--border);
+      padding: 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .preview-hero-block::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(201,168,76,0.05) 0%, transparent 70%);
+    }
+    .preview-title {
+      font-family: var(--font-display);
+      font-size: 48px;
+      letter-spacing: 6px;
+      color: var(--white);
+      position: relative;
+    }
+    .preview-subtitle {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--gold);
+      letter-spacing: 4px;
+      margin-top: 8px;
+      position: relative;
+    }
+    .preview-blocks {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      width: 100%;
+    }
+    .preview-block {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 20px;
+      text-align: center;
+    }
+    .preview-block-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      color: var(--white);
+      letter-spacing: 2px;
+    }
+    .preview-block-sub {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--gold);
+      margin-top: 4px;
+      letter-spacing: 2px;
+    }
+    .canvas-toolbar {
+      display: flex; align-items: center;
+      padding: 12px 20px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      gap: 8px;
+    }
+    .toolbar-btn {
+      padding: 6px 14px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--silver);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+    }
+    .toolbar-btn:hover, .toolbar-btn.active {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    .builder-props {
+      border-left: 1px solid var(--border);
+      padding: 24px;
+      overflow-y: auto;
+    }
+    .prop-group {
+      margin-bottom: 28px;
+    }
+    .prop-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--gold);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .prop-row {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+    .prop-name {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--silver);
+    }
+    .prop-value {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--gold);
+    }
+    .prop-swatch {
+      width: 16px; height: 16px;
+      border-radius: 2px;
+      border: 1px solid var(--border);
+    }
+    
+    /* SCORING SECTION */
+    .scoring-section { background: var(--void); }
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 60px;
+    }
+    .score-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+    .score-card:hover {
+      border-color: var(--gold-dim);
+      transform: translateY(-4px);
+    }
+    .score-card-header {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .score-card-title {
+      font-family: var(--font-display);
+      font-size: 24px;
+      letter-spacing: 2px;
+    }
+    .score-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 4px 12px;
+      letter-spacing: 2px;
+    }
+    .score-badge.pass { background: rgba(0,255,136,0.1); color: var(--green); border: 1px solid rgba(0,255,136,0.3); }
+    .score-badge.warn { background: rgba(255,170,0,0.1); color: #ffaa00; border: 1px solid rgba(255,170,0,0.3); }
+    .score-badge.fail { background: rgba(255,51,51,0.1); color: var(--red); border: 1px solid rgba(255,51,51,0.3); }
+    .score-bar-wrap {
+      margin-bottom: 16px;
+    }
+    .score-bar-label {
+      display: flex; justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--silver);
+      margin-bottom: 6px;
+    }
+    .score-bar {
+      height: 2px;
+      background: var(--border);
+      position: relative;
+    }
+    .score-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold), var(--gold-bright));
+      transition: width 1s ease;
+    }
+    .score-bar-fill.high { background: linear-gradient(90deg, var(--green), #00ffaa); }
+    .score-bar-fill.low { background: linear-gradient(90deg, var(--red), #ff8888); }
+    
+    /* LEARNING ENGINE */
+    .learning-section {
+      background: var(--deep);
+      border-top: 1px solid var(--border);
+    }
+    .learning-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      margin-top: 60px;
+    }
+    .learning-cell {
+      background: var(--panel);
+      padding: 48px;
+    }
+    .learning-cell-icon {
+      width: 48px; height: 48px;
+      border: 1px solid var(--gold-dim);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 24px;
+      font-family: var(--font-mono);
+      font-size: 18px;
+      color: var(--gold);
+    }
+    .learning-cell-title {
+      font-family: var(--font-display);
+      font-size: 32px;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+    }
+    .learning-cell-desc {
+      font-size: 14px;
+      line-height: 1.8;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 24px;
+    }
+    .learning-sources {
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .learning-source {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .learning-source-dot {
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--gold);
+    }
+    .learning-source-name {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--silver);
+    }
+    .learning-source-type {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--gold-dim);
+      letter-spacing: 2px;
+    }
+    
+    /* MONETIZATION */
+    .mono-section { background: var(--void); }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      margin-top: 60px;
+    }
+    .pricing-card {
+      background: var(--panel);
+      padding: 40px 32px;
+      position: relative;
+      transition: all 0.3s;
+    }
+    .pricing-card.featured {
+      background: rgba(201,168,76,0.05);
+      border-top: 2px solid var(--gold);
+    }
+    .pricing-card:hover { background: var(--surface); }
+    .pricing-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 4px;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .pricing-price {
+      font-family: var(--font-display);
+      font-size: 48px;
+      color: var(--white);
+      letter-spacing: 2px;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .pricing-period {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--silver);
+      letter-spacing: 2px;
+      margin-bottom: 32px;
+    }
+    .pricing-features {
+      list-style: none;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .pricing-features li {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .pricing-features li::before {
+      content: '+';
+      color: var(--gold);
+      font-family: var(--font-mono);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    
+    /* ROADMAP */
+    .roadmap-section {
+      background: var(--deep);
+      border-top: 1px solid var(--border);
+    }
+    .roadmap-timeline {
+      margin-top: 60px;
+      position: relative;
+    }
+    .roadmap-timeline::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(180deg, transparent, var(--gold), transparent);
+      transform: translateX(-50%);
+    }
+    .roadmap-item {
+      display: grid;
+      grid-template-columns: 1fr 80px 1fr;
+      gap: 0;
+      margin-bottom: 60px;
+      align-items: center;
+    }
+    .roadmap-item:nth-child(even) .roadmap-content { grid-column: 3; grid-row: 1; }
+    .roadmap-item:nth-child(even) .roadmap-empty { grid-column: 1; grid-row: 1; }
+    .roadmap-center {
+      display: flex; align-items: center; justify-content: center;
+    }
+    .roadmap-node {
+      width: 40px; height: 40px;
+      border: 1px solid var(--gold);
+      background: var(--void);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--gold);
+      position: relative;
+      z-index: 1;
+    }
+    .roadmap-content {
+      padding: 32px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      transition: all 0.3s;
+    }
+    .roadmap-content:hover {
+      border-color: var(--gold-dim);
+      transform: translateX(-4px);
+    }
+    .roadmap-item:nth-child(even) .roadmap-content:hover {
+      transform: translateX(4px);
+    }
+    .roadmap-phase {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--gold);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .roadmap-title {
+      font-family: var(--font-display);
+      font-size: 28px;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+    .roadmap-desc {
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.5);
+    }
+    .roadmap-empty {}
+    
+    /* TECH STACK */
+    .tech-section { background: var(--void); }
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 1px;
+      background: var(--border);
+      margin-top: 60px;
+    }
+    .tech-cell {
+      background: var(--panel);
+      padding: 32px 24px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .tech-cell:hover {
+      background: var(--surface);
+      transform: translateY(-4px);
+    }
+    .tech-icon {
+      font-family: var(--font-mono);
+      font-size: 24px;
+      color: var(--gold);
+      margin-bottom: 12px;
+      display: block;
+    }
+    .tech-name {
+      font-family: var(--font-display);
+      font-size: 18px;
+      letter-spacing: 2px;
+      margin-bottom: 4px;
+    }
+    .tech-role {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--silver);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    
+    /* CTA */
+    .cta-section {
+      background: var(--deep);
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 160px 80px;
+    }
+    .cta-title {
+      font-family: var(--font-display);
+      font-size: clamp(60px, 10vw, 120px);
+      letter-spacing: 6px;
+      line-height: 0.9;
+      margin-bottom: 48px;
+    }
+    .cta-title span { color: var(--gold); }
+    
+    /* FOOTER */
+    footer {
+      background: var(--void);
+      border-top: 1px solid var(--border);
+      padding: 60px 80px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 60px;
+    }
+    .footer-brand {
+      font-family: var(--font-display);
+      font-size: 36px;
+      letter-spacing: 6px;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+    .footer-tagline {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--silver);
+      letter-spacing: 2px;
+      line-height: 1.8;
+    }
+    .footer-col-title {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 4px;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .footer-links {
+      list-style: none;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .footer-links a {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--silver);
+      text-decoration: none;
+      letter-spacing: 1px;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-bottom {
+      background: var(--void);
+      border-top: 1px solid var(--border);
+      padding: 24px 80px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-copy {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--silver);
+      letter-spacing: 2px;
+    }
+    
+    /* MARQUEE */
+    .marquee-wrap {
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--deep);
+      padding: 16px 0;
+    }
+    .marquee-track {
+      display: flex; gap: 0;
+      animation: marqueeScroll 30s linear infinite;
+      white-space: nowrap;
+    }
+    @keyframes marqueeScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .marquee-item {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 4px;
+      color: var(--gold-dim);
+      text-transform: uppercase;
+      padding: 0 40px;
+      flex-shrink: 0;
+    }
+    .marquee-item span { color: var(--gold); margin-right: 40px; }
+    
+    /* REVEAL ANIMATIONS */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* RESPONSIVE */
+    @media (max-width: 1200px) {
+      .matrix-grid { grid-template-columns: repeat(2, 1fr); }
+      .engine-diagram { grid-template-columns: 1fr; }
+      .engine-divider { display: none; }
+      .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+      .tech-grid { grid-template-columns: repeat(3, 1fr); }
+      footer { grid-template-columns: 1fr; gap: 40px; }
+    }
+    @media (max-width: 768px) {
+      .section { padding: 80px 24px; }
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .hero { padding: 100px 24px 60px; }
+      .hero-metrics { gap: 30px; flex-wrap: wrap; justify-content: center; }
+      .matrix-grid { grid-template-columns: 1fr; }
+      .score-grid { grid-template-columns: 1fr; }
+      .learning-grid { grid-template-columns: 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .tech-grid { grid-template-columns: repeat(2, 1fr); }
+      .roadmap-timeline::before { left: 20px; }
+      .roadmap-item { grid-template-columns: 40px 1fr; }
+      .roadmap-empty { display: none; }
+      .builder-body { grid-template-columns: 1fr; }
+      .builder-sidebar, .builder-props { display: none; }
+      .cta-section { padding: 80px 24px; }
+      footer { padding: 60px 24px; }
+      .footer-bottom { padding: 24px; flex-direction: column; gap: 12px; }
+    }
+    </style>
+    </head>
+    <body>
+    
+    <div id="cursor"></div>
+    <div id="cursor-ring"></div>
+    
+    <!-- NAV -->
+    <nav>
+      <div>
+        <div class="nav-logo">SNOWBALL</div>
+        <div class="nav-badge">META 2027 ENGINE</div>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#matrix">Matrix</a></li>
+        <li><a href="#engine">Engine</a></li>
+        <li><a href="#builder">Builder</a></li>
+        <li><a href="#scoring">Scoring</a></li>
+        <li><a href="#roadmap">Roadmap</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+      </ul>
+      <div class="nav-status">
+        <div class="status-dot"></div>
+        SYSTEM ONLINE
+      </div>
+    </nav>
+    
+    <!-- HERO -->
+    <section class="hero" id="home">
+      <div class="hero-grid"></div>
+      <div class="hero-orb"></div>
+      <div class="hero-label">Snowball Design Intelligence — Meta 2027</div>
+      <h1 class="hero-title">THE <span>LUXURY</span><br>DESIGN ENGINE</h1>
+      <div class="hero-subtitle">WEBSITE BUILDER MATRIX</div>
+      <p class="hero-desc">A self-learning, curating, and compounding design intelligence platform. Built from the DNA of the world's greatest luxury design studios. Scalable to infinity.</p>
+      <div class="hero-cta-group">
+        <a href="#builder" class="btn-primary">Launch Builder</a>
+        <a href="#matrix" class="btn-ghost">View Matrix</a>
+      </div>
+      <div class="hero-metrics">
+        <div class="hero-metric-item">
+          <div class="hero-metric-value">8</div>
+          <div class="hero-metric-label">Design Archetypes</div>
+        </div>
+        <div class="hero-metric-item">
+          <div class="hero-metric-value">200+</div>
+          <div class="hero-metric-label">Components</div>
+        </div>
+        <div class="hero-metric-item">
+          <div class="hero-metric-value">$0</div>
+          <div class="hero-metric-label">Copyright Exposure</div>
+        </div>
+        <div class="hero-metric-item">
+          <div class="hero-metric-value">INF</div>
+          <div class="hero-metric-label">Scalability</div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- MARQUEE -->
+    <div class="marquee-wrap">
+      <div class="marquee-track">
+        <span class="marquee-item"><span>+</span> DARK PRECISION</span>
+        <span class="marquee-item"><span>+</span> FLUID ELEGANCE</span>
+        <span class="marquee-item"><span>+</span> AVANT GARDE</span>
+        <span class="marquee-item"><span>+</span> WEDGE FUTURIST</span>
+        <span class="marquee-item"><span>+</span> BRAND IDENTITY</span>
+        <span class="marquee-item"><span>+</span> TRANSPORT LUXURY</span>
+        <span class="marquee-item"><span>+</span> FUTURE CONCEPT</span>
+        <span class="marquee-item"><span>+</span> TECHNICAL SCULPTURE</span>
+        <span class="marquee-item"><span>+</span> DARK PRECISION</span>
+        <span class="marquee-item"><span>+</span> FLUID ELEGANCE</span>
+        <span class="marquee-item"><span>+</span> AVANT GARDE</span>
+        <span class="marquee-item"><span>+</span> WEDGE FUTURIST</span>
+        <span class="marquee-item"><span>+</span> BRAND IDENTITY</span>
+        <span class="marquee-item"><span>+</span> TRANSPORT LUXURY</span>
+        <span class="marquee-item"><span>+</span> FUTURE CONCEPT</span>
+        <span class="marquee-item"><span>+</span> TECHNICAL SCULPTURE</span>
+      </div>
+    </div>
+    
+    <!-- MATRIX -->
+    <section class="section matrix-section" id="matrix">
+      <div class="section-label">01 — The Design Matrix</div>
+      <h2 class="section-title reveal">THE 8<br>ARCHETYPES</h2>
+      <p class="section-desc reveal">Every site generated by the Snowball engine is rooted in one of 8 luxury design archetypes. Each archetype is a complete design system — not a template.</p>
+      <div class="matrix-grid reveal">
+        <div class="matrix-cell">
+          <div class="matrix-cell-number">01 / 08</div>
+          <div class="matrix-cell-title">DARK PRECISION</div>
+          <div class="matrix-cell-brand">Obsidian + Gold</div>
+          <div class="matrix-cell-desc">Surgical precision meets dark luxury. Every element placed with intent. Zero decoration. Maximum authority.</div>
+          <div class="matrix-cell-tags">
+            <span class="matrix-tag">Automotive</span>
+            <span class="matrix-tag">Industrial</span>
+            <span class="matrix-tag">Tech</span>
+          </div>
+        </div>
+        <div class="matrix-cell">
+          <div class="matrix-cell-number">02 / 08</div>
+          <div class="matrix-cell-title">FLUID ELEGANCE</div>
+          <div class="matrix-cell-brand">Cream + Warm Gold</div>
+          <div class="matrix-cell-desc">Italian sensibility. Curves that breathe. Whitespace that commands. The language of Pininfarina translated into digital form.</div>
+          <div class="matrix-cell-tags">
+            <span class="matrix-tag">Luxury</span>
+            <span class="matrix-tag">Fashion</span>
+            <span class="matrix-tag">Jewelry</span>
+          </div>
+        </div>
+        <div class="matrix-cell">
+          <div class="matrix-cell-number">03 / 08</div>
+          <div class="matrix-cell-title">AVANT GARDE</div>
+          <div class="matrix-cell-brand">Black + Signal Red</div>
+          <div class="matrix-cell-desc">Aggressive geometry. Bold contrast. Typography that dominates. For studios that refuse to be conventional.</div>
+          <div class="matrix-cell-tags">
+            <span class="matrix-tag">Racing</span>
+            <span class="matrix-tag">Sport</span>
+            <span class="matrix-tag">Bold</span>
+          </div>
+        </div>
+        <div class="matrix-cell">
+          <div class="matrix-cell-number">04 / 08</div>
+          <div class="matrix-cell-title">WEDGE FUTURIST</div>
+          <div class="matrix-cell-brand">Navy + Electric Blue</div>
+          <div class="matrix-cell-desc">The future, designed today. Sharp angles, electric accents, and a visual language that feels 10 years ahead.</div>
+          <div class="matrix-cell-tags">
+            <span class="matrix-tag">Future</span>
+            <span class="matrix-tag">Tech</span>
+            <span class="matrix-tag">EV</span>
+          </div>
+        </div>
+        <div class="matrix-cell">
+          <div class="matrix-cell-number">05 / 08</div>
+          <div class="matrix-cell-title">BRAND IDENTITY</div>
+          <div class="matrix-cell-brand">Sand + Rust</div>
+          <div class="matrix-cell-desc">Where product meets brand. Systems thinking expressed through warm editorial design. Wearbrand DNA elevated.</div>
+          <div class="matrix-cell-tags">
+            <span class="matrix-tag">Brand</span>
+            <span class="matrix-tag">Product</span>
+            <span class="matrix-tag">Identity</span>
+          </div>
+        </div>
+        <div class="matrix-cell">
+          <div class="matrix-cell-number">06 / 08</div>
+          <div class="matrix-cell-title">TRANSPORT LUXURY</div>
+          <div class="matrix-cell-brand">Navy + Gold</div>
+          <div class="matrix-cell-desc">The grammar of aviation and maritime luxury. Clean, confident, and built for clients who move between continents.</div>
+          <div class="matrix-cell-tags">
+            <span class="matrix-tag">Aviation</span>
+            <span class="matrix-tag">Yacht</span>
+            <span class="matrix-tag">Rail</span>
+          </div>
+        </div>
+        <div class="matrix-cell">
+          <div class="matrix-cell-number">07 / 08</div>
+          <div class="matrix-cell-title">FUTURE CONCEPT</div>
+          <div class="matrix-cell-brand">Void + Lime</div>
+          <div class="matrix-cell-desc">Conceptual, provocative, visionary. For studios that sell ideas before they sell products. Pure narrative design.</div>
+          <div class="matrix-cell-tags">
+            <span class="matrix-tag">Concept</span>
+            <span class="matrix-tag">Research</span>
+            <span class="matrix-tag">Vision</span>
+          </div>
+        </div>
+        <div class="matrix-cell">
+          <div class="matrix-cell-number">08 / 08</div>
+          <div class="matrix-cell-title">TECHNICAL SCULPTURE</div>
+          <div class="matrix-cell-brand">Teal + Charcoal</div>
+          <div class="matrix-cell-desc">Engineering as art. Precision as beauty. The Italdesign philosophy — where technical mastery becomes sculptural expression.</div>
+          <div class="matrix-cell-tags">
+            <span class="matrix-tag">Engineering</span>
+            <span class="matrix-tag">Architecture</span>
+            <span class="matrix-tag">Medical</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- ENGINE LAYERS -->
+    <section class="section engine-section" id="engine">
+      <div class="section-label">02 — The Architecture</div>
+      <h2 class="section-title reveal">THREE LAYER<br>ENGINE</h2>
+      <p class="section-desc reveal">Three interdependent layers that compound over time. Each layer feeds the next. The longer Snowball runs, the better it gets.</p>
+      <div class="engine-diagram reveal">
+        <div class="engine-layer">
+          <div class="engine-layer-label">Layer 01 — Foundation</div>
+          <div class="engine-layer-title">DESIGN DNA</div>
+          <div class="engine-item">
+            <div class="engine-item-dot"></div>
+            <div class="engine-item-text"><strong>Typography Library</strong>Curated pairings from each archetype. No generic fonts. Every pairing tested against luxury standards.</div>
+          </div>
+          <div class="engine-item">
+            <div class="engine-item-dot"></div>
+            <div class="engine-item-text"><strong>Color System</strong>Dark luxury palettes, metallic accents, muted industrials. 5 complete palette archetypes with exact hex codes.</div>
+          </div>
+          <div class="engine-item">
+            <div class="engine-item-dot"></div>
+            <div class="engine-item-text"><strong>Motion Language</strong>Scroll behaviors, hover states, transitions. No janky animations — only cinematic, purposeful motion.</div>
+          </div>
+          <div class="engine-item">
+            <div class="engine-item-dot"></div>
+            <div class="engine-item-text"><strong>Layout Grammar</strong>The specific grid rules each archetype uses. Spacing ratios, hierarchy systems, whitespace doctrine.</div>
+          </div>
+          <div class="engine-item">
+            <div class="engine-item-dot"></div>
+            <div class="engine-item-text"><strong>Component Library</strong>200+ components — hero sections, project showcases, team grids, contact forms — all pre-styled to luxury standards.</div>
+          </div>
+        </div>
+        <div class="engine-divider"></div>
+        <div class="engine-layer">
+          <div class="engine-layer-label">Layer 02 — Builder</div>
+          <div class="engine-layer-title">SITE ENGINE</div>
+          <div class="engine-item">
+            <div class="engine-item-dot"></div>
+            <div class="engine-item-text"><strong>Niche Selector</strong>Pick your archetype — Automotive, Aviation, Jewelry, Architecture, Industrial. The engine adapts everything automatically.</div>
+          </div>
+          <div class="engine-item">
+            <div class="engine-item-dot"></div>
+            <div class="engine-item-text"><strong>Brand Input</strong>Logo, colors, copy — the tool adapts them to the luxury grammar without breaking aesthetic guardrails.</div>
+          </div>
+          <div class="engine-item">
+            <div class="engine-item-dot"></div>
+            <div class="engine-item-text"><strong>Template Engine</strong>8 base templates mapped to archetypes, each customizable within precise aesthetic boundaries.</div>
+          </div>
+          <div class="engine-item">
+            <div class="engine-item-dot"></div>
+            <div class="engine-item-text"><strong>AI Style Advisor</strong>Flags when a client input breaks the luxury aesthetic — wrong font, clashing color, cheap component.</div>
+          </div>
+          <div class="engine-item">
+            <div class="engine-item-dot"></div>
+            <div class="engine-item-text"><strong>Export Options</strong>Live hosted site, exportable code, or CMS-backed via Webflow or Framer integration.</div>
+          </div>
+        </div>
+        <div class="engine-divider"></div>
+        <div class="engine-layer">
+          <div class="engine-layer-label">Layer 03 — Intelligence</div>
+          <div class="engine-layer-title">LEARNING SYSTEM</div>
+          <div class="engine-item">
+            <div class="engine-item-dot"></div>
+            <div class="engine-item-text"><strong>Trend Scraper</strong>Monitors Red Dot, iF, Core77, Awwwards weekly. Detects when luxury design language shifts.</div>
+          </div>
+          <div class="engine-item">
+            <div class="engine-item-dot"></div>
+            <div class="engine-item-text"><strong>Style Drift Detection</strong>Identifies when an archetype is evolving and suggests template updates before the market moves.</div>
+          </div>
+          <div class="engine-item">
+            <div class="engine-item-dot"></div>
+            <div class="engine-item-text"><strong>Client Feedback Loop</strong>Tracks which elements clients change most — informs future template iterations automatically.</div>
+          </div>
+          <div class="engine-item">
+            <div class="engine-item-dot"></div>
+            <div class="engine-item-text"><strong>Performance Data</strong>Which layouts convert best for inquiry and contact — gives clients ROI data, not just aesthetics.</div>
+          </div>
+          <div class="engine-item">
+            <div class="engine-item-dot"></div>
+            <div class="engine-item-text"><strong>Compound Moat</strong>Every client, every site, every trend absorbed makes Snowball harder to compete with. The snowball rolls.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- BUILDER PREVIEW -->
+    <section class="section builder-section" id="builder">
+      <div class="section-label">03 — The Interface</div>
+      <h2 class="section-title reveal">THE BUILDER<br>EXPERIENCE</h2>
+      <p class="section-desc reveal">A design intelligence interface unlike any site builder. Not for everyone — built for studios that demand precision and earn premium rates.</p>
+      <div class="builder-interface reveal">
+        <div class="builder-topbar">
+          <div class="builder-dots">
+            <div class="builder-dot"></div>
+            <div class="builder-dot"></div>
+            <div class="builder-dot"></div>
+          </div>
+          <div class="builder-topbar-title">SNOWBALL DESIGN ENGINE — v2.7.0 — Dark Precision Archetype</div>
+        </div>
+        <div class="builder-body">
+          <div class="builder-sidebar">
+            <div class="builder-sidebar-section">
+              <div class="builder-sidebar-label">Archetype</div>
+              <div class="archetype-option active">
+                <div class="archetype-swatch" style="background: linear-gradient(135deg, #000, #1a1a1a); border: 1px solid #c9a84c;"></div>
+                <span class="archetype-name">DARK PRECISION</span>
+              </div>
+              <div class="archetype-option">
+                <div class="archetype-swatch" style="background: linear-gradient(135deg, #f5f0e8, #e8d5a3);"></div>
+                <span class="archetype-name">FLUID ELEGANCE</span>
+              </div>
+              <div class="archetype-option">
+                <div class="archetype-swatch" style="background: linear-gradient(135deg, #0a0a0a, #1a0000); border: 1px solid #ff3333;"></div>
+                <span class="archetype-name">AVANT GARDE</span>
+              </div>
+              <div class="archetype-option">
+                <div class="archetype-swatch" style="background: linear-gradient(135deg, #0d1b2a, #1a3a5c); border: 1px solid #4488ff;"></div>
+                <span class="archetype-name">WEDGE FUTURIST</span>
+              </div>
+              <div class="archetype-option">
+                <div class="archetype-swatch" style="background: linear-gradient(135deg, #2a2018, #4a3828);"></div>
+                <span class="archetype-name">BRAND IDENTITY</span>
+              </div>
+              <div class="archetype-option">
+                <div class="archetype-swatch" style="background: linear-gradient(135deg, #0d1b2a, #1a3a5c); border: 1px solid #c9a84c;"></div>
+                <span class="archetype-name">TRANSPORT LUXURY</span>
+              </div>
+              <div class="archetype-option">
+                <div class="archetype-swatch" style="background: linear-gradient(135deg, #050505, #0a0a0a); border: 1px solid #00ff88;"></div>
+                <span class="archetype-name">FUTURE CONCEPT</span>
+              </div>
+              <div class="archetype-option">
+                <div class="archetype-swatch" style="background: linear-gradient(135deg, #0a1a1a, #1a2a2a); border: 1px solid #00d4ff;"></div>
+                <span class="archetype-name">TECHNICAL SCULPTURE</span>
+              </div>
+            </div>
+            <div class="builder-sidebar-section">
+              <div class="builder-sidebar-label">Sections</div>
+              <div class="archetype-option active">
+                <span class="archetype-name">HERO — Full Viewport</span>
+              </div>
+              <div class="archetype-option">
+                <span class="archetype-name">MANIFESTO</span>
+              </div>
+              <div class="archetype-option">
+                <span class="archetype-name">CAPABILITIES</span>
+              </div>
+              <div class="archetype-option">
+                <span class="archetype-name">PROCESS — 4 Step</span>
+              </div>
+              <div class="archetype-option">
+                <span class="archetype-name">METRICS</span>
+              </div>
+              <div class="archetype-option">
+                <span class="archetype-name">WORK SHOWCASE</span>
+              </div>
+              <div class="archetype-option">
+                <span class="archetype-name">TESTIMONIAL</span>
+              </div>
+              <div class="archetype-option">
+                <span class="archetype-name">CTA — Commission</span>
+              </div>
+            </div>
+          </div>
+          <div class="builder-canvas">
+            <div class="canvas-preview">
+              <div class="preview-hero-block">
+                <div class="preview-title">STUDIO NAME</div>
+                <div class="preview-subtitle">LUXURY DESIGN INTELLIGENCE</div>
+              </div>
+              <div class="preview-blocks">
+                <div class="preview-block">
+                  <div class="preview-block-title">CAPABILITY</div>
+                  <div class="preview-block-sub">Industrial Design</div>
+                </div>
+                <div class="preview-block">
+                  <div class="preview-block-title">CAPABILITY</div>
+                  <div class="preview-block-sub">Brand Systems</div>
+                </div>
+                <div class="preview-block">
+                  <div class="preview-block-title">CAPABILITY</div>
+                  <div class="preview-block-sub">Digital Product</div>
+                </div>
+              </div>
+            </div>
+            <div class="canvas-toolbar">
+              <button class="toolbar-btn active">PREVIEW</button>
+              <button class="toolbar-btn">MOBILE</button>
+              <button class="toolbar-btn">CODE</button>
+              <button class="toolbar-btn">EXPORT</button>
+              <div style="margin-left:auto; display:flex; gap:8px;">
+                <button class="toolbar-btn" style="color:var(--green); border-color:rgba(0,255,136,0.3);">LUXURY SCORE: 94</button>
+                <button class="toolbar-btn" style="background:var(--gold); color:var(--void); border-color:var(--gold);">DEPLOY</button>
+              </div>
+            </div>
+          </div>
+          <div class="builder-props">
+            <div class="prop-group">
+              <div class="prop-label">Typography</div>
+              <div class="prop-row">
+                <span class="prop-name">Display Font</span>
+                <span class="prop-value">Bebas Neue</span>
+              </div>
+              <div class="prop-row">
+                <span class="prop-name">Body Font</span>
+                <span class="prop-value">Inter</span>
+              </div>
+              <div class="prop-row">
+                <span class="prop-name">Mono Font</span>
+                <span class="prop-value">JetBrains Mono</span>
+              </div>
+              <div class="prop-row">
+                <span class="prop-name">Scale Ratio</span>
+                <span class="prop-value">1.414 (Aug4)</span>
+              </div>
+            </div>
+            <div class="prop-group">
+              <div class="prop-label">Color System</div>
+              <div class="prop-row">
+                <span class="prop-name">Primary</span>
+                <div class="prop-swatch" style="background:#c9a84c;"></div>
+              </div>
+              <div class="prop-row">
+                <span class="prop-name">Background</span>
+                <div class="prop-swatch" style="background:#000; border-color:#333;"></div>
+              </div>
+              <div class="prop-row">
+                <span class="prop-name">Surface</span>
+                <div class="prop-swatch" style="background:#0f0f0f; border-color:#333;"></div>
+              </div>
+              <div class="prop-row">
+                <span class="prop-name">Border</span>
+                <div class="prop-swatch" style="background:#1e1e1e; border-color:#333;"></div>
+              </div>
+            </div>
+            <div class="prop-group">
+              <div class="prop-label">Luxury Score</div>
+              <div class="prop-row">
+                <span class="prop-name">Typography</span>
+                <span class="prop-value" style="color:var(--green);">98 / 100</span>
+              </div>
+              <div class="prop-row">
+                <span class="prop-name">Color Harmony</span>
+                <span class="prop-value" style="color:var(--green);">96 / 100</span>
+              </div>
+              <div class="prop-row">
+                <span class="prop-name">Spacing</span>
+                <span class="prop-value" style="color:var(--green);">92 / 100</span>
+              </div>
+              <div class="prop-row">
+                <span class="prop-name">Motion</span>
+                <span class="prop-value" style="color:#ffaa00;">88 / 100</span>
+              </div>
+              <div class="prop-row">
+                <span class="prop-name">Overall</span>
+                <span class="prop-value" style="color:var(--gold); font-size:14px;">94 / 100</span>
+              </div>
+            </div>
+            <div class="prop-group">
+              <div class="prop-label">AI Advisor</div>
+              <div style="padding:12px; background:rgba(0,255,136,0.05); border:1px solid rgba(0,255,136,0.2); font-family:var(--font-mono); font-size:10px; color:var(--green); line-height:1.7;">
+                All luxury standards met. Typography hierarchy is strong. Consider adding scroll-triggered reveals to the capabilities section for maximum cinematic impact.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- LUXURY SCORING -->
+    <section class="section scoring-section" id="scoring">
+      <div class="section-label">04 — Quality Control</div>
+      <h2 class="section-title reveal">THE LUXURY<br>SCORE SYSTEM</h2>
+      <p class="section-desc reveal">Every site generated by Snowball is scored across 6 dimensions before it can be deployed. Below 85 — it doesn't ship.</p>
+      <div class="score-grid reveal">
+        <div class="score-card">
+          <div class="score-card-header">
+            <div class="score-card-title">TYPOGRAPHY</div>
+            <span class="score-badge pass">PASS</span>
+          </div>
+          <div class="score-bar-wrap">
+            <div class="score-bar-label"><span>Display Hierarchy</span><span>98</span></div>
+            <div class="score-bar"><div class="score-bar-fill high" style="width:98%"></div></div>
+          </div>
+          <div class="score-bar-wrap">
+            <div class="score-bar-label"><span>Pairing Quality</span><span>96</span></div>
+            <div class="score-bar"><div class="score-bar-fill high" style="width:96%"></div></div>
+          </div>
+          <div class="score-bar-wrap">
+            <div class="score-bar-label"><span>Scale Ratio</span><span>94</span></div>
+            <div class="score-bar"><div class="score-bar-fill high" style="width:94%"></div></div>
+          </div>
+        </div>
+        <div class="score-card">
+          <div class="score-card-header">
+            <div class="score-card-title">COLOR</div>
+            <span class="score-badge pass">PASS</span>
+          </div>
+          <div class="score-bar-wrap">
+            <div class="score-bar-label"><span>Palette Harmony</span><span>96</span></div>
+            <div class="score-bar"><div class="score-bar-fill high" style="width:96%"></div></div>
+          </div>
+          <div class="score-bar-wrap">
+            <div class="score-bar-label"><span>Contrast Ratio</span><span>100</span></div>
+            <div class="score-bar"><div class="score-bar-fill high" style="width:100%"></div></div>
+          </div>
+          <div class="score-bar-wrap">
+            <div class="score-bar-label"><span>Luxury Alignment</span><span>94</span></div>
+            <div class="score-bar"><div class="score-bar-fill high" style="width:94%"></div></div>
+          </div>
+        </div>
+        <div class="score-card">
+          <div class="score-card-header">
+            <div class="score-card-title">SPACING</div>
+            <span class="score-badge pass">PASS</span>
+          </div>
+          <div class="score-bar-wrap">
+            <div class="score-bar-label"><span>Grid Consistency</span><span>92</span></div>
+            <div class="score-bar"><div class="score-bar-fill" style="width:92%"></div></div>
+          </div>
+          <div class="score-bar-wrap">
+            <div class="score-bar-label"><span>Breathing Room</span><span>95</span></div>
+            <div class="score-bar"><div class="score-bar-fill high" style="width:95%"></div></div>
+          </div>
+          <div class="score-bar-wrap">
+            <div class="score-bar-label"><span>Margin Doctrine</span><span>90</span></div>
+            <div class="score-bar"><div class="score-bar-fill" style="width:90%"></div></div>
+          </div>
+        </div>
+        <div class="score-card">
+          <div class="score-card-header">
+            <div class="score-card-title">MOTION</div>
+            <span class="score-badge warn">REVIEW</span>
+          </div>
+          <div class="score-bar-wrap">
+            <div class="score-bar-label"><span>Scroll Behavior</span><span>88</span></div>
+            <div class="score-bar"><div class="score-bar-fill" style="width:88%"></div></div>
+          </div>
+          <div class="score-bar-wrap">
+            <div class="score-bar-label"><span>Hover States</span><span>86</span></div>
+            <div class="score-bar"><div class="score-bar-fill" style="width:86%"></div></div>
+          </div>
+          <div class="score-bar-wrap">
+            <div class="score-bar-label"><span>Transition Curves</span><span>84</span></div>
+            <div class="score-bar"><div class="score-bar-fill" style="width:84%"></div></div>
+          </div>
+        </div>
+        <div class="score-card">
+          <div class="score-card-header">
+            <div class="score-card-title">PERFORMANCE</div>
+            <span class="score-badge pass">PASS</span>
+          </div>
+          <div class="score-bar-wrap">
+            <div class="score-bar-label"><span>Load Speed</span><span>97</span></div>
+            <div class="score-bar"><div class="score-bar-fill high" style="width:97%"></div></div>
+          </div>
+          <div class="score-bar-wrap">
+            <div class="score-bar-label"><span>Mobile Score</span><span>94</span></div>
+            <div class="score-bar"><div class="score-bar-fill high" style="width:94%"></div></div>
+          </div>
+          <div class="score-bar-wrap">
+            <div class="score-bar-label"><span>Core Web Vitals</span><span>91</span></div>
+            <div class="score-bar"><div class="score-bar-fill" style="width:91%"></div></div>
+          </div>
+        </div>
+        <div class="score-card">
+          <div class="score-card-header">
+            <div class="score-card-title">CONVERSION</div>
+            <span class="score-badge pass">PASS</span>
+          </div>
+          <div class="score-bar-wrap">
+            <div class="score-bar-label"><span>CTA Placement</span><span>93</span></div>
+            <div class="score-bar"><div class="score-bar-fill" style="width:93%"></div></div>
+          </div>
+          <div class="score-bar-wrap">
+            <div class="score-bar-label"><span>Trust Signals</span><span>90</span></div>
+            <div class="score-bar"><div class="score-bar-fill" style="width:90%"></div></div>
+          </div>
+          <div class="score-bar-wrap">
+            <div class="score-bar-label"><span>Inquiry Flow</span><span>88</span></div>
+            <div class="score-bar"><div class="score-bar-fill" style="width:88%"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- LEARNING ENGINE -->
+    <section class="section learning-section" id="learning">
+      <div class="section-label">05 — The Intelligence</div>
+      <h2 class="section-title reveal">THE LEARNING<br>MATRIX</h2>
+      <p class="section-desc reveal">Snowball monitors, curates, and absorbs luxury design intelligence every week. The platform gets smarter without being touched.</p>
+      <div class="learning-grid reveal">
+        <div class="learning-cell">
+          <div class="learning-cell-icon">01</div>
+          <div class="learning-cell-title">TREND RADAR</div>
+          <div class="learning-cell-desc">Eight authoritative sources monitored weekly. When luxury design moves, Snowball moves first.</div>
+          <div class="learning-sources">
+            <div class="learning-source">
+              <div class="learning-source-dot"></div>
+              <span class="learning-source-name">Red Dot Design Award</span>
+              <span class="learning-source-type">WEEKLY</span>
+            </div>
+            <div class="learning-source">
+              <div class="learning-source-dot"></div>
+              <span class="learning-source-name">iF Design Award</span>
+              <span class="learning-source-type">WEEKLY</span>
+            </div>
+            <div class="learning-source">
+              <div class="learning-source-dot"></div>
+              <span class="learning-source-name">Awwwards SOTD</span>
+              <span class="learning-source-type">DAILY</span>
+            </div>
+            <div class="learning-source">
+              <div class="learning-source-dot"></div>
+              <span class="learning-source-name">Core77 Design</span>
+              <span class="learning-source-type">WEEKLY</span>
+            </div>
+            <div class="learning-source">
+              <div class="learning-source-dot"></div>
+              <span class="learning-source-name">Dezeen Awards</span>
+              <span class="learning-source-type">MONTHLY</span>
+            </div>
+            <div class="learning-source">
+              <div class="learning-source-dot"></div>
+              <span class="learning-source-name">LVMH Brand Launches</span>
+              <span class="learning-source-type">ON RELEASE</span>
+            </div>
+            <div class="learning-source">
+              <div class="learning-source-dot"></div>
+              <span class="learning-source-name">Automobile Magazine</span>
+              <span class="learning-source-type">MONTHLY</span>
+            </div>
+            <div class="learning-source">
+              <div class="learning-source-dot"></div>
+              <span class="learning-source-name">Wallpaper* Design</span>
+              <span class="learning-source-type">MONTHLY</span>
+            </div>
+          </div>
+        </div>
+        <div class="learning-cell">
+          <div class="learning-cell-icon">02</div>
+          <div class="learning-cell-title">DRIFT DETECTION</div>
+          <div class="learning-cell-desc">When an archetype's reference brands update their visual language, Snowball detects the drift and flags template updates before clients notice the gap.</div>
+          <div class="learning-sources">
+            <div class="learning-source">
+              <div class="learning-source-dot"></div>
+              <span class="learning-source-name">Color Trend Analysis</span>
+              <span class="learning-source-type">AUTO</span>
+            </div>
+            <div class="learning-source">
+              <div class="learning-source-dot"></div>
+              <span class="learning-source-name">Typography Shift Monitor</span>
+              <span class="learning-source-type">AUTO</span>
+            </div>
+            <div class="learning-source">
+              <div class="learning-source-dot"></div>
+              <span class="learning-source-name">Layout Pattern Recognition</span>
+              <span class="learning-source-type">AUTO</span>
+            </div>
+            <div class="learning-source">
+              <div class="learning-source-dot"></div>
+              <span class="learning-source-name">Motion Trend Tracking</span>
+              <span class="learning-source-type">AUTO</span>
+            </div>
+          </div>
+        </div>
+        <div class="learning-cell">
+          <div class="learning-cell-icon">03</div>
+          <div class="learning-cell-title">CLIENT LOOP</div>
+          <div class="learning-cell-desc">Every client interaction trains the engine. What they change, what they keep, what they ask for — all becomes intelligence that improves the next site.</div>
+          <div class="learning-sources">
+            <div class="learning-source">
+              <div class="learning-source-dot"></div>
+              <span class="learning-source-name">Element Change Tracking</span>
+              <span class="learning-source-type">PASSIVE</span>
+            </div>
+            <div class="learning-source">
+              <div class="learning-source-dot"></div>
+              <span class="learning-source-name">Revision Request Analysis</span>
+              <span class="learning-source-type">PASSIVE</span>
+            </div>
+            <div class="learning-source">
+              <div class="learning-source-dot"></div>
+              <span class="learning-source-name">Satisfaction Correlation</span>
+              <span class="learning-source-type">PASSIVE</span>
+            </div>
+            <div class="learning-source">
+              <div class="learning-source-dot"></div>
+              <span class="learning-source-name">Conversion Rate by Template</span>
+              <span class="learning-source-type">PASSIVE</span>
+            </div>
+          </div>
+        </div>
+        <div class="learning-cell">
+          <div class="learning-cell-icon">04</div>
+          <div class="learning-cell-title">COMPOUND MOAT</div>
+          <div class="learning-cell-desc">The longer Snowball operates, the harder it is to replicate. Competitors can copy the templates — they cannot copy 3 years of luxury design intelligence.</div>
+          <div class="learning-sources">
+            <div class="learning-source">
+              <div class="learning-source-dot"></div>
+              <span class="learning-source-name">Year 1: Design DNA Established</span>
+              <span class="learning-source-type">PHASE 1</span>
+            </div>
+            <div class="learning-source">
+              <div class="learning-source-dot"></div>
+              <span class="learning-source-name">Year 2: Client Data Compounds</span>
+              <span class="learning-source-type">PHASE 2</span>
+            </div>
+            <div class="learning-source">
+              <div class="learning-source-dot"></div>
+              <span class="learning-source-name">Year 3: Proprietary Intelligence</span>
+              <span class="learning-source-type">PHASE 3</span>
+            </div>
+            <div class="learning-source">
+              <div class="learning-source-dot"></div>
+              <span class="learning-source-name">Year 5: Unassailable Position</span>
+              <span class="learning-source-type">PHASE 4</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- TECH STACK -->
+    <section class="section tech-section" id="tech">
+      <div class="section-label">06 — The Stack</div>
+      <h2 class="section-title reveal">TECHNOLOGY<br>MATRIX</h2>
+      <p class="section-desc reveal">Every technology chosen for precision, performance, and scalability. No bloat. No compromise.</p>
+      <div class="tech-grid reveal">
+        <div class="tech-cell">
+          <span class="tech-icon">{N}</span>
+          <div class="tech-name">NEXT.JS</div>
+          <div class="tech-role">Frontend</div>
+        </div>
+        <div class="tech-cell">
+          <span class="tech-icon">{T}</span>
+          <div class="tech-name">TAILWIND</div>
+          <div class="tech-role">Styling</div>
+        </div>
+        <div class="tech-cell">
+          <span class="tech-icon">{F}</span>
+          <div class="tech-name">FRAMER</div>
+          <div class="tech-role">Motion</div>
+        </div>
+        <div class="tech-cell">
+          <span class="tech-icon">{S}</span>
+          <div class="tech-name">SUPABASE</div>
+          <div class="tech-role">Database</div>
+        </div>
+        <div class="tech-cell">
+          <span class="tech-icon">{$}</span>
+          <div class="tech-name">STRIPE</div>
+          <div class="tech-role">Payments</div>
+        </div>
+        <div class="tech-cell">
+          <span class="tech-icon">{V}</span>
+          <div class="tech-name">VERCEL</div>
+          <div class="tech-role">Deploy</div>
+        </div>
+        <div class="tech-cell">
+          <span class="tech-icon">{A}</span>
+          <div class="tech-name">GPT-4o</div>
+          <div class="tech-role">AI Layer</div>
+        </div>
+        <div class="tech-cell">
+          <span class="tech-icon">{C}</span>
+          <div class="tech-name">FIRECRAWL</div>
+          <div class="tech-role">Scraper</div>
+        </div>
+        <div class="tech-cell">
+          <span class="tech-icon">{G}</span>
+          <div class="tech-name">GITHUB</div>
+          <div class="tech-role">Version</div>
+        </div>
+        <div class="tech-cell">
+          <span class="tech-icon">{P}</span>
+          <div class="tech-name">PLAUSIBLE</div>
+          <div class="tech-role">Analytics</div>
+        </div>
+        <div class="tech-cell">
+          <span class="tech-icon">{W}</span>
+          <div class="tech-name">WEBFLOW</div>
+          <div class="tech-role">CMS Export</div>
+        </div>
+        <div class="tech-cell">
+          <span class="tech-icon">{R}</span>
+          <div class="tech-name">RESEND</div>
+          <div class="tech-role">Email</div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- PRICING -->
+    <section class="section mono-section" id="pricing">
+      <div class="section-label">07 — Monetization</div>
+      <h2 class="section-title reveal">THE REVENUE<br>MATRIX</h2>
+      <p class="section-desc reveal">Four revenue streams. Each one compounds the others. The engine generates revenue whether you are working or not.</p>
+      <div class="pricing-grid reveal">
+        <div class="pricing-card">
+          <div class="pricing-label">Stream 01 — Done For You</div>
+          <div class="pricing-price">$5K</div>
+          <div class="pricing-period">Per site built</div>
+          <ul class="pricing-features">
+            <li>Full custom site build</li>
+            <li>One archetype selected</li>
+            <li>Brand kit integration</li>
+            <li>Luxury score guarantee 90+</li>
+            <li>2 revision rounds</li>
+            <li>Deploy + handoff</li>
+          </ul>
+        </div>
+        <div class="pricing-card featured">
+          <div class="pricing-label">Stream 02 — Template License</div>
+          <div class="pricing-price">$997</div>
+          <div class="pricing-period">One-time per archetype</div>
+          <ul class="pricing-features">
+            <li>Full archetype template</li>
+            <li>Component library access</li>
+            <li>Brand customization guide</li>
+            <li>Deploy documentation</li>
+            <li>6 months updates</li>
+            <li>Commercial use license</li>
+          </ul>
+        </div>
+        <div class="pricing-card">
+          <div class="pricing-label">Stream 03 — SaaS Platform</div>
+          <div class="pricing-price">$199</div>
+          <div class="pricing-period">Per month</div>
+          <ul class="pricing-features">
+            <li>Full builder access</li>
+            <li>All 8 archetypes</li>
+            <li>AI Style Advisor</li>
+            <li>Luxury Scoring live</li>
+            <li>Export unlimited</li>
+            <li>Monthly trend updates</li>
+          </ul>
+        </div>
+        <div class="pricing-card">
+          <div class="pricing-label">Stream 04 — Agency License</div>
+          <div class="pricing-price">$3K</div>
+          <div class="pricing-period">Per month</div>
+          <ul class="pricing-features">
+            <li>White-label the engine</li>
+            <li>Your brand, your clients</li>
+            <li>Unlimited site builds</li>
+            <li>Priority trend updates</li>
+            <li>API access</li>
+            <li>Dedicated support</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    
+    <!-- ROADMAP -->
+    <section class="section roadmap-section" id="roadmap">
+      <div class="section-label">08 — The Plan</div>
+      <h2 class="section-title reveal">90 DAY<br>ROADMAP</h2>
+      <p class="section-desc reveal">Four phases. Each one builds on the last. By day 90, Snowball is a live SaaS with paying clients and a compound moat.</p>
+      <div class="roadmap-timeline reveal">
+        <div class="roadmap-item">
+          <div class="roadmap-content">
+            <div class="roadmap-phase">Phase 01 — Days 1-14</div>
+            <div class="roadmap-title">PROOF OF MARKET</div>
+            <div class="roadmap-desc">Deploy all 8 demo sites. Send cold email sequence to 50 luxury design studios. Close first 2 DFY clients at $3.5K-$5K each. Validate the market before building the tool.</div>
+          </div>
+          <div class="roadmap-center"><div class="roadmap-node">01</div></div>
+          <div class="roadmap-empty"></div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-empty"></div>
+          <div class="roadmap-center"><div class="roadmap-node">02</div></div>
+          <div class="roadmap-content">
+            <div class="roadmap-phase">Phase 02 — Days 15-45</div>
+            <div class="roadmap-title">TEMPLATE SYSTEM</div>
+            <div class="roadmap-desc">Codify all 8 archetypes into the builder. Build the component library. Create the niche selector and brand input flow. Soft launch to 10 beta agencies at $99/mo each.</div>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-content">
+            <div class="roadmap-phase">Phase 03 — Days 46-75</div>
+            <div class="roadmap-title">AI LAYER LIVE</div>
+            <div class="roadmap-desc">Launch the Style Advisor. Activate the trend scraper. Connect the Luxury Scoring system. Public SaaS launch at $199/mo. Target 50 paying subscribers by day 75.</div>
+          </div>
+          <div class="roadmap-center"><div class="roadmap-node">03</div></div>
+          <div class="roadmap-empty"></div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-empty"></div>
+          <div class="roadmap-center"><div class="roadmap-node">04</div></div>
+          <div class="roadmap-content">
+            <div class="roadmap-phase">Phase 04 — Days 76-90</div>
+            <div class="roadmap-title">SCALE AND COMPOUND</div>
+            <div class="roadmap-desc">Launch white-label agency tier at $3K/mo. Expand archetypes into yacht, jewelry, aerospace. The learning system starts compounding the moat. Target $20K MRR by day 90.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- CTA -->
+    <section class="cta-section">
+      <div class="section-label" style="justify-content:center; margin-bottom:40px;">09 — Commission</div>
+      <h2 class="cta-title reveal">THE SNOWBALL<br><span>ROLLS NOW</span></h2>
+      <p style="font-size:18px; color:rgba(255,255,255,0.5); max-width:480px; margin:0 auto 60px; line-height:1.8; font-family:var(--font-mono);">Every site built. Every client won. Every trend absorbed. The engine compounds. The moat deepens. The snowball rolls.</p>
+      <div class="hero-cta-group">
+        <a href="snowball_client_intake.html" class="btn-primary">Commission A Site</a>
+        <a href="snowball_intelligence_app.html" class="btn-ghost">Launch Intelligence App</a>
+      </div>
+    </section>
+    
+    <!-- FOOTER -->
+    <footer>
+      <div>
+        <div class="footer-brand">SNOWBALL</div>
+        <div class="footer-tagline">Meta 2027 Design Intelligence Engine.<br>Built to compound. Built to last.<br>Built by Captain.</div>
+      </div>
+      <div>
+        <div class="footer-col-title">The Suite</div>
+        <ul class="footer-links">
+          <li><a href="SNOWBALL_COMMAND_CENTER.html">Command Center</a></li>
+          <li><a href="snowball_intelligence_app.html">Intelligence App</a></li>
+          <li><a href="snowball_dashboard.html">Dashboard</a></li>
+          <li><a href="snowball_client_intake.html">Client Intake</a></li>
+          <li><a href="snowball_saas_tool.html">SaaS Tool</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">The Sites</div>
+        <ul class="footer-links">
+          <li><a href="snowball_hero_site.html">Dark Precision</a></li>
+          <li><a href="aurora_design_site.html">Fluid Elegance</a></li>
+          <li><a href="vortex_design_site.html">Avant Garde</a></li>
+          <li><a href="prism_design_site.html">Wedge Futurist</a></li>
+          <li><a href="apex_transport_site.html">Transport Luxury</a></li>
+          <li><a href="oracle_design_site.html">Future Concept</a></li>
+          <li><a href="forma_italdesign_site.html">Technical Sculpture</a></li>
+          <li><a href="mark_brand_site.html">Brand Identity</a></li>
+        </ul>
+      </div>
+    </footer>
+    <div class="footer-bottom">
+      <div class="footer-copy">SNOWBALL DESIGN INTELLIGENCE — META 2027 ENGINE — ALL SYSTEMS OPERATIONAL</div>
+      <div class="footer-copy" style="color:var(--gold);">LUXURY SCORE: 97 / 100</div>
+    </div>
+    
+    <script>
+    // CURSOR
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx - 6 + 'px';
+      cursor.style.top = my - 6 + 'px';
+    });
+    function animateRing() {
+      rx += (mx - rx - 18) * 0.12;
+      ry += (my - ry - 18) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top = ry + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+    document.querySelectorAll('a, button, .matrix-cell, .score-card, .archetype-option, .tech-cell').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.transform = 'scale(2)';
+        ring.style.transform = 'scale(1.5)';
+        ring.style.opacity = '1';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.transform = 'scale(1)';
+        ring.style.transform = 'scale(1)';
+        ring.style.opacity = '0.5';
+      });
+    });
+    
+    // REVEAL ON SCROLL
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) e.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(r => observer.observe(r));
+    
+    // ARCHETYPE SWITCHER
+    document.querySelectorAll('.archetype-option').forEach(opt => {
+      opt.addEventListener('click', function() {
+        document.querySelectorAll('.archetype-option').forEach(o => o.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+    
+    // BUILDER TOOLBAR
+    document.querySelectorAll('.toolbar-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        if (!this.style.background) {
+          document.querySelectorAll('.toolbar-btn').forEach(b => {
+            if (!b.style.background) b.classList.remove('active');
+          });
+          this.classList.add('active');
+        }
+      });
+    });
+    
+    // SCORE BAR ANIMATION
+    const scoreObserver = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.querySelectorAll('.score-bar-fill').forEach(bar => {
+            const w = bar.style.width;
+            bar.style.width = '0%';
+            setTimeout(() => { bar.style.width = w; }, 100);
+          });
+        }
+      });
+    }, { threshold: 0.3 });
+    document.querySelectorAll('.score-card').forEach(c => scoreObserver.observe(c));
+    
+    // NAV SCROLL EFFECT
+    window.addEventListener('scroll', () => {
+      const nav = document.querySelector('nav');
+      if (window.scrollY > 100) {
+        nav.style.background = 'rgba(0,0,0,0.98)';
+      } else {
+        nav.style.background = 'rgba(0,0,0,0.9)';
+      }
+    });
+    
+    console.log('%cSNOWBALL META 2027 ENGINE', 'color:#c9a84c; font-size:24px; font-weight:bold; font-family:monospace;');
+    console.log('%cDesign Intelligence Matrix — All Systems Operational', 'color:#666; font-family:monospace;');
+    console.log('%cLuxury Score: 97/100', 'color:#00ff88; font-family:monospace;');
+    </script>
+    </body>
+    </html>

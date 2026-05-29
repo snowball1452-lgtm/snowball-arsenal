@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURORA — Design Intelligence</title>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Montserrat:wght@200;300;400;600&display=swap');
+    
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --ivory: #F5F0E8;
+      --cream: #EDE8DC;
+      --gold: #C9A96E;
+      --warm-black: #0D0B09;
+      --charcoal: #1A1714;
+      --silver: #8A8680;
+      --rose: #C4856A;
+    }
+    
+    html { scroll-behavior: smooth; }
+    
+    body {
+      background: var(--ivory);
+      color: var(--warm-black);
+      font-family: 'Montserrat', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+    
+    /* Custom cursor */
+    .cursor {
+      width: 8px; height: 8px;
+      background: var(--gold);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.1s ease;
+    }
+    .cursor-ring {
+      width: 40px; height: 40px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transition: all 0.15s ease;
+      opacity: 0.6;
+    }
+    
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 2rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      mix-blend-mode: multiply;
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 300;
+      letter-spacing: 0.4em;
+      color: var(--warm-black);
+      text-transform: uppercase;
+    }
+    .nav-links {
+      display: flex;
+      gap: 3rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--warm-black);
+      text-decoration: none;
+      opacity: 0.6;
+      transition: opacity 0.3s;
+    }
+    .nav-links a:hover { opacity: 1; }
+    
+    /* HERO */
+    .hero {
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-left {
+      background: var(--warm-black);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 6rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-left::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(ellipse at 60% 60%, rgba(201,169,110,0.08) 0%, transparent 60%);
+      animation: breathe 8s ease-in-out infinite;
+    }
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.1); opacity: 1; }
+    }
+    .hero-eyebrow {
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 2rem;
+    }
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      font-weight: 300;
+      line-height: 1.1;
+      color: var(--ivory);
+      margin-bottom: 2rem;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold);
+    }
+    .hero-subtitle {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      line-height: 1.8;
+      color: rgba(245,240,232,0.5);
+      max-width: 340px;
+      margin-bottom: 3rem;
+    }
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--ivory);
+      text-decoration: none;
+      border-bottom: 1px solid var(--gold);
+      padding-bottom: 0.5rem;
+      transition: gap 0.3s;
+    }
+    .hero-cta:hover { gap: 2rem; }
+    
+    .hero-right {
+      background: var(--cream);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hero-right::before {
+      content: 'AURORA';
+      position: absolute;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18vw;
+      font-weight: 300;
+      color: rgba(201,169,110,0.06);
+      white-space: nowrap;
+      user-select: none;
+    }
+    .hero-right-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+    .hero-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(6rem, 12vw, 10rem);
+      font-weight: 300;
+      color: var(--warm-black);
+      line-height: 1;
+      opacity: 0.15;
+    }
+    .hero-year {
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      color: var(--silver);
+      text-transform: uppercase;
+      margin-top: 1rem;
+    }
+    
+    /* MARQUEE */
+    .marquee-section {
+      background: var(--warm-black);
+      padding: 1.5rem 0;
+      overflow: hidden;
+      border-top: 1px solid rgba(201,169,110,0.2);
+      border-bottom: 1px solid rgba(201,169,110,0.2);
+    }
+    .marquee-track {
+      display: flex;
+      gap: 4rem;
+      animation: marquee 25s linear infinite;
+      white-space: nowrap;
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    .marquee-item {
+      font-size: 0.55rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: rgba(201,169,110,0.6);
+      flex-shrink: 0;
+    }
+    .marquee-dot {
+      color: var(--gold);
+      margin: 0 1rem;
+    }
+    
+    /* PHILOSOPHY */
+    .philosophy {
+      padding: 12rem 8rem;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 8rem;
+      align-items: start;
+    }
+    .philosophy-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--silver);
+      padding-top: 0.5rem;
+    }
+    .philosophy-content {}
+    .philosophy-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.8rem, 3.5vw, 3rem);
+      font-weight: 300;
+      line-height: 1.4;
+      color: var(--warm-black);
+      margin-bottom: 3rem;
+    }
+    .philosophy-quote em { font-style: italic; color: var(--gold); }
+    .philosophy-body {
+      font-size: 0.7rem;
+      line-height: 2;
+      color: var(--silver);
+      max-width: 500px;
+      column-count: 2;
+      column-gap: 3rem;
+    }
+    .philosophy-line {
+      width: 60px;
+      height: 1px;
+      background: var(--gold);
+      margin: 3rem 0;
+    }
+    
+    /* SERVICES */
+    .services {
+      background: var(--warm-black);
+      padding: 10rem 8rem;
+    }
+    .services-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 6rem;
+      border-bottom: 1px solid rgba(201,169,110,0.15);
+      padding-bottom: 3rem;
+    }
+    .services-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 300;
+      color: var(--ivory);
+    }
+    .services-count {
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      color: var(--silver);
+      text-transform: uppercase;
+    }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+    }
+    .service-item {
+      padding: 3rem;
+      border-right: 1px solid rgba(201,169,110,0.1);
+      border-bottom: 1px solid rgba(201,169,110,0.1);
+      transition: background 0.4s;
+      cursor: default;
+    }
+    .service-item:hover { background: rgba(201,169,110,0.04); }
+    .service-item:nth-child(3n) { border-right: none; }
+    .service-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.8rem;
+      color: var(--gold);
+      opacity: 0.4;
+      margin-bottom: 2rem;
+    }
+    .service-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 300;
+      color: var(--ivory);
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    .service-desc {
+      font-size: 0.65rem;
+      line-height: 1.9;
+      color: rgba(245,240,232,0.35);
+      letter-spacing: 0.05em;
+    }
+    
+    /* SHOWCASE */
+    .showcase {
+      padding: 10rem 0;
+      background: var(--ivory);
+    }
+    .showcase-header {
+      padding: 0 8rem;
+      margin-bottom: 5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .showcase-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 300;
+    }
+    .showcase-link {
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      border-bottom: 1px solid var(--gold);
+      padding-bottom: 0.2rem;
+    }
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      grid-template-rows: 500px;
+      gap: 2px;
+    }
+    .showcase-item {
+      position: relative;
+      overflow: hidden;
+      background: var(--charcoal);
+    }
+    .showcase-item:first-child {
+      grid-row: span 1;
+    }
+    .showcase-bg {
+      width: 100%; height: 100%;
+      background: var(--charcoal);
+      transition: transform 0.8s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .showcase-item:hover .showcase-bg { transform: scale(1.05); }
+    .showcase-bg-1 { background: linear-gradient(135deg, #0D0B09 0%, #1a1510 50%, #2a1f10 100%); }
+    .showcase-bg-2 { background: linear-gradient(135deg, #0a0a10 0%, #12121a 100%); }
+    .showcase-bg-3 { background: linear-gradient(135deg, #0D0B09 0%, #1a1210 100%); }
+    .showcase-label {
+      position: absolute;
+      bottom: 2rem;
+      left: 2rem;
+      z-index: 2;
+    }
+    .showcase-label-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: var(--ivory);
+    }
+    .showcase-label-cat {
+      font-size: 0.55rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-top: 0.3rem;
+    }
+    .showcase-inner-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 5rem;
+      font-weight: 300;
+      color: rgba(201,169,110,0.08);
+      text-align: center;
+    }
+    
+    /* STATS */
+    .stats {
+      background: var(--warm-black);
+      padding: 8rem;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4rem;
+      border-top: 1px solid rgba(201,169,110,0.1);
+    }
+    .stat-item { text-align: center; }
+    .stat-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 5vw, 4.5rem);
+      font-weight: 300;
+      color: var(--ivory);
+      line-height: 1;
+    }
+    .stat-unit {
+      color: var(--gold);
+    }
+    .stat-label {
+      font-size: 0.55rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: rgba(245,240,232,0.3);
+      margin-top: 1rem;
+    }
+    
+    /* PROCESS */
+    .process {
+      padding: 12rem 8rem;
+      background: var(--cream);
+    }
+    .process-header {
+      margin-bottom: 6rem;
+      max-width: 500px;
+    }
+    .process-eyebrow {
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+    }
+    .process-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 4vw, 3.5rem);
+      font-weight: 300;
+      line-height: 1.2;
+    }
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4rem;
+      position: relative;
+    }
+    .process-steps::before {
+      content: '';
+      position: absolute;
+      top: 1.5rem;
+      left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, var(--gold) 0%, rgba(201,169,110,0.1) 100%);
+    }
+    .process-step {}
+    .process-step-num {
+      width: 3rem; height: 3rem;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.9rem;
+      color: var(--gold);
+      margin-bottom: 2rem;
+      background: var(--cream);
+      position: relative;
+      z-index: 1;
+    }
+    .process-step-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 300;
+      margin-bottom: 1rem;
+    }
+    .process-step-desc {
+      font-size: 0.65rem;
+      line-height: 1.9;
+      color: var(--silver);
+    }
+    
+    /* CTA */
+    .cta-section {
+      background: var(--warm-black);
+      padding: 12rem 8rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(201,169,110,0.06) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .cta-eyebrow {
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 2rem;
+    }
+    .cta-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 6vw, 5rem);
+      font-weight: 300;
+      color: var(--ivory);
+      line-height: 1.2;
+      margin-bottom: 3rem;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .cta-title em { font-style: italic; color: var(--gold); }
+    .cta-btn {
+      display: inline-block;
+      padding: 1.2rem 3.5rem;
+      border: 1px solid var(--gold);
+      color: var(--ivory);
+      text-decoration: none;
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      transition: all 0.4s;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-btn::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: var(--gold);
+      transition: left 0.4s ease;
+      z-index: -1;
+    }
+    .cta-btn:hover::before { left: 0; }
+    .cta-btn:hover { color: var(--warm-black); }
+    
+    /* FOOTER */
+    footer {
+      background: var(--warm-black);
+      padding: 4rem 8rem;
+      border-top: 1px solid rgba(201,169,110,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 300;
+      letter-spacing: 0.4em;
+      color: var(--ivory);
+      text-transform: uppercase;
+    }
+    .footer-copy {
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+      color: rgba(245,240,232,0.2);
+      text-transform: uppercase;
+    }
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    .footer-links a {
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(245,240,232,0.3);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .footer-links a:hover { color: var(--gold); }
+    
+    /* REVEAL */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-right { display: none; }
+      .philosophy { grid-template-columns: 1fr; padding: 6rem 2rem; gap: 3rem; }
+      .services { padding: 6rem 2rem; }
+      .services-grid { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2, 1fr); padding: 4rem 2rem; }
+      .process { padding: 6rem 2rem; }
+      .process-steps { grid-template-columns: 1fr 1fr; }
+      .showcase-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
+      .cta-section { padding: 8rem 2rem; }
+      footer { flex-direction: column; gap: 2rem; text-align: center; padding: 3rem 2rem; }
+      nav { padding: 1.5rem 2rem; }
+      .nav-links { display: none; }
+      .hero-left { padding: 8rem 2rem 4rem; }
+    }
+    </style>
+    </head>
+    <body>
+    
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+    
+    <nav>
+      <div class="nav-logo">Aurora</div>
+      <ul class="nav-links">
+        <li><a href="#philosophy">Philosophy</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#process">Process</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    
+    <section class="hero">
+      <div class="hero-left">
+        <p class="hero-eyebrow">Design Intelligence — Est. 2024</p>
+        <h1 class="hero-title">Where <em>form</em><br>becomes<br>philosophy</h1>
+        <p class="hero-subtitle">Aurora crafts the visual language of tomorrow's most iconic brands. Fluid, precise, eternal.</p>
+        <a href="#contact" class="hero-cta">Commission a project <span>→</span></a>
+      </div>
+      <div class="hero-right">
+        <div class="hero-right-content">
+          <div class="hero-number">VIII</div>
+          <div class="hero-year">Design Archetypes — 2024</div>
+        </div>
+      </div>
+    </section>
+    
+    <div class="marquee-section">
+      <div class="marquee-track">
+        <span class="marquee-item">Automotive Identity</span><span class="marquee-dot">·</span>
+        <span class="marquee-item">Luxury Interiors</span><span class="marquee-dot">·</span>
+        <span class="marquee-item">Brand Architecture</span><span class="marquee-dot">·</span>
+        <span class="marquee-item">Industrial Sculpture</span><span class="marquee-dot">·</span>
+        <span class="marquee-item">Digital Presence</span><span class="marquee-dot">·</span>
+        <span class="marquee-item">Spatial Design</span><span class="marquee-dot">·</span>
+        <span class="marquee-item">Motion Language</span><span class="marquee-dot">·</span>
+        <span class="marquee-item">Automotive Identity</span><span class="marquee-dot">·</span>
+        <span class="marquee-item">Luxury Interiors</span><span class="marquee-dot">·</span>
+        <span class="marquee-item">Brand Architecture</span><span class="marquee-dot">·</span>
+        <span class="marquee-item">Industrial Sculpture</span><span class="marquee-dot">·</span>
+        <span class="marquee-item">Digital Presence</span><span class="marquee-dot">·</span>
+        <span class="marquee-item">Spatial Design</span><span class="marquee-dot">·</span>
+        <span class="marquee-item">Motion Language</span><span class="marquee-dot">·</span>
+      </div>
+    </div>
+    
+    <section class="philosophy" id="philosophy">
+      <div class="philosophy-label reveal">Philosophy</div>
+      <div class="philosophy-content">
+        <blockquote class="philosophy-quote reveal">
+          "Design is not what it looks like. Design is <em>how it feels</em> to become part of something inevitable."
+        </blockquote>
+        <div class="philosophy-line reveal"></div>
+        <p class="philosophy-body reveal">
+          Aurora was born from a singular conviction: that luxury design is not a category but a commitment. Every curve, every silence between elements, every weight of type chosen — these are not aesthetic decisions. They are philosophical ones. We work with clients who understand that the difference between a brand and a legend is not budget. It is intention. Our process begins where others end: with meaning. We ask not what you want to look like, but what you want the world to feel when they encounter you. From that answer, we build everything.
+        </p>
+      </div>
+    </section>
+    
+    <section class="services" id="services">
+      <div class="services-header reveal">
+        <h2 class="services-title">Capabilities</h2>
+        <span class="services-count">06 Disciplines</span>
+      </div>
+      <div class="services-grid">
+        <div class="service-item reveal">
+          <div class="service-num">01</div>
+          <h3 class="service-name">Brand Architecture</h3>
+          <p class="service-desc">Complete identity systems built for longevity. Logo marks, typography hierarchies, color systems, and the invisible rules that keep a brand coherent across every touchpoint.</p>
+        </div>
+        <div class="service-item reveal">
+          <div class="service-num">02</div>
+          <h3 class="service-name">Digital Presence</h3>
+          <p class="service-desc">Websites and digital experiences that perform at the level of your physical brand. No templates. No compromises. Pure design intelligence translated to pixels.</p>
+        </div>
+        <div class="service-item reveal">
+          <div class="service-num">03</div>
+          <h3 class="service-name">Industrial Aesthetics</h3>
+          <p class="service-desc">Product and industrial design consultancy that brings the language of automotive sculpture to consumer goods, equipment, and manufactured objects.</p>
+        </div>
+        <div class="service-item reveal">
+          <div class="service-num">04</div>
+          <h3 class="service-name">Spatial Identity</h3>
+          <p class="service-desc">Showrooms, studios, and environments designed as brand extensions. Every material choice, lighting decision, and spatial flow is a deliberate message.</p>
+        </div>
+        <div class="service-item reveal">
+          <div class="service-num">05</div>
+          <h3 class="service-name">Motion Design</h3>
+          <p class="service-desc">Animation, film, and motion language for brands that move. From brand films to UI micro-interactions, movement that carries meaning.</p>
+        </div>
+        <div class="service-item reveal">
+          <div class="service-num">06</div>
+          <h3 class="service-name">Design Strategy</h3>
+          <p class="service-desc">Long-term design direction for organisations undergoing transformation. We become your embedded design intelligence, ensuring every decision compounds toward the brand you are becoming.</p>
+        </div>
+      </div>
+    </section>
+    
+    <section class="showcase" id="work">
+      <div class="showcase-header reveal">
+        <h2 class="showcase-title">Selected Work</h2>
+        <a href="#" class="showcase-link">View all projects</a>
+      </div>
+      <div class="showcase-grid">
+        <div class="showcase-item">
+          <div class="showcase-bg showcase-bg-1">
+            <div class="showcase-inner-text">I</div>
+          </div>
+          <div class="showcase-label">
+            <div class="showcase-label-title">Velaris Motors — Brand System</div>
+            <div class="showcase-label-cat">Automotive · Brand Architecture</div>
+          </div>
+        </div>
+        <div class="showcase-item">
+          <div class="showcase-bg showcase-bg-2">
+            <div class="showcase-inner-text">II</div>
+          </div>
+          <div class="showcase-label">
+            <div class="showcase-label-title">Obsidian Interiors</div>
+            <div class="showcase-label-cat">Spatial · Identity</div>
+          </div>
+        </div>
+        <div class="showcase-item">
+          <div class="showcase-bg showcase-bg-3">
+            <div class="showcase-inner-text">III</div>
+          </div>
+          <div class="showcase-label">
+            <div class="showcase-label-title">Meridian Aviation</div>
+            <div class="showcase-label-cat">Industrial · Digital</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <div class="stats">
+      <div class="stat-item reveal">
+        <div class="stat-number">8<span class="stat-unit">+</span></div>
+        <div class="stat-label">Design Archetypes</div>
+      </div>
+      <div class="stat-item reveal">
+        <div class="stat-number">100<span class="stat-unit">%</span></div>
+        <div class="stat-label">Original — Zero IP Risk</div>
+      </div>
+      <div class="stat-item reveal">
+        <div class="stat-number">24<span class="stat-unit">h</span></div>
+        <div class="stat-label">Concept to Delivery</div>
+      </div>
+      <div class="stat-item reveal">
+        <div class="stat-number">∞</div>
+        <div class="stat-label">Scalable Intelligence</div>
+      </div>
+    </div>
+    
+    <section class="process" id="process">
+      <div class="process-header">
+        <div class="process-eyebrow reveal">How We Work</div>
+        <h2 class="process-title reveal">A process built<br>on intention</h2>
+      </div>
+      <div class="process-steps">
+        <div class="process-step reveal">
+          <div class="process-step-num">01</div>
+          <h3 class="process-step-title">Discovery</h3>
+          <p class="process-step-desc">Deep immersion in your world. We learn your values, your competitors, your ambitions, and the gaps between where you are and where you belong.</p>
+        </div>
+        <div class="process-step reveal">
+          <div class="process-step-num">02</div>
+          <h3 class="process-step-title">Archetype Selection</h3>
+          <p class="process-step-desc">We identify which of our 8 design archetypes serves as the foundation for your identity — or define a new one if you transcend existing categories.</p>
+        </div>
+        <div class="process-step reveal">
+          <div class="process-step-num">03</div>
+          <h3 class="process-step-title">Synthesis</h3>
+          <p class="process-step-desc">Our design intelligence system generates and refines options within strict luxury guardrails. Every option produced earns its place through performance and beauty.</p>
+        </div>
+        <div class="process-step reveal">
+          <div class="process-step-num">04</div>
+          <h3 class="process-step-title">Refinement</h3>
+          <p class="process-step-desc">Collaborative iteration toward the inevitable. We work until the result feels not like something designed, but like something discovered.</p>
+        </div>
+      </div>
+    </section>
+    
+    <section class="cta-section" id="contact">
+      <p class="cta-eyebrow reveal">Begin a Conversation</p>
+      <h2 class="cta-title reveal">Ready to build something <em>timeless?</em></h2>
+      <a href="mailto:studio@aurora-design.com" class="cta-btn reveal">Commission a project</a>
+    </section>
+    
+    <footer>
+      <div class="footer-logo">Aurora</div>
+      <p class="footer-copy">&copy; 2024 Aurora Design Intelligence. All rights reserved.</p>
+      <ul class="footer-links">
+        <li><a href="#">Privacy</a></li>
+        <li><a href="#">Terms</a></li>
+        <li><a href="#">Studio</a></li>
+      </ul>
+    </footer>
+    
+    <script>
+    // Cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+    document.addEventListener('mousemove', e => {
+      mouseX = e.clientX; mouseY = e.clientY;
+      cursor.style.left = mouseX - 4 + 'px';
+      cursor.style.top = mouseY - 4 + 'px';
+    });
+    function animateRing() {
+      ringX += (mouseX - ringX - 20) * 0.12;
+      ringY += (mouseY - ringY - 20) * 0.12;
+      ring.style.left = ringX + 'px';
+      ring.style.top = ringY + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+    
+    // Reveal on scroll
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    reveals.forEach(el => observer.observe(el));
+    
+    // Hover cursor expand
+    document.querySelectorAll('a, button, .service-item, .showcase-item').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        ring.style.transform = 'scale(2)';
+        ring.style.opacity = '0.3';
+      });
+      el.addEventListener('mouseleave', () => {
+        ring.style.transform = 'scale(1)';
+        ring.style.opacity = '0.6';
+      });
+    });
+    </script>
+    </body>
+    </html>

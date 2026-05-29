@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marcello Dark Precision — Snowball Archetype 01</title>
+    <style>
+    /* ═══════════════════════════════════════════════
+       MARCELLO DARK PRECISION — DESIGN TOKEN SYSTEM
+       Archetype 01 / Snowball Design Intelligence
+       ═══════════════════════════════════════════════ */
+    
+    :root {
+      /* CORE PALETTE */
+      --m-bg:        #080810;
+      --m-bg2:       #0d0d18;
+      --m-bg3:       #12121f;
+      --m-bg4:       #17172a;
+      --m-surface:   rgba(255,255,255,0.028);
+      --m-surface2:  rgba(255,255,255,0.055);
+    
+      /* ACCENT — ICE BLUE */
+      --m-accent:    #4a9eff;
+      --m-accent2:   #2563eb;
+      --m-accent3:   #93c5fd;
+      --m-accent-dim: rgba(74,158,255,0.12);
+      --m-accent-glow: rgba(74,158,255,0.25);
+    
+      /* TYPOGRAPHY SCALE */
+      --m-text:      #f0f4f8;
+      --m-text2:     #8a9ab5;
+      --m-text3:     #4a5568;
+      --m-text4:     #2d3748;
+    
+      /* BORDERS */
+      --m-border:    rgba(255,255,255,0.065);
+      --m-border2:   rgba(255,255,255,0.12);
+      --m-border-accent: rgba(74,158,255,0.45);
+    
+      /* HEALTH */
+      --m-green:  #4ade80;
+      --m-amber:  #fbbf24;
+      --m-red:    #f87171;
+    
+      /* SPACING SCALE (8pt grid) */
+      --s1: 4px;   --s2: 8px;   --s3: 12px;
+      --s4: 16px;  --s5: 24px;  --s6: 32px;
+      --s7: 48px;  --s8: 64px;  --s9: 96px;
+    
+      /* TYPE SCALE */
+      --t-display:  clamp(52px,6vw,96px);
+      --t-h1:       clamp(36px,4vw,64px);
+      --t-h2:       clamp(24px,3vw,42px);
+      --t-h3:       28px;
+      --t-h4:       20px;
+      --t-body:     15px;
+      --t-small:    13px;
+      --t-xs:       11px;
+      --t-mono:     13px;
+    
+      /* FONTS */
+      --f-display: -apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
+      --f-body:    -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      --f-mono:    ui-monospace,monospace;
+    
+      /* LETTER SPACING */
+      --ls-tight:  -0.04em;
+      --ls-normal: -0.01em;
+      --ls-wide:   0.08em;
+      --ls-wider:  0.16em;
+      --ls-widest: 0.24em;
+    
+      /* RADIUS */
+      --r-sm:  4px;
+      --r-md:  8px;
+      --r-lg:  12px;
+      --r-xl:  20px;
+    
+      /* MOTION */
+      --ease-out:   cubic-bezier(0.0,0.0,0.2,1);
+      --ease-in:    cubic-bezier(0.4,0.0,1,1);
+      --ease-inout: cubic-bezier(0.4,0.0,0.2,1);
+      --dur-micro:  150ms;
+      --dur-fast:   220ms;
+      --dur-base:   350ms;
+      --dur-slow:   600ms;
+    }
+    
+    /* ═══ RESET + BASE ═══ */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; font-size:16px; }
+    body {
+      background: var(--m-bg);
+      color: var(--m-text);
+      font-family: var(--f-body);
+      font-size: var(--t-body);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    /* ═══ SCROLLBAR ═══ */
+    ::-webkit-scrollbar { width:3px; }
+    ::-webkit-scrollbar-track { background:transparent; }
+    ::-webkit-scrollbar-thumb { background:var(--m-border2); border-radius:2px; }
+    
+    /* ═══ LAYOUT SHELL ═══ */
+    #shell {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      grid-template-rows: 52px 1fr;
+      min-height: 100vh;
+    }
+    #topbar {
+      grid-column: 1/-1;
+      height: 52px;
+      background: rgba(8,8,16,0.92);
+      border-bottom: 1px solid var(--m-border);
+      backdrop-filter: blur(16px);
+      display: flex;
+      align-items: center;
+      padding: 0 var(--s5);
+      gap: var(--s4);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    #sidebar {
+      background: var(--m-bg2);
+      border-right: 1px solid var(--m-border);
+      padding: var(--s4) 0;
+      overflow-y: auto;
+      position: sticky;
+      top: 52px;
+      height: calc(100vh - 52px);
+    }
+    #main {
+      overflow-y: auto;
+      background: var(--m-bg);
+    }
+    
+    /* ═══ TOPBAR COMPONENTS ═══ */
+    .tb-logo {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: var(--ls-wider);
+      text-transform: uppercase;
+      color: var(--m-text);
+      display: flex;
+      align-items: center;
+      gap: var(--s2);
+    }
+    .tb-logo-dot { width:6px; height:6px; border-radius:50%; background:var(--m-accent); }
+    .tb-sep { width:1px; height:20px; background:var(--m-border); }
+    .tb-badge {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: var(--ls-widest);
+      text-transform: uppercase;
+      color: var(--m-accent);
+      background: var(--m-accent-dim);
+      border: 1px solid var(--m-border-accent);
+      border-radius: var(--r-sm);
+      padding: 2px 7px;
+    }
+    .tb-nav { display:flex; gap:var(--s4); margin-left:auto; }
+    .tb-nav a {
+      font-size: var(--t-xs);
+      letter-spacing: var(--ls-wide);
+      text-transform: uppercase;
+      color: var(--m-text3);
+      text-decoration: none;
+      transition: color var(--dur-fast) var(--ease-out);
+    }
+    .tb-nav a:hover { color: var(--m-text); }
+    .tb-nav a.active { color: var(--m-accent); }
+    .tb-action {
+      padding: 6px 16px;
+      background: var(--m-accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--r-md);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: var(--ls-wide);
+      text-transform: uppercase;
+      transition: all var(--dur-fast) var(--ease-out);
+    }
+    .tb-action:hover { opacity:0.85; transform:translateY(-1px); }
+    
+    /* ═══ SIDEBAR ═══ */
+    .sb-section {
+      padding: var(--s2) var(--s4);
+      margin-bottom: var(--s2);
+    }
+    .sb-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: var(--ls-widest);
+      text-transform: uppercase;
+      color: var(--m-text4);
+      padding: var(--s2) var(--s3);
+      margin-bottom: var(--s1);
+    }
+    .sb-link {
+      display: flex;
+      align-items: center;
+      gap: var(--s2);
+      padding: 7px var(--s3);
+      border-radius: var(--r-md);
+      font-size: var(--t-small);
+      color: var(--m-text3);
+      text-decoration: none;
+      cursor: pointer;
+      transition: all var(--dur-micro) var(--ease-out);
+      letter-spacing: 0.01em;
+    }
+    .sb-link:hover { background:var(--m-surface); color:var(--m-text); }
+    .sb-link.active { background:var(--m-accent-dim); color:var(--m-accent); }
+    .sb-link-dot { width:4px; height:4px; border-radius:50%; background:currentColor; flex-shrink:0; opacity:0.6; }
+    .sb-count {
+      margin-left: auto;
+      font-size: 10px;
+      background: var(--m-surface2);
+      color: var(--m-text3);
+      padding: 1px 6px;
+      border-radius: 10px;
+      font-family: var(--f-mono);
+    }
+    .sb-divider { height:1px; background:var(--m-border); margin:var(--s3) var(--s3); }
+    
+    /* ═══ MAIN CONTENT ═══ */
+    .content-section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: var(--s8) var(--s8) var(--s9);
+    }
+    
+    /* Section headers */
+    .sec-eyebrow {
+      font-size: var(--t-xs);
+      font-weight: 700;
+      letter-spacing: var(--ls-widest);
+      text-transform: uppercase;
+      color: var(--m-accent);
+      margin-bottom: var(--s3);
+      display: flex;
+      align-items: center;
+      gap: var(--s3);
+    }
+    .sec-eyebrow::after { content:''; flex:1; height:1px; background:var(--m-border); }
+    .sec-title {
+      font-size: var(--t-h1);
+      font-weight: 800;
+      letter-spacing: var(--ls-tight);
+      line-height: 1.05;
+      margin-bottom: var(--s4);
+      color: var(--m-text);
+    }
+    .sec-sub {
+      font-size: var(--t-body);
+      color: var(--m-text2);
+      max-width: 560px;
+      line-height: 1.75;
+      margin-bottom: var(--s8);
+    }
+    .sec-divider {
+      height: 1px;
+      background: var(--m-border);
+      margin: var(--s9) 0;
+    }
+    
+    /* ═══════════════════════════════════════════════
+       COMPONENT LIBRARY
+       ═══════════════════════════════════════════════ */
+    
+    /* --- TYPOGRAPHY COMPONENTS --- */
+    .m-display {
+      font-size: var(--t-display);
+      font-weight: 800;
+      letter-spacing: var(--ls-tight);
+      line-height: 0.98;
+      color: var(--m-text);
+    }
+    .m-h1 { font-size:var(--t-h1); font-weight:800; letter-spacing:var(--ls-tight); line-height:1.05; }
+    .m-h2 { font-size:var(--t-h2); font-weight:700; letter-spacing:var(--ls-tight); line-height:1.1; }
+    .m-h3 { font-size:var(--t-h3); font-weight:700; letter-spacing:-0.02em; line-height:1.2; }
+    .m-h4 { font-size:var(--t-h4); font-weight:600; letter-spacing:-0.01em; }
+    .m-body { font-size:var(--t-body); line-height:1.75; color:var(--m-text2); }
+    .m-small { font-size:var(--t-small); line-height:1.6; color:var(--m-text2); }
+    .m-mono { font-family:var(--f-mono); font-size:var(--t-mono); color:var(--m-accent3); }
+    .m-label {
+      font-size: var(--t-xs);
+      font-weight: 700;
+      letter-spacing: var(--ls-widest);
+      text-transform: uppercase;
+      color: var(--m-text3);
+    }
+    .m-accent-text { color: var(--m-accent); }
+    .m-muted { color: var(--m-text3); }
+    
+    /* --- BUTTON SYSTEM --- */
+    .m-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s2);
+      padding: 10px 20px;
+      border-radius: var(--r-md);
+      font-size: var(--t-small);
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: all var(--dur-fast) var(--ease-out);
+      border: 1px solid transparent;
+      text-decoration: none;
+      white-space: nowrap;
+      position: relative;
+      overflow: hidden;
+    }
+    .m-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background var(--dur-micro);
+    }
+    .m-btn:hover::after { background: rgba(255,255,255,0.04); }
+    .m-btn:active { transform: translateY(1px); }
+    
+    .m-btn-primary {
+      background: var(--m-accent);
+      color: #fff;
+      border-color: var(--m-accent);
+      box-shadow: 0 0 0 0 var(--m-accent-glow);
+    }
+    .m-btn-primary:hover {
+      box-shadow: 0 0 24px var(--m-accent-glow);
+      transform: translateY(-1px);
+    }
+    .m-btn-secondary {
+      background: transparent;
+      color: var(--m-text);
+      border-color: var(--m-border2);
+    }
+    .m-btn-secondary:hover { border-color: rgba(255,255,255,0.22); background:var(--m-surface); }
+    .m-btn-ghost {
+      background: transparent;
+      color: var(--m-accent);
+      border-color: transparent;
+      padding-left: 0; padding-right: 0;
+    }
+    .m-btn-ghost:hover { color: var(--m-accent3); }
+    .m-btn-danger {
+      background: transparent;
+      color: var(--m-red);
+      border-color: rgba(248,113,113,0.3);
+    }
+    .m-btn-danger:hover { background:rgba(248,113,113,0.08); }
+    .m-btn-sm { padding:6px 12px; font-size:11px; }
+    .m-btn-lg { padding:14px 28px; font-size:var(--t-body); }
+    .m-btn-icon { width:36px; height:36px; padding:0; justify-content:center; border-radius:var(--r-md); }
+    .m-btn-loading::before {
+      content:'';
+      width:12px; height:12px;
+      border:2px solid rgba(255,255,255,0.3);
+      border-top-color:#fff;
+      border-radius:50%;
+      animation:spin 0.7s linear infinite;
+    }
+    @keyframes spin{to{transform:rotate(360deg);}}
+    
+    /* --- CARD SYSTEM --- */
+    .m-card {
+      background: var(--m-surface);
+      border: 1px solid var(--m-border);
+      border-radius: var(--r-lg);
+      padding: var(--s5);
+      transition: all var(--dur-base) var(--ease-out);
+    }
+    .m-card:hover { border-color:var(--m-border2); }
+    .m-card-accent {
+      border-left: 3px solid var(--m-accent);
+      border-radius: 0 var(--r-lg) var(--r-lg) 0;
+    }
+    .m-card-glow {
+      box-shadow: 0 0 40px rgba(74,158,255,0.06);
+    }
+    .m-card-glow:hover { box-shadow:0 0 60px rgba(74,158,255,0.1); }
+    .m-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: var(--s4);
+      gap: var(--s3);
+    }
+    .m-card-title { font-size:var(--t-h4); font-weight:700; letter-spacing:-0.01em; }
+    .m-card-meta { font-size:var(--t-xs); color:var(--m-text3); font-family:var(--f-mono); }
+    .m-card-body { font-size:var(--t-small); color:var(--m-text2); line-height:1.7; }
+    .m-card-footer {
+      margin-top: var(--s4);
+      padding-top: var(--s3);
+      border-top: 1px solid var(--m-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .m-card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:var(--s3); }
+    
+    /* --- BADGE / CHIP SYSTEM --- */
+    .m-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: var(--t-xs);
+      font-weight: 700;
+      letter-spacing: var(--ls-wide);
+      text-transform: uppercase;
+      border: 1px solid;
+    }
+    .m-badge-blue   { background:rgba(74,158,255,0.1);  color:var(--m-accent);  border-color:rgba(74,158,255,0.25); }
+    .m-badge-green  { background:rgba(74,222,128,0.08); color:var(--m-green);   border-color:rgba(74,222,128,0.2); }
+    .m-badge-amber  { background:rgba(251,191,36,0.1);  color:var(--m-amber);   border-color:rgba(251,191,36,0.25); }
+    .m-badge-red    { background:rgba(248,113,113,0.1); color:var(--m-red);     border-color:rgba(248,113,113,0.2); }
+    .m-badge-ghost  { background:var(--m-surface);      color:var(--m-text3);   border-color:var(--m-border); }
+    .m-badge-purple { background:rgba(124,58,237,0.12); color:#a78bfa;          border-color:rgba(124,58,237,0.25); }
+    
+    /* --- INPUT SYSTEM --- */
+    .m-input-wrap { display:flex; flex-direction:column; gap:var(--s2); }
+    .m-input-label { font-size:var(--t-xs); font-weight:700; letter-spacing:var(--ls-wide); text-transform:uppercase; color:var(--m-text3); }
+    .m-input {
+      background: var(--m-bg3);
+      border: 1px solid var(--m-border);
+      border-radius: var(--r-md);
+      padding: 10px 14px;
+      color: var(--m-text);
+      font-size: var(--t-small);
+      font-family: var(--f-body);
+      outline: none;
+      transition: all var(--dur-fast) var(--ease-out);
+      width: 100%;
+    }
+    .m-input:focus { border-color:var(--m-accent); box-shadow:0 0 0 3px rgba(74,158,255,0.12); }
+    .m-input::placeholder { color:var(--m-text4); }
+    .m-input-mono { font-family:var(--f-mono); font-size:var(--t-mono); }
+    .m-textarea { resize:vertical; min-height:100px; }
+    .m-select {
+      background: var(--m-bg3);
+      border: 1px solid var(--m-border);
+      border-radius: var(--r-md);
+      padding: 10px 14px;
+      color: var(--m-text);
+      font-size: var(--t-small);
+      cursor: pointer;
+      outline: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234a5568' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+      transition: all var(--dur-fast) var(--ease-out);
+      width: 100%;
+    }
+    .m-select:focus { border-color:var(--m-accent); }
+    .m-input-error { border-color:rgba(248,113,113,0.5)!important; }
+    .m-input-success { border-color:rgba(74,222,128,0.4)!important; }
+    .m-input-hint { font-size:11px; color:var(--m-text3); }
+    .m-input-hint.error { color:var(--m-red); }
+    
+    /* --- TABLE SYSTEM --- */
+    .m-table-wrap { overflow-x:auto; border:1px solid var(--m-border); border-radius:var(--r-lg); }
+    .m-table { width:100%; border-collapse:collapse; }
+    .m-table th {
+      padding: 10px var(--s4);
+      text-align: left;
+      font-size: var(--t-xs);
+      font-weight: 700;
+      letter-spacing: var(--ls-wide);
+      text-transform: uppercase;
+      color: var(--m-text3);
+      background: var(--m-bg2);
+      border-bottom: 1px solid var(--m-border);
+    }
+    .m-table td {
+      padding: 12px var(--s4);
+      font-size: var(--t-small);
+      color: var(--m-text2);
+      border-bottom: 1px solid var(--m-border);
+    }
+    .m-table tr:last-child td { border-bottom:none; }
+    .m-table tr:hover td { background:var(--m-surface); }
+    .m-table .mono { font-family:var(--f-mono); font-size:11px; color:var(--m-accent3); }
+    
+    /* --- PROGRESS / METRICS --- */
+    .m-progress-wrap { display:flex; flex-direction:column; gap:var(--s2); }
+    .m-progress-header { display:flex; justify-content:space-between; align-items:center; }
+    .m-progress-label { font-size:var(--t-small); color:var(--m-text2); }
+    .m-progress-value { font-size:var(--t-small); font-weight:700; font-family:var(--f-mono); color:var(--m-text); }
+    .m-progress-bar { height:3px; background:var(--m-border); border-radius:2px; overflow:hidden; }
+    .m-progress-fill { height:100%; background:var(--m-accent); border-radius:2px; transition:width var(--dur-slow) var(--ease-out); }
+    .m-progress-fill.green { background:var(--m-green); }
+    .m-progress-fill.amber { background:var(--m-amber); }
+    .m-progress-fill.red   { background:var(--m-red); }
+    
+    .m-stat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:var(--s3); }
+    .m-stat {
+      background: var(--m-surface);
+      border: 1px solid var(--m-border);
+      border-radius: var(--r-lg);
+      padding: var(--s4);
+    }
+    .m-stat-num { font-size:32px; font-weight:800; letter-spacing:var(--ls-tight); color:var(--m-text); line-height:1; margin-bottom:4px; }
+    .m-stat-label { font-size:var(--t-xs); font-weight:600; letter-spacing:var(--ls-wide); text-transform:uppercase; color:var(--m-text3); }
+    .m-stat-delta { font-size:var(--t-xs); font-family:var(--f-mono); margin-top:6px; }
+    .m-stat-delta.up { color:var(--m-green); }
+    .m-stat-delta.down { color:var(--m-red); }
+    
+    /* --- TIMELINE COMPONENT --- */
+    .m-timeline { display:flex; flex-direction:column; }
+    .m-timeline-item { display:flex; gap:var(--s4); position:relative; padding-bottom:var(--s5); }
+    .m-timeline-item:last-child { padding-bottom:0; }
+    .m-timeline-line { display:flex; flex-direction:column; align-items:center; flex-shrink:0; }
+    .m-timeline-dot { width:10px; height:10px; border-radius:50%; background:var(--m-accent); flex-shrink:0; margin-top:5px; }
+    .m-timeline-dot.done { background:var(--m-green); }
+    .m-timeline-dot.pending { background:var(--m-border2); }
+    .m-timeline-connector { width:1px; flex:1; background:var(--m-border); margin-top:4px; }
+    .m-timeline-content { flex:1; padding-bottom:var(--s3); }
+    .m-timeline-title { font-size:var(--t-small); font-weight:600; color:var(--m-text); margin-bottom:2px; }
+    .m-timeline-meta { font-size:var(--t-xs); color:var(--m-text3); font-family:var(--f-mono); margin-bottom:6px; }
+    .m-timeline-body { font-size:var(--t-small); color:var(--m-text2); line-height:1.6; }
+    
+    /* --- CODE BLOCK --- */
+    .m-code {
+      background: var(--m-bg2);
+      border: 1px solid var(--m-border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+    }
+    .m-code-header {
+      padding: 10px var(--s4);
+      border-bottom: 1px solid var(--m-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--m-bg3);
+    }
+    .m-code-lang { font-size:10px; font-weight:700; letter-spacing:var(--ls-wide); text-transform:uppercase; color:var(--m-text3); }
+    .m-code-copy { font-size:10px; color:var(--m-accent); cursor:pointer; transition:color var(--dur-fast); }
+    .m-code-copy:hover { color:var(--m-accent3); }
+    .m-code-body {
+      padding: var(--s4);
+      font-family: var(--f-mono);
+      font-size: 12px;
+      line-height: 1.7;
+      color: var(--m-text2);
+      overflow-x: auto;
+      white-space: pre;
+    }
+    .m-code-body .kw { color:#c792ea; }
+    .m-code-body .str { color:#c3e88d; }
+    .m-code-body .num { color:#f78c6c; }
+    .m-code-body .comment { color:var(--m-text4); font-style:italic; }
+    .m-code-body .fn { color:#82aaff; }
+    .m-code-body .var { color:var(--m-text); }
+    .m-code-body .prop { color:var(--m-accent3); }
+    
+    /* --- ALERT / TOAST SYSTEM --- */
+    .m-alert {
+      display: flex;
+      gap: var(--s3);
+      align-items: flex-start;
+      padding: var(--s3) var(--s4);
+      border-radius: var(--r-lg);
+      border: 1px solid;
+      font-size: var(--t-small);
+      line-height: 1.6;
+    }
+    .m-alert-blue   { background:rgba(74,158,255,0.06);  border-color:rgba(74,158,255,0.25);  color:var(--m-text2); }
+    .m-alert-green  { background:rgba(74,222,128,0.05);  border-color:rgba(74,222,128,0.2);   color:var(--m-text2); }
+    .m-alert-amber  { background:rgba(251,191,36,0.06);  border-color:rgba(251,191,36,0.25);  color:var(--m-text2); }
+    .m-alert-red    { background:rgba(248,113,113,0.06); border-color:rgba(248,113,113,0.2);  color:var(--m-text2); }
+    .m-alert-icon   { flex-shrink:0; font-size:16px; margin-top:1px; }
+    .m-alert-title  { font-weight:700; color:var(--m-text); display:block; margin-bottom:2px; }
+    
+    /* --- AVATAR COMPONENT --- */
+    .m-avatar {
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .m-avatar-sm  { width:24px; height:24px; font-size:9px; }
+    .m-avatar-md  { width:36px; height:36px; font-size:13px; }
+    .m-avatar-lg  { width:52px; height:52px; font-size:18px; }
+    .m-avatar-xl  { width:72px; height:72px; font-size:24px; }
+    .m-avatar-stack { display:flex; }
+    .m-avatar-stack .m-avatar { margin-left:-8px; border:2px solid var(--m-bg); }
+    .m-avatar-stack .m-avatar:first-child { margin-left:0; }
+    
+    /* --- TOGGLE / CHECKBOX --- */
+    .m-toggle {
+      display: flex;
+      align-items: center;
+      gap: var(--s3);
+      cursor: pointer;
+    }
+    .m-toggle-track {
+      width: 36px; height: 20px;
+      background: var(--m-border2);
+      border-radius: 10px;
+      position: relative;
+      transition: background var(--dur-fast);
+    }
+    .m-toggle-thumb {
+      width: 14px; height: 14px;
+      background: #fff;
+      border-radius: 50%;
+      position: absolute;
+      top: 3px; left: 3px;
+      transition: transform var(--dur-fast) var(--ease-out);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+    .m-toggle input { display:none; }
+    .m-toggle input:checked ~ .m-toggle-track { background:var(--m-accent); }
+    .m-toggle input:checked ~ .m-toggle-track .m-toggle-thumb { transform:translateX(16px); }
+    .m-toggle-label { font-size:var(--t-small); color:var(--m-text2); }
+    
+    /* --- DIVIDER --- */
+    .m-divider { height:1px; background:var(--m-border); margin:var(--s5) 0; }
+    .m-divider-label {
+      display:flex; align-items:center; gap:var(--s3);
+      font-size:var(--t-xs); color:var(--m-text3); letter-spacing:var(--ls-wide); text-transform:uppercase;
+    }
+    .m-divider-label::before,.m-divider-label::after { content:''; flex:1; height:1px; background:var(--m-border); }
+    
+    /* --- TAG CLOUD --- */
+    .m-tags { display:flex; flex-wrap:wrap; gap:var(--s2); }
+    .m-tag {
+      padding: 4px 10px;
+      background: var(--m-surface);
+      border: 1px solid var(--m-border);
+      border-radius: var(--r-sm);
+      font-size: var(--t-xs);
+      color: var(--m-text3);
+      letter-spacing: 0.04em;
+      cursor: default;
+      transition: all var(--dur-fast);
+    }
+    .m-tag:hover { border-color:var(--m-border2); color:var(--m-text2); }
+    .m-tag.active { background:var(--m-accent-dim); border-color:var(--m-border-accent); color:var(--m-accent); }
+    
+    /* --- DROPDOWN MENU --- */
+    .m-dropdown { position:relative; display:inline-block; }
+    .m-dropdown-menu {
+      position:absolute;
+      top: calc(100% + 6px);
+      left:0;
+      min-width:180px;
+      background:var(--m-bg3);
+      border:1px solid var(--m-border2);
+      border-radius:var(--r-lg);
+      padding:var(--s2) 0;
+      box-shadow:0 20px 60px rgba(0,0,0,0.5);
+      z-index:200;
+      display:none;
+      animation:fadeIn var(--dur-fast) var(--ease-out);
+    }
+    @keyframes fadeIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+    .m-dropdown:hover .m-dropdown-menu { display:block; }
+    .m-dropdown-item {
+      display:flex; align-items:center; gap:var(--s2);
+      padding: 8px var(--s4);
+      font-size:var(--t-small);
+      color:var(--m-text2);
+      cursor:pointer;
+      transition:all var(--dur-micro);
+    }
+    .m-dropdown-item:hover { background:var(--m-surface); color:var(--m-text); }
+    .m-dropdown-item.danger { color:var(--m-red); }
+    .m-dropdown-item.danger:hover { background:rgba(248,113,113,0.06); }
+    .m-dropdown-sep { height:1px; background:var(--m-border); margin:var(--s2) 0; }
+    
+    /* --- MOTION RECIPES --- */
+    .m-fade-in { animation: mFadeIn var(--dur-base) var(--ease-out) both; }
+    .m-slide-up { animation: mSlideUp var(--dur-base) var(--ease-out) both; }
+    .m-slide-right { animation: mSlideRight var(--dur-base) var(--ease-out) both; }
+    @keyframes mFadeIn { from{opacity:0;} to{opacity:1;} }
+    @keyframes mSlideUp { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
+    @keyframes mSlideRight { from{opacity:0;transform:translateX(-12px);} to{opacity:1;transform:translateX(0);} }
+    .m-delay-1 { animation-delay:80ms; }
+    .m-delay-2 { animation-delay:160ms; }
+    .m-delay-3 { animation-delay:240ms; }
+    .m-delay-4 { animation-delay:320ms; }
+    
+    /* --- DEMO PAGE SECTIONS --- */
+    .demo-grid { display:grid; grid-template-columns:1fr 1fr; gap:var(--s4); margin-bottom:var(--s6); }
+    .demo-grid.cols3 { grid-template-columns:1fr 1fr 1fr; }
+    .demo-grid.single { grid-template-columns:1fr; }
+    .demo-block {
+      background:var(--m-bg2);
+      border:1px solid var(--m-border);
+      border-radius:var(--r-lg);
+      padding:var(--s5);
+    }
+    .demo-label {
+      font-size:9px;
+      font-weight:700;
+      letter-spacing:var(--ls-widest);
+      text-transform:uppercase;
+      color:var(--m-text4);
+      margin-bottom:var(--s4);
+      padding-bottom:var(--s3);
+      border-bottom:1px solid var(--m-border);
+    }
+    .demo-row { display:flex; flex-wrap:wrap; gap:var(--s3); align-items:center; margin-bottom:var(--s3); }
+    .demo-row:last-child { margin-bottom:0; }
+    
+    /* --- HERO SECTION (full demo) --- */
+    .m-hero {
+      padding: var(--s9) var(--s8);
+      position:relative;
+      overflow:hidden;
+    }
+    .m-hero-grid {
+      position:absolute; inset:0;
+      background-image:
+        linear-gradient(var(--m-border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--m-border) 1px, transparent 1px);
+      background-size:48px 48px;
+      mask-image:radial-gradient(ellipse at 30% 40%, black 20%, transparent 75%);
+    }
+    .m-hero-content { position:relative; max-width:680px; }
+    .m-hero-title { margin-bottom:var(--s4); }
+    .m-hero-sub { margin-bottom:var(--s6); }
+    .m-hero-actions { display:flex; gap:var(--s3); flex-wrap:wrap; }
+    
+    /* ═══ RESPONSIVE ═══ */
+    @media(max-width:900px){
+      #shell { grid-template-columns:1fr; }
+      #sidebar { display:none; }
+      .content-section { padding:var(--s7) var(--s5) var(--s8); }
+      .demo-grid { grid-template-columns:1fr; }
+      .demo-grid.cols3 { grid-template-columns:1fr 1fr; }
+    }
+    </style>
+    </head>
+    <body>
+    <div id="shell">
+    
+      <!-- TOPBAR -->
+      <div id="topbar">
+        <div class="tb-logo">
+          <div class="tb-logo-dot"></div>
+          Snowball
+        </div>
+        <div class="tb-sep"></div>
+        <div class="tb-badge">Archetype 01</div>
+        <nav class="tb-nav">
+          <a href="#tokens" class="active">Tokens</a>
+          <a href="#typography">Type</a>
+          <a href="#components">Components</a>
+          <a href="#patterns">Patterns</a>
+          <a href="#motion">Motion</a>
+        </nav>
+        <button class="tb-action">Export System →</button>
+      </div>
+    
+      <!-- SIDEBAR -->
+      <aside id="sidebar">
+        <div class="sb-section">
+          <div class="sb-label">Foundation</div>
+          <a class="sb-link active" href="#tokens"><div class="sb-link-dot"></div>Design Tokens</a>
+          <a class="sb-link" href="#typography"><div class="sb-link-dot"></div>Typography Scale</a>
+          <a class="sb-link" href="#colors"><div class="sb-link-dot"></div>Color System</a>
+          <a class="sb-link" href="#spacing"><div class="sb-link-dot"></div>Spacing Grid</a>
+        </div>
+        <div class="sb-divider"></div>
+        <div class="sb-section">
+          <div class="sb-label">Components</div>
+          <a class="sb-link" href="#buttons"><div class="sb-link-dot"></div>Buttons <span class="sb-count">7</span></a>
+          <a class="sb-link" href="#cards"><div class="sb-link-dot"></div>Cards <span class="sb-count">5</span></a>
+          <a class="sb-link" href="#badges"><div class="sb-link-dot"></div>Badges <span class="sb-count">6</span></a>
+          <a class="sb-link" href="#inputs"><div class="sb-link-dot"></div>Inputs <span class="sb-count">6</span></a>
+          <a class="sb-link" href="#tables"><div class="sb-link-dot"></div>Tables <span class="sb-count">2</span></a>
+          <a class="sb-link" href="#alerts"><div class="sb-link-dot"></div>Alerts <span class="sb-count">4</span></a>
+          <a class="sb-link" href="#avatars"><div class="sb-link-dot"></div>Avatars <span class="sb-count">4</span></a>
+          <a class="sb-link" href="#toggles"><div class="sb-link-dot"></div>Toggles <span class="sb-count">2</span></a>
+          <a class="sb-link" href="#progress"><div class="sb-link-dot"></div>Progress <span class="sb-count">3</span></a>
+          <a class="sb-link" href="#code"><div class="sb-link-dot"></div>Code Blocks <span class="sb-count">2</span></a>
+          <a class="sb-link" href="#timeline"><div class="sb-link-dot"></div>Timeline <span class="sb-count">1</span></a>
+          <a class="sb-link" href="#dropdown"><div class="sb-link-dot"></div>Dropdowns <span class="sb-count">1</span></a>
+        </div>
+        <div class="sb-divider"></div>
+        <div class="sb-section">
+          <div class="sb-label">Patterns</div>
+          <a class="sb-link" href="#hero-pattern"><div class="sb-link-dot"></div>Hero Section</a>
+          <a class="sb-link" href="#data-pattern"><div class="sb-link-dot"></div>Data Dashboard</a>
+          <a class="sb-link" href="#copy"><div class="sb-link-dot"></div>Copy Register</a>
+          <a class="sb-link" href="#motion"><div class="sb-link-dot"></div>Motion Spec</a>
+        </div>
+        <div class="sb-divider"></div>
+        <div class="sb-section">
+          <div class="sb-label">Export</div>
+          <a class="sb-link" href="#"><div class="sb-link-dot"></div>CSS Variables</a>
+          <a class="sb-link" href="#"><div class="sb-link-dot"></div>Figma Tokens</a>
+          <a class="sb-link" href="#"><div class="sb-link-dot"></div>Next.js Components</a>
+        </div>
+      </aside>
+    
+      <!-- MAIN -->
+      <main id="main">
+    
+        <!-- HERO DEMO -->
+        <div class="m-hero m-slide-up" id="tokens">
+          <div class="m-hero-grid"></div>
+          <div class="m-hero-content">
+            <div class="sec-eyebrow m-delay-1 m-fade-in">Marcello Dark Precision — Archetype 01</div>
+            <h1 class="m-display m-hero-title m-slide-up m-delay-1">Surgical.<br>Precise.<br>Alive.</h1>
+            <p class="m-body m-hero-sub m-fade-in m-delay-2">Heavy type. Clean borders. Every element load-bearing. This is the Marcello archetype — editorial dark precision, zero decoration.</p>
+            <div class="m-hero-actions m-fade-in m-delay-3">
+              <button class="m-btn m-btn-primary m-btn-lg">Explore Components →</button>
+              <button class="m-btn m-btn-secondary m-btn-lg">Export System</button>
+            </div>
+          </div>
+        </div>
+    
+        <div class="content-section">
+    
+          <!-- TYPOGRAPHY -->
+          <div id="typography">
+            <div class="sec-eyebrow">Typography Scale</div>
+            <h2 class="sec-title" style="margin-bottom:var(--s3);">Type as structure</h2>
+            <p class="sec-sub">Weight and tracking do the work of color. No decorative type — every size has a function.</p>
+            <div class="demo-block" style="margin-bottom:var(--s4);">
+              <div class="demo-label">Display — 96px / weight 800 / tracking -0.04em</div>
+              <div class="m-display" style="font-size:64px;">The Precise One</div>
+            </div>
+            <div class="demo-grid">
+              <div class="demo-block">
+                <div class="demo-label">Heading Scale</div>
+                <div style="display:flex;flex-direction:column;gap:var(--s4);">
+                  <div class="m-h1">H1 — 64px</div>
+                  <div class="m-h2">H2 — 42px</div>
+                  <div class="m-h3">H3 — 28px</div>
+                  <div class="m-h4">H4 — 20px</div>
+                </div>
+              </div>
+              <div class="demo-block">
+                <div class="demo-label">Body + Utility</div>
+                <div style="display:flex;flex-direction:column;gap:var(--s4);">
+                  <p class="m-body">Body — 15px / 1.75 line-height. Comfortable reading, never compressed.</p>
+                  <p class="m-small">Small — 13px. Secondary information, metadata, supporting copy.</p>
+                  <div class="m-mono">mono — ui-monospace. Hashes, code, metrics.</div>
+                  <div class="m-label">Label — Uppercase / Wide Tracking</div>
+                  <div class="m-muted">Muted — text3 color. Tertiary hierarchy.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+    
+          <div class="sec-divider"></div>
+    
+          <!-- BUTTONS -->
+          <div id="buttons">
+            <div class="sec-eyebrow">Button System</div>
+            <h2 class="sec-title" style="margin-bottom:var(--s3);font-size:var(--t-h2);">Seven button variants</h2>
+            <div class="demo-grid">
+              <div class="demo-block">
+                <div class="demo-label">Primary Variants</div>
+                <div class="demo-row">
+                  <button class="m-btn m-btn-primary m-btn-lg">Large Primary</button>
+                  <button class="m-btn m-btn-primary">Default</button>
+                  <button class="m-btn m-btn-primary m-btn-sm">Small</button>
+                </div>
+                <div class="demo-row">
+                  <button class="m-btn m-btn-secondary m-btn-lg">Secondary</button>
+                  <button class="m-btn m-btn-secondary">Default</button>
+                </div>
+                <div class="demo-row">
+                  <button class="m-btn m-btn-ghost">Ghost →</button>
+                  <button class="m-btn m-btn-danger m-btn-sm">Delete</button>
+                </div>
+              </div>
+              <div class="demo-block">
+                <div class="demo-label">States + Loading</div>
+                <div class="demo-row">
+                  <button class="m-btn m-btn-primary m-btn-loading">Loading</button>
+                  <button class="m-btn m-btn-secondary" disabled style="opacity:0.35;cursor:not-allowed;">Disabled</button>
+                </div>
+                <div class="demo-row">
+                  <button class="m-btn m-btn-icon m-btn-secondary">⬡</button>
+                  <button class="m-btn m-btn-icon m-btn-primary">→</button>
+                  <button class="m-btn m-btn-icon" style="background:var(--m-surface);border:1px solid var(--m-border);color:var(--m-text3);">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+    
+          <div class="sec-divider"></div>
+    
+          <!-- BADGES -->
+          <div id="badges">
+            <div class="sec-eyebrow">Badge System</div>
+            <h2 class="sec-title" style="margin-bottom:var(--s3);font-size:var(--t-h2);">Six semantic variants</h2>
+            <div class="demo-block" style="margin-bottom:var(--s4);">
+              <div class="demo-label">All Variants</div>
+              <div class="demo-row">
+                <span class="m-badge m-badge-blue">Active</span>
+                <span class="m-badge m-badge-green">Healthy</span>
+                <span class="m-badge m-badge-amber">Warning</span>
+                <span class="m-badge m-badge-red">Critical</span>
+                <span class="m-badge m-badge-ghost">Dormant</span>
+                <span class="m-badge m-badge-purple">Agent</span>
+              </div>
+              <div class="demo-row" style="margin-top:var(--s3);">
+                <span class="m-badge m-badge-blue">⬡ Full Crew</span>
+                <span class="m-badge m-badge-amber">⚡ Solo</span>
+                <span class="m-badge m-badge-ghost">◉ Dark Mode</span>
+                <span class="m-badge m-badge-green">✓ Compiled</span>
+                <span class="m-badge m-badge-red">✗ 503 Error</span>
+              </div>
+            </div>
+          </div>
+    
+          <div class="sec-divider"></div>
+    
+          <!-- CARDS -->
+          <div id="cards">
+            <div class="sec-eyebrow">Card System</div>
+            <h2 class="sec-title" style="margin-bottom:var(--s3);font-size:var(--t-h2);">Five card variants</h2>
+            <div class="m-card-grid">
+              <div class="m-card">
+                <div class="m-card-header">
+                  <span class="m-card-title">Default Card</span>
+                  <span class="m-badge m-badge-blue">Active</span>
+                </div>
+                <div class="m-card-body">Clean surface. 1px border. Subtle inner shadow only. No glow halos.</div>
+                <div class="m-card-footer">
+                  <span class="m-card-meta">updated 2m ago</span>
+                  <button class="m-btn m-btn-ghost m-btn-sm">View →</button>
+                </div>
+              </div>
+              <div class="m-card m-card-accent">
+                <div class="m-card-header">
+                  <span class="m-card-title">Accent Border</span>
+                  <span class="m-badge m-badge-green">Healthy</span>
+                </div>
+                <div class="m-card-body">Left accent border signals active or important state. 3px width, full accent opacity.</div>
+                <div class="m-card-footer">
+                  <span class="m-card-meta">weight: 0.87</span>
+                  <button class="m-btn m-btn-ghost m-btn-sm">Expand →</button>
+                </div>
+              </div>
+              <div class="m-card m-card-glow" style="border-left:3px solid var(--m-amber);">
+                <div class="m-card-header">
+                  <span class="m-card-title">Alert Surface</span>
+                  <span class="m-badge m-badge-amber">Resurfaced</span>
+                </div>
+                <div class="m-card-body">Amber left border + glow shadow. Used for health alerts and dependency drift.</div>
+                <div class="m-card-footer">
+                  <span class="m-card-meta m-mono">dep-drift</span>
+                  <button class="m-btn m-btn-sm m-btn-secondary">Act</button>
+                </div>
+              </div>
+            </div>
+          </div>
+    
+          <div class="sec-divider"></div>
+    
+          <!-- INPUTS -->
+          <div id="inputs">
+            <div class="sec-eyebrow">Input System</div>
+            <h2 class="sec-title" style="margin-bottom:var(--s3);font-size:var(--t-h2);">Form components</h2>
+            <div class="demo-grid">
+              <div class="demo-block">
+                <div class="demo-label">Text Inputs</div>
+                <div style="display:flex;flex-direction:column;gap:var(--s4);">
+                  <div class="m-input-wrap">
+                    <label class="m-input-label">Project Name</label>
+                    <input class="m-input" placeholder="HyperForge...">
+                  </div>
+                  <div class="m-input-wrap">
+                    <label class="m-input-label">Agent Manifest</label>
+                    <input class="m-input m-input-mono" placeholder="wondelai/skills@main">
+                  </div>
+                  <div class="m-input-wrap">
+                    <label class="m-input-label">Status</label>
+                    <select class="m-select">
+                      <option>Active</option>
+                      <option>Sinking</option>
+                      <option>Done</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="demo-block">
+                <div class="demo-label">States + Textarea</div>
+                <div style="display:flex;flex-direction:column;gap:var(--s4);">
+                  <div class="m-input-wrap">
+                    <label class="m-input-label">Error State</label>
+                    <input class="m-input m-input-error" value="invalid-dep@">
+                    <span class="m-input-hint error">Dependency format invalid. Use repo/name@version.</span>
+                  </div>
+                  <div class="m-input-wrap">
+                    <label class="m-input-label">Notes</label>
+                    <textarea class="m-input m-textarea" placeholder="Agent instructions or context..."></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+    
+          <div class="sec-divider"></div>
+    
+          <!-- TABLES -->
+          <div id="tables">
+            <div class="sec-eyebrow">Table System</div>
+            <h2 class="sec-title" style="margin-bottom:var(--s3);font-size:var(--t-h2);">Data tables</h2>
+            <div class="m-table-wrap" style="margin-bottom:var(--s4);">
+              <table class="m-table">
+                <thead>
+                  <tr>
+                    <th>Skill</th>
+                    <th>Mode</th>
+                    <th>Last Run</th>
+                    <th>Success</th>
+                    <th>Cost</th>
+                    <th>Hash</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>trend_scraper</strong></td>
+                    <td><span class="m-badge m-badge-green">live</span></td>
+                    <td>2h ago</td>
+                    <td>94%</td>
+                    <td>0.8 cr</td>
+                    <td class="mono">a4f2e8c1</td>
+                  </tr>
+                  <tr>
+                    <td><strong>auth_flow</strong></td>
+                    <td><span class="m-badge m-badge-blue">🔒 compiled</span></td>
+                    <td>1d ago</td>
+                    <td>100%</td>
+                    <td>0.1 cr</td>
+                    <td class="mono">d9e2f1a4</td>
+                  </tr>
+                  <tr>
+                    <td><strong>kb_search</strong></td>
+                    <td><span class="m-badge m-badge-red">degraded</span></td>
+                    <td>15m ago</td>
+                    <td>61%</td>
+                    <td>1.2 cr</td>
+                    <td class="mono">b3c7a902</td>
+                  </tr>
+                  <tr>
+                    <td><strong>brand_dna_engine</strong></td>
+                    <td><span class="m-badge m-badge-ghost">dormant</span></td>
+                    <td>never</td>
+                    <td>—</td>
+                    <td>2.1 cr</td>
+                    <td class="mono">—</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+    
+          <div class="sec-divider"></div>
+    
+          <!-- ALERTS -->
+          <div id="alerts">
+            <div class="sec-eyebrow">Alert System</div>
+            <h2 class="sec-title" style="margin-bottom:var(--s3);font-size:var(--t-h2);">Four semantic alerts</h2>
+            <div style="display:flex;flex-direction:column;gap:var(--s3);margin-bottom:var(--s6);">
+              <div class="m-alert m-alert-blue"><span class="m-alert-icon">ℹ</span><div><span class="m-alert-title">System Update</span>NanoClaw rebuilt the dependency graph. 12 new edges mapped across HyperForge.</div></div>
+              <div class="m-alert m-alert-green"><span class="m-alert-icon">✓</span><div><span class="m-alert-title">Skill Compiled</span>auth_flow locked as COMPILED skill. Fires in DARK mode without LLM cost.</div></div>
+              <div class="m-alert m-alert-amber"><span class="m-alert-icon">⚠</span><div><span class="m-alert-title">Dependency Drift</span>anthropic SDK 2.1 behind declared requirement 2.3 in HyperForge manifest.</div></div>
+              <div class="m-alert m-alert-red"><span class="m-alert-icon">✗</span><div><span class="m-alert-title">Health: Red</span>kb_search endpoint returning 503 for 15 minutes. BrambleThundery resurfaced.</div></div>
+            </div>
+          </div>
+    
+          <div class="sec-divider"></div>
+    
+          <!-- PROGRESS + STATS -->
+          <div id="progress">
+            <div class="sec-eyebrow">Progress + Stats</div>
+            <h2 class="sec-title" style="margin-bottom:var(--s3);font-size:var(--t-h2);">Metrics components</h2>
+            <div class="demo-grid" style="margin-bottom:var(--s5);">
+              <div class="demo-block">
+                <div class="demo-label">Progress Bars</div>
+                <div style="display:flex;flex-direction:column;gap:var(--s4);">
+                  <div class="m-progress-wrap">
+                    <div class="m-progress-header"><span class="m-progress-label">HyperForge Health</span><span class="m-progress-value">87%</span></div>
+                    <div class="m-progress-bar"><div class="m-progress-fill" style="width:87%;"></div></div>
+                  </div>
+                  <div class="m-progress-wrap">
+                    <div class="m-progress-header"><span class="m-progress-label">BrambleThundery</span><span class="m-progress-value">43%</span></div>
+                    <div class="m-progress-bar"><div class="m-progress-fill amber" style="width:43%;"></div></div>
+                  </div>
+                  <div class="m-progress-wrap">
+                    <div class="m-progress-header"><span class="m-progress-label">kb_search Success</span><span class="m-progress-value">61%</span></div>
+                    <div class="m-progress-bar"><div class="m-progress-fill red" style="width:61%;"></div></div>
+                  </div>
+                </div>
+              </div>
+              <div class="demo-block">
+                <div class="demo-label">Stat Grid</div>
+                <div class="m-stat-grid">
+                  <div class="m-stat"><div class="m-stat-num">847</div><div class="m-stat-label">MCP Calls</div><div class="m-stat-delta up">+12.3%</div></div>
+                  <div class="m-stat"><div class="m-stat-num">20</div><div class="m-stat-label">Max Agents</div><div class="m-stat-delta up">Full Crew</div></div>
+                  <div class="m-stat"><div class="m-stat-num">4</div><div class="m-stat-label">Active Now</div><div class="m-stat-delta down">1 blocked</div></div>
+                  <div class="m-stat"><div class="m-stat-num">0.87</div><div class="m-stat-label">Peak Weight</div><div class="m-stat-delta up">HyperForge</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+    
+          <div class="sec-divider"></div>
+    
+          <!-- CODE BLOCK -->
+          <div id="code">
+            <div class="sec-eyebrow">Code Block</div>
+            <h2 class="sec-title" style="margin-bottom:var(--s3);font-size:var(--t-h2);">Provenance-first</h2>
+            <div class="m-code" style="margin-bottom:var(--s4);">
+              <div class="m-code-header">
+                <span class="m-code-lang">CSS Variables</span>
+                <span class="m-code-copy" onclick="copyCode(this)">Copy</span>
+              </div>
+              <div class="m-code-body"><span class="comment">/* Marcello Dark — Core Token Export */</span>
+    <span class="kw">:root</span> {
+      <span class="comment">/* Palette */</span>
+      <span class="prop">--m-bg</span>:        <span class="str">#080810</span>;
+      <span class="prop">--m-accent</span>:    <span class="str">#4a9eff</span>;
+      <span class="prop">--m-text</span>:      <span class="str">#f0f4f8</span>;
+    
+      <span class="comment">/* Type Scale */</span>
+      <span class="prop">--t-display</span>: <span class="fn">clamp</span>(<span class="num">52px</span>, <span class="num">6vw</span>, <span class="num">96px</span>);
+      <span class="prop">--t-h1</span>:      <span class="fn">clamp</span>(<span class="num">36px</span>, <span class="num">4vw</span>, <span class="num">64px</span>);
+    
+      <span class="comment">/* Motion */</span>
+      <span class="prop">--ease-out</span>: <span class="fn">cubic-bezier</span>(<span class="num">0.0</span>, <span class="num">0.0</span>, <span class="num">0.2</span>, <span class="num">1</span>);
+      <span class="prop">--dur-base</span>: <span class="num">350ms</span>;
+    }</div>
+            </div>
+            <div class="m-code">
+              <div class="m-code-header">
+                <span class="m-code-lang">Blake3 Hash — Provenance Signal</span>
+                <span class="m-code-copy" onclick="copyCode(this)">Copy</span>
+              </div>
+              <div class="m-code-body"><span class="comment">/* written by Archivist · 2026-05-28T03:41Z */</span>
+    <span class="kw">const</span> <span class="var">tokenExport</span> = <span class="kw">await</span> <span class="fn">generateTokens</span>({
+      archetype: <span class="str">'marcello-dark'</span>,
+      version:   <span class="str">'1.4.2'</span>,
+      blake3:    <span class="str">'a4f2e8c1d9b037fa...'</span>
+    });
+    <span class="comment">// blake3: a4f2e8c1d9b037fa290e6d4c8b15a3e7</span></div>
+            </div>
+          </div>
+    
+          <div class="sec-divider"></div>
+    
+          <!-- TIMELINE -->
+          <div id="timeline">
+            <div class="sec-eyebrow">Timeline</div>
+            <h2 class="sec-title" style="margin-bottom:var(--s3);font-size:var(--t-h2);">Project history</h2>
+            <div class="demo-block" style="max-width:520px;">
+              <div class="demo-label">Agent Activity Stream</div>
+              <div class="m-timeline">
+                <div class="m-timeline-item">
+                  <div class="m-timeline-line"><div class="m-timeline-dot"></div><div class="m-timeline-connector"></div></div>
+                  <div class="m-timeline-content"><div class="m-timeline-title">Weaver compiled auth_flow</div><div class="m-timeline-meta">2m ago · Weaver · skill_compile</div><div class="m-timeline-body">Saved as COMPILED skill. Blake3: d9e2f1a4. Fires in DARK mode.</div></div>
+                </div>
+                <div class="m-timeline-item">
+                  <div class="m-timeline-line"><div class="m-timeline-dot done"></div><div class="m-timeline-connector"></div></div>
+                  <div class="m-timeline-content"><div class="m-timeline-title">NanoClaw rebuilt dependency graph</div><div class="m-timeline-meta">15m ago · NanoClaw · graph_traverse</div><div class="m-timeline-body">12 new edges mapped. HyperForge weight updated to 0.87.</div></div>
+                </div>
+                <div class="m-timeline-item">
+                  <div class="m-timeline-line"><div class="m-timeline-dot pending"></div></div>
+                  <div class="m-timeline-content"><div class="m-timeline-title">Sentinel queued: kb_search recovery</div><div class="m-timeline-meta">pending · Sentinel · health_check</div><div class="m-timeline-body">Waiting for endpoint recovery before resuming BrambleThundery checks.</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+    
+          <div class="sec-divider"></div>
+    
+          <!-- TOGGLES + AVATARS -->
+          <div id="toggles">
+            <div class="sec-eyebrow">Toggles + Avatars</div>
+            <div class="demo-grid">
+              <div class="demo-block">
+                <div class="demo-label">Toggle Controls</div>
+                <div style="display:flex;flex-direction:column;gap:var(--s4);">
+                  <label class="m-toggle">
+                    <input type="checkbox" checked onchange="this.parentNode.querySelector('.m-toggle-track').style.background=this.checked?'var(--m-accent)':'var(--m-border2)'">
+                    <div class="m-toggle-track"><div class="m-toggle-thumb"></div></div>
+                    <span class="m-toggle-label">Proactive speech enabled</span>
+                  </label>
+                  <label class="m-toggle">
+                    <input type="checkbox">
+                    <div class="m-toggle-track"><div class="m-toggle-thumb"></div></div>
+                    <span class="m-toggle-label">Quiet hours active</span>
+                  </label>
+                  <label class="m-toggle">
+                    <input type="checkbox" checked onchange="this.parentNode.querySelector('.m-toggle-track').style.background=this.checked?'var(--m-accent)':'var(--m-border2)'">
+                    <div class="m-toggle-track" style="background:var(--m-accent);"><div class="m-toggle-thumb" style="transform:translateX(16px);"></div></div>
+                    <span class="m-toggle-label">Health sub-agent on cron</span>
+                  </label>
+                </div>
+              </div>
+              <div class="demo-block" id="avatars">
+                <div class="demo-label">Avatar System</div>
+                <div class="demo-row">
+                  <div class="m-avatar m-avatar-xl" style="background:rgba(124,58,237,0.2);color:#a78bfa;border:2px solid rgba(124,58,237,0.3);">NC</div>
+                  <div class="m-avatar m-avatar-lg" style="background:rgba(74,158,255,0.15);color:var(--m-accent);border:2px solid rgba(74,158,255,0.3);">WV</div>
+                  <div class="m-avatar m-avatar-md" style="background:rgba(16,185,129,0.15);color:var(--m-green);border:2px solid rgba(16,185,129,0.3);">AR</div>
+                  <div class="m-avatar m-avatar-sm" style="background:rgba(248,113,113,0.15);color:var(--m-red);border:2px solid rgba(248,113,113,0.3);">SE</div>
+                </div>
+                <div style="margin-top:var(--s4);">
+                  <div class="demo-label" style="margin-bottom:var(--s3);">Avatar Stack</div>
+                  <div class="m-avatar-stack">
+                    <div class="m-avatar m-avatar-md" style="background:rgba(124,58,237,0.2);color:#a78bfa;">NC</div>
+                    <div class="m-avatar m-avatar-md" style="background:rgba(74,158,255,0.15);color:var(--m-accent);">WV</div>
+                    <div class="m-avatar m-avatar-md" style="background:rgba(16,185,129,0.15);color:var(--m-green);">AR</div>
+                    <div class="m-avatar m-avatar-md" style="background:rgba(248,113,113,0.15);color:var(--m-red);">SE</div>
+                    <div class="m-avatar m-avatar-md" style="background:var(--m-surface);color:var(--m-text3);border:2px solid var(--m-bg);">+2</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+    
+          <div class="sec-divider"></div>
+    
+          <!-- COPY REGISTER -->
+          <div id="copy">
+            <div class="sec-eyebrow">Copy Register</div>
+            <h2 class="sec-title" style="margin-bottom:var(--s3);font-size:var(--t-h2);">Colleague, not assistant</h2>
+            <p class="sec-sub" style="margin-bottom:var(--s6);">Every string in Marcello uses the colleague register. Review every string before shipping.</p>
+            <div class="demo-grid">
+              <div class="demo-block">
+                <div class="demo-label" style="color:var(--m-green);">✓ Correct Register</div>
+                <div style="display:flex;flex-direction:column;gap:var(--s3);">
+                  <div class="m-alert m-alert-green"><span class="m-alert-icon">→</span><div class="m-mono">"HyperForge dependency shifted."</div></div>
+                  <div class="m-alert m-alert-green"><span class="m-alert-icon">→</span><div class="m-mono">"Snowball build finished. Three files changed."</div></div>
+                  <div class="m-alert m-alert-green"><span class="m-alert-icon">→</span><div class="m-mono">"Haven't touched MedCore in four days."</div></div>
+                  <div class="m-alert m-alert-green"><span class="m-alert-icon">→</span><div class="m-mono">"Three tasks queued. NanoClaw flagged drift."</div></div>
+                </div>
+              </div>
+              <div class="demo-block">
+                <div class="demo-label" style="color:var(--m-red);">✗ Never Ship These</div>
+                <div style="display:flex;flex-direction:column;gap:var(--s3);">
+                  <div class="m-alert m-alert-red"><span class="m-alert-icon">✗</span><div class="m-mono">"Hello! How can I assist you today?"</div></div>
+                  <div class="m-alert m-alert-red"><span class="m-alert-icon">✗</span><div class="m-mono">"I noticed you may want to review..."</div></div>
+                  <div class="m-alert m-alert-red"><span class="m-alert-icon">✗</span><div class="m-mono">"Great! I'll get right on that for you!"</div></div>
+                  <div class="m-alert m-alert-red"><span class="m-alert-icon">✗</span><div class="m-mono">"As an AI assistant, I can help you..."</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+    
+          <div class="sec-divider"></div>
+    
+          <!-- MOTION SPEC -->
+          <div id="motion">
+            <div class="sec-eyebrow">Motion Spec</div>
+            <h2 class="sec-title" style="margin-bottom:var(--s3);font-size:var(--t-h2);">Purposeful only</h2>
+            <p class="sec-sub">Nothing animates without a reason. Every duration and easing is prescribed.</p>
+            <div class="demo-grid cols3">
+              <div class="demo-block" style="text-align:center;">
+                <div class="demo-label">Micro — 150ms</div>
+                <div style="font-size:11px;color:var(--m-text3);font-family:var(--f-mono);margin-bottom:var(--s3);">Hover states, toggles</div>
+                <button class="m-btn m-btn-secondary" onclick="this.style.transform='scale(0.97)';setTimeout(()=>this.style.transform='',150)">Hover me</button>
+              </div>
+              <div class="demo-block" style="text-align:center;">
+                <div class="demo-label">Fast — 220ms</div>
+                <div style="font-size:11px;color:var(--m-text3);font-family:var(--f-mono);margin-bottom:var(--s3);">Button press, focus ring</div>
+                <button class="m-btn m-btn-primary" onclick="this.classList.add('m-btn-loading');setTimeout(()=>this.classList.remove('m-btn-loading'),1200)">Trigger</button>
+              </div>
+              <div class="demo-block" style="text-align:center;">
+                <div class="demo-label">Base — 350ms</div>
+                <div style="font-size:11px;color:var(--m-text3);font-family:var(--f-mono);margin-bottom:var(--s3);">Card appear, panel open</div>
+                <button class="m-btn m-btn-secondary" onclick="triggerDemo(this)">Animate card</button>
+              </div>
+            </div>
+            <div id="motion-demo" style="display:none;margin-top:var(--s4);">
+              <div class="m-card m-slide-up">
+                <div class="m-card-header"><span class="m-card-title">Card appeared</span><span class="m-badge m-badge-blue">350ms ease-out</span></div>
+                <div class="m-card-body">Base duration with cubic-bezier(0.0, 0.0, 0.2, 1). Feels instant but not jarring.</div>
+              </div>
+            </div>
+          </div>
+    
+          <div class="sec-divider"></div>
+    
+          <!-- TOKEN EXPORT -->
+          <div id="export" style="padding-bottom:var(--s9);">
+            <div class="sec-eyebrow">Export</div>
+            <h2 class="sec-title" style="margin-bottom:var(--s3);font-size:var(--t-h2);">Three export formats</h2>
+            <div class="demo-grid cols3">
+              <div class="m-card" style="text-align:center;cursor:pointer;" onclick="showExport('css')">
+                <div style="font-size:32px;margin-bottom:var(--s3);">{ }</div>
+                <div class="m-card-title">CSS Variables</div>
+                <div class="m-card-body" style="margin-top:var(--s2);">Paste into any project. Zero dependencies.</div>
+              </div>
+              <div class="m-card" style="text-align:center;cursor:pointer;" onclick="showExport('figma')">
+                <div style="font-size:32px;margin-bottom:var(--s3);">◈</div>
+                <div class="m-card-title">Figma Tokens</div>
+                <div class="m-card-body" style="margin-top:var(--s2);">JSON format for Token Studio plugin.</div>
+              </div>
+              <div class="m-card" style="text-align:center;cursor:pointer;" onclick="showExport('next')">
+                <div style="font-size:32px;margin-bottom:var(--s3);">⬡</div>
+                <div class="m-card-title">Next.js Components</div>
+                <div class="m-card-body" style="margin-top:var(--s2);">TypeScript + Tailwind + CVA variant system.</div>
+              </div>
+            </div>
+            <div id="export-preview" style="margin-top:var(--s4);display:none;"></div>
+          </div>
+    
+        </div><!-- /content-section -->
+      </main>
+    </div>
+    
+    <script>
+    // Sidebar active state
+    document.querySelectorAll('.sb-link').forEach(link=>{
+      link.addEventListener('click',function(){
+        document.querySelectorAll('.sb-link').forEach(l=>l.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+    // Copy code
+    window.copyCode = function(el) {
+      const code = el.closest('.m-code').querySelector('.m-code-body').textContent;
+      navigator.clipboard?.writeText(code).then(()=>{
+        el.textContent = 'Copied!';
+        setTimeout(()=>el.textContent='Copy',1500);
+      });
+    };
+    // Motion demo
+    window.triggerDemo = function(btn) {
+      const demo = document.getElementById('motion-demo');
+      demo.style.display = 'block';
+      const card = demo.querySelector('.m-card');
+      card.classList.remove('m-slide-up');
+      void card.offsetWidth;
+      card.classList.add('m-slide-up');
+      setTimeout(()=>demo.style.display='none', 3000);
+    };
+    // Export preview
+    const EXPORTS = {
+      css: `/* Marcello Dark — CSS Variables Export */
+:root {
+  --m-bg: #080810;
+  --m-accent: #4a9eff;
+  --m-text: #f0f4f8;
+  --t-display: clamp(52px,6vw,96px);
+  --dur-base: 350ms;
+  --ease-out: cubic-bezier(0.0,0.0,0.2,1);
+}`,
+      figma: `{
+  "marcello-dark": {
+    "bg": { "value": "#080810", "type": "color" },
+    "accent": { "value": "#4a9eff", "type": "color" },
+    "t-display": { "value": "96px", "type": "fontSizes" }
+  }
+}`,
+      next: `// Button.tsx — Marcello Dark
+import { cva } from 'class-variance-authority';
+export const button = cva(
+  'inline-flex items-center rounded-md font-semibold transition-all',
+  {
+    variants: {
+      variant: {
+        primary: 'bg-[#4a9eff] text-white hover:opacity-85',
+        secondary: 'border border-white/10 hover:bg-white/4',
+        ghost: 'text-[#4a9eff] hover:text-[#93c5fd]',
+      },
+      size: {
+        sm: 'px-3 py-1.5 text-xs',
+        md: 'px-5 py-2.5 text-sm',
+        lg: 'px-7 py-3.5 text-base',
+      }
+    },
+    defaultVariants: { variant:'primary', size:'md' }
+  }
+);`
+    };
+    window.showExport = function(type) {
+      const preview = document.getElementById('export-preview');
+      preview.style.display = 'block';
+      preview.innerHTML = \`
+        <div class="m-code">
+          <div class="m-code-header">
+            <span class="m-code-lang">\${type === 'css' ? 'CSS Variables' : type === 'figma' ? 'Figma Token JSON' : 'Next.js / TypeScript'}</span>
+            <span class="m-code-copy" onclick="copyCode(this)">Copy</span>
+          </div>
+          <div class="m-code-body">\${EXPORTS[type]}</div>
+        </div>\`;
+    };
+    // Scroll spy
+    const observer = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          const id = e.target.id;
+          document.querySelectorAll('.sb-link').forEach(l=>{
+            l.classList.toggle('active', l.getAttribute('href')==='#'+id);
+          });
+        }
+      });
+    },{threshold:0.3});
+    document.querySelectorAll('[id]').forEach(el=>observer.observe(el));
+    console.log('%cMarcello Dark Precision — Snowball Archetype 01', 'color:#4a9eff;font-weight:700;font-size:13px;');
+    console.log('%c200+ components · CSS tokens · Figma export · Next.js CVA system', 'color:#8a9ab5;');
+    </script>
+    </body>
+    </html>

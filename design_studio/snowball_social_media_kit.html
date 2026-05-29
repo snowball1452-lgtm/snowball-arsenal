@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snowball — Social Media Kit</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Playfair+Display:wght@400;700;900&display=swap');
+      
+      *{margin:0;padding:0;box-sizing:border-box}
+      :root{
+        --black:#030303;--gold:#C9A84C;--gold-light:#E8C97A;--white:#FAFAFA;
+        --gray:#888;--dark:#0A0A0A;--card:#111;--border:rgba(201,168,76,0.2);
+      }
+      body{background:var(--black);color:var(--white);font-family:'Inter',sans-serif;min-height:100vh}
+      
+      header{padding:40px 60px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+      .logo{font-family:'Playfair Display',serif;font-size:28px;color:var(--gold);letter-spacing:2px}
+      .badge{background:rgba(201,168,76,0.1);border:1px solid var(--border);padding:8px 20px;border-radius:2px;font-size:12px;letter-spacing:3px;color:var(--gold);text-transform:uppercase}
+      
+      main{padding:60px}
+      h1{font-family:'Playfair Display',serif;font-size:48px;font-weight:900;margin-bottom:12px}
+      .subtitle{color:var(--gray);font-size:16px;margin-bottom:60px;letter-spacing:1px}
+      
+      .section{margin-bottom:80px}
+      .section-title{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:30px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+      
+      /* BRAND COLORS */
+      .colors-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-bottom:40px}
+      .color-swatch{border-radius:4px;overflow:hidden}
+      .color-block{height:100px}
+      .color-info{background:var(--card);padding:12px;border:1px solid var(--border)}
+      .color-name{font-size:11px;letter-spacing:2px;color:var(--white);text-transform:uppercase;margin-bottom:4px}
+      .color-hex{font-size:10px;color:var(--gold);font-family:monospace}
+      
+      /* TYPOGRAPHY */
+      .type-showcase{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+      .type-card{background:var(--card);border:1px solid var(--border);padding:40px}
+      .type-sample-serif{font-family:'Playfair Display',serif;font-size:48px;font-weight:900;color:var(--white);line-height:1}
+      .type-sample-sans{font-family:'Inter',sans-serif;font-size:14px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-top:16px}
+      .type-label{font-size:10px;letter-spacing:3px;color:var(--gray);text-transform:uppercase;margin-top:20px;padding-top:20px;border-top:1px solid var(--border)}
+      
+      /* SOCIAL TEMPLATES */
+      .templates-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+      .template-card{background:var(--card);border:1px solid var(--border);overflow:hidden;border-radius:4px}
+      .template-preview{width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+      .template-info{padding:20px;border-top:1px solid var(--border)}
+      .template-name{font-size:13px;font-weight:600;color:var(--white);margin-bottom:4px}
+      .template-size{font-size:11px;color:var(--gold);letter-spacing:2px}
+      .template-desc{font-size:11px;color:var(--gray);margin-top:8px;line-height:1.6}
+      
+      /* LINKEDIN BANNER */
+      .linkedin-banner{width:100%;height:180px;background:linear-gradient(135deg,#030303 0%,#0A0A0A 50%,#030303 100%);border:1px solid var(--border);position:relative;overflow:hidden;display:flex;align-items:center;padding:40px;margin-bottom:12px}
+      .linkedin-banner::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 30% 50%,rgba(201,168,76,0.08) 0%,transparent 60%)}
+      .banner-grid{position:absolute;top:0;left:0;right:0;bottom:0;background-image:linear-gradient(rgba(201,168,76,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.05) 1px,transparent 1px);background-size:40px 40px}
+      .banner-content{position:relative;z-index:2}
+      .banner-logo{font-family:'Playfair Display',serif;font-size:36px;color:var(--gold);letter-spacing:4px;font-weight:900}
+      .banner-tagline{font-size:12px;letter-spacing:4px;text-transform:uppercase;color:var(--gray);margin-top:8px}
+      .banner-right{position:absolute;right:40px;text-align:right;z-index:2}
+      .banner-stat{font-family:'Playfair Display',serif;font-size:48px;color:rgba(201,168,76,0.15);font-weight:900;line-height:1}
+      
+      /* POST TEMPLATES */
+      .post-square{width:100%;aspect-ratio:1;position:relative;overflow:hidden}
+      .post-story{width:100%;aspect-ratio:9/16;position:relative;overflow:hidden;max-height:300px}
+      .post-landscape{width:100%;aspect-ratio:16/9;position:relative;overflow:hidden}
+      
+      /* Template 1 - Quote Post */
+      .tpl-quote{background:var(--black);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center}
+      .tpl-quote::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(201,168,76,0.06),transparent 70%)}
+      .quote-mark{font-family:'Playfair Display',serif;font-size:80px;color:var(--gold);opacity:0.3;line-height:0.5;margin-bottom:20px}
+      .quote-text{font-family:'Playfair Display',serif;font-size:18px;color:var(--white);line-height:1.6;position:relative;z-index:2}
+      .quote-author{font-size:10px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-top:20px;position:relative;z-index:2}
+      
+      /* Template 2 - Case Study */
+      .tpl-case{background:linear-gradient(135deg,#0A0A0A,#030303);display:flex;flex-direction:column;justify-content:space-between;padding:30px}
+      .case-tag{font-size:9px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;border:1px solid var(--border);padding:6px 12px;display:inline-block}
+      .case-title{font-family:'Playfair Display',serif;font-size:22px;color:var(--white);line-height:1.3;margin-top:20px;position:relative;z-index:2}
+      .case-metric{font-family:'Playfair Display',serif;font-size:48px;color:var(--gold);font-weight:900;line-height:1}
+      .case-metric-label{font-size:9px;letter-spacing:3px;color:var(--gray);text-transform:uppercase}
+      
+      /* Template 3 - Archetype Showcase */
+      .tpl-arch{background:var(--black);display:flex;flex-direction:column;justify-content:flex-end;padding:30px;position:relative}
+      .arch-bg{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(201,168,76,0.05) 0%,rgba(3,3,3,0.95) 60%,#030303 100%)}
+      .arch-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(201,168,76,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.04) 1px,transparent 1px);background-size:30px 30px}
+      .arch-number{font-family:'Playfair Display',serif;font-size:80px;color:rgba(201,168,76,0.08);font-weight:900;position:absolute;top:10px;right:20px;line-height:1}
+      .arch-name{font-family:'Playfair Display',serif;font-size:24px;color:var(--white);position:relative;z-index:2}
+      .arch-tag{font-size:9px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:10px;position:relative;z-index:2}
+      
+      /* Template 4 - LinkedIn Article */
+      .tpl-article{background:var(--card);border:1px solid var(--border);padding:30px;display:flex;flex-direction:column;justify-content:space-between}
+      .article-category{font-size:9px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:16px}
+      .article-headline{font-family:'Playfair Display',serif;font-size:20px;color:var(--white);line-height:1.4}
+      .article-excerpt{font-size:11px;color:var(--gray);line-height:1.6;margin-top:12px}
+      .article-footer{display:flex;align-items:center;justify-content:space-between;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+      .article-brand{font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase}
+      .article-date{font-size:10px;color:var(--gray)}
+      
+      /* Template 5 - Story */
+      .tpl-story{background:var(--black);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;position:relative}
+      .story-logo{font-family:'Playfair Display',serif;font-size:28px;color:var(--gold);letter-spacing:4px;font-weight:900;margin-bottom:40px}
+      .story-number{font-family:'Playfair Display',serif;font-size:96px;color:var(--gold);font-weight:900;line-height:1}
+      .story-label{font-size:10px;letter-spacing:4px;color:var(--white);text-transform:uppercase;margin-top:8px}
+      .story-sub{font-size:11px;color:var(--gray);margin-top:16px;line-height:1.6}
+      
+      /* Template 6 - Process */
+      .tpl-process{background:var(--black);padding:30px;display:flex;flex-direction:column;justify-content:space-between}
+      .process-title{font-family:'Playfair Display',serif;font-size:20px;color:var(--white);margin-bottom:24px}
+      .process-step{display:flex;align-items:flex-start;gap:16px;margin-bottom:16px}
+      .step-num{font-family:'Playfair Display',serif;font-size:24px;color:var(--gold);font-weight:900;min-width:30px;line-height:1}
+      .step-text{font-size:11px;color:var(--gray);line-height:1.5}
+      .step-name{font-size:12px;color:var(--white);font-weight:600;margin-bottom:4px}
+      
+      /* COPY TEMPLATES */
+      .copy-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+      .copy-card{background:var(--card);border:1px solid var(--border);padding:30px}
+      .copy-platform{font-size:10px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:16px}
+      .copy-text{font-size:13px;color:var(--white);line-height:1.8;font-style:italic}
+      .copy-chars{font-size:10px;color:var(--gray);margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+      
+      /* HASHTAG BANKS */
+      .hashtag-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+      .hashtag-card{background:var(--card);border:1px solid var(--border);padding:24px}
+      .hashtag-category{font-size:10px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:16px}
+      .hashtag-list{display:flex;flex-wrap:wrap;gap:8px}
+      .hashtag{background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);padding:4px 10px;border-radius:2px;font-size:10px;color:var(--white);font-family:monospace}
+      
+      /* POSTING SCHEDULE */
+      .schedule-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+      .day-card{background:var(--card);border:1px solid var(--border);padding:16px;text-align:center}
+      .day-name{font-size:9px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:12px}
+      .day-post{font-size:9px;color:var(--white);line-height:1.6;padding:6px;background:rgba(201,168,76,0.05);border-radius:2px;margin-bottom:6px}
+      .day-time{font-size:8px;color:var(--gray)}
+      .day-off{opacity:0.3}
+      
+      /* PROFILE IMAGES */
+      .profiles-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+      .profile-card{background:var(--card);border:1px solid var(--border);padding:24px;text-align:center}
+      .profile-circle{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#030303,#0A0A0A);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-family:'Playfair Display',serif;font-size:32px;color:var(--gold);font-weight:900}
+      .profile-size{font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:8px}
+      .profile-use{font-size:11px;color:var(--gray)}
+      
+      /* BIO TEMPLATES */
+      .bio-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+      .bio-card{background:var(--card);border:1px solid var(--border);padding:24px}
+      .bio-platform{font-size:10px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:12px}
+      .bio-text{font-size:12px;color:var(--white);line-height:1.7}
+      .bio-chars{font-size:10px;color:var(--gray);margin-top:10px}
+    
+      /* DOWNLOAD BTN */
+      .download-section{background:var(--card);border:1px solid var(--border);padding:40px;text-align:center;margin-top:60px}
+      .download-title{font-family:'Playfair Display',serif;font-size:32px;color:var(--white);margin-bottom:12px}
+      .download-sub{font-size:13px;color:var(--gray);margin-bottom:30px}
+      .btn{display:inline-block;padding:16px 40px;background:var(--gold);color:var(--black);font-size:11px;letter-spacing:3px;text-transform:uppercase;font-weight:700;border:none;cursor:pointer;text-decoration:none;margin:8px}
+      .btn-outline{background:transparent;color:var(--gold);border:1px solid var(--gold)}
+    </style>
+    </head>
+    <body>
+    
+    <header>
+      <div class="logo">SNOWBALL</div>
+      <div class="badge">Social Media Kit — 2026</div>
+    </header>
+    
+    <main>
+      <h1>Social Media Kit</h1>
+      <p class="subtitle">Complete brand assets, post templates, copy banks, and posting strategy</p>
+    
+      <!-- BRAND COLORS -->
+      <div class="section">
+        <div class="section-title">Brand Color System</div>
+        <div class="colors-grid">
+          <div class="color-swatch">
+            <div class="color-block" style="background:#030303"></div>
+            <div class="color-info"><div class="color-name">Void Black</div><div class="color-hex">#030303</div></div>
+          </div>
+          <div class="color-swatch">
+            <div class="color-block" style="background:#C9A84C"></div>
+            <div class="color-info"><div class="color-name">Precision Gold</div><div class="color-hex">#C9A84C</div></div>
+          </div>
+          <div class="color-swatch">
+            <div class="color-block" style="background:#E8C97A"></div>
+            <div class="color-info"><div class="color-name">Light Gold</div><div class="color-hex">#E8C97A</div></div>
+          </div>
+          <div class="color-swatch">
+            <div class="color-block" style="background:#0A0A0A"></div>
+            <div class="color-info"><div class="color-name">Carbon</div><div class="color-hex">#0A0A0A</div></div>
+          </div>
+          <div class="color-swatch">
+            <div class="color-block" style="background:#888888"></div>
+            <div class="color-info"><div class="color-name">Steel Gray</div><div class="color-hex">#888888</div></div>
+          </div>
+          <div class="color-swatch">
+            <div class="color-block" style="background:#FAFAFA"></div>
+            <div class="color-info"><div class="color-name">Pure White</div><div class="color-hex">#FAFAFA</div></div>
+          </div>
+        </div>
+      </div>
+    
+      <!-- TYPOGRAPHY -->
+      <div class="section">
+        <div class="section-title">Typography System</div>
+        <div class="type-showcase">
+          <div class="type-card">
+            <div class="type-sample-serif">Playfair Display</div>
+            <div class="type-sample-sans">Aa Bb Cc 123</div>
+            <div class="type-label">Headlines · Titles · Quotes · Brand Name</div>
+          </div>
+          <div class="type-card">
+            <div style="font-family:'Inter',sans-serif;font-size:36px;font-weight:300;color:var(--white)">Inter Light</div>
+            <div class="type-sample-sans">Body · Captions · UI · Navigation</div>
+            <div class="type-label">Body · Captions · Labels · Data</div>
+          </div>
+        </div>
+      </div>
+    
+      <!-- LINKEDIN BANNER -->
+      <div class="section">
+        <div class="section-title">LinkedIn Banner — 1584 x 396px</div>
+        <div class="linkedin-banner">
+          <div class="banner-grid"></div>
+          <div class="banner-content">
+            <div class="banner-logo">SNOWBALL</div>
+            <div class="banner-tagline">Design Intelligence · Luxury Digital Experiences · 8 Archetypes</div>
+          </div>
+          <div class="banner-right">
+            <div class="banner-stat">S</div>
+          </div>
+        </div>
+        <p style="font-size:11px;color:var(--gray);letter-spacing:2px">Save as image · Upload directly to LinkedIn profile · Recommended 1584×396px</p>
+      </div>
+    
+      <!-- PROFILE IMAGES -->
+      <div class="section">
+        <div class="section-title">Profile Image Variants</div>
+        <div class="profiles-grid">
+          <div class="profile-card">
+            <div class="profile-circle">S</div>
+            <div class="profile-size">400 x 400px</div>
+            <div class="profile-use">LinkedIn · Twitter/X · Instagram</div>
+          </div>
+          <div class="profile-card">
+            <div class="profile-circle" style="border-color:var(--white);color:var(--white);font-size:24px">SBI</div>
+            <div class="profile-size">400 x 400px</div>
+            <div class="profile-use">Formal / White Label Variant</div>
+          </div>
+          <div class="profile-card">
+            <div class="profile-circle" style="background:var(--gold);color:var(--black)">S</div>
+            <div class="profile-size">400 x 400px</div>
+            <div class="profile-use">Gold Fill — High Contrast Variant</div>
+          </div>
+          <div class="profile-card">
+            <div class="profile-circle" style="width:100px;height:100px;border-radius:8px;border-color:var(--gold)">S</div>
+            <div class="profile-size">400 x 400px</div>
+            <div class="profile-use">Square — Facebook · YouTube</div>
+          </div>
+        </div>
+      </div>
+    
+      <!-- POST TEMPLATES -->
+      <div class="section">
+        <div class="section-title">Post Templates — 6 Ready-to-Use Designs</div>
+        <div class="templates-grid">
+          
+          <!-- Quote Post -->
+          <div class="template-card">
+            <div class="template-preview">
+              <div class="post-square tpl-quote">
+                <div class="quote-mark">"</div>
+                <div class="quote-text">Design is not decoration. It is intelligence made visible.</div>
+                <div class="quote-author">— Snowball Design Intelligence</div>
+              </div>
+            </div>
+            <div class="template-info">
+              <div class="template-name">Quote Post</div>
+              <div class="template-size">1080 x 1080px · Instagram · LinkedIn</div>
+              <div class="template-desc">Use 3x/week. Swap quote text. Keep gold on black format.</div>
+            </div>
+          </div>
+    
+          <!-- Case Study -->
+          <div class="template-card">
+            <div class="template-preview">
+              <div class="post-square tpl-case">
+                <div>
+                  <div class="case-tag">Case Study</div>
+                  <div class="case-title">Dark Precision archetype deployed for automotive studio</div>
+                </div>
+                <div>
+                  <div class="case-metric">$5K</div>
+                  <div class="case-metric-label">Commission Value · 72hr Delivery</div>
+                </div>
+              </div>
+            </div>
+            <div class="template-info">
+              <div class="template-name">Case Study / Result</div>
+              <div class="template-size">1080 x 1080px · LinkedIn · Twitter</div>
+              <div class="template-desc">Post after every client delivery. Real numbers only.</div>
+            </div>
+          </div>
+    
+          <!-- Archetype Showcase -->
+          <div class="template-card">
+            <div class="template-preview">
+              <div class="post-square tpl-arch">
+                <div class="arch-bg"></div>
+                <div class="arch-grid-bg"></div>
+                <div class="arch-number">01</div>
+                <div class="arch-tag">Design Archetype</div>
+                <div class="arch-name">Dark Precision</div>
+              </div>
+            </div>
+            <div class="template-info">
+              <div class="template-name">Archetype Showcase</div>
+              <div class="template-size">1080 x 1080px · Instagram · Pinterest</div>
+              <div class="template-desc">8-post carousel series. One per archetype. Pin to profile.</div>
+            </div>
+          </div>
+    
+          <!-- LinkedIn Article -->
+          <div class="template-card">
+            <div class="template-preview" style="padding:20px">
+              <div style="width:100%" class="tpl-article">
+                <div>
+                  <div class="article-category">Design Intelligence</div>
+                  <div class="article-headline">Why luxury design studios are being disrupted by intelligence-first platforms</div>
+                  <div class="article-excerpt">The $47B luxury brand design market has a problem. Most studios still operate on instinct rather than systematic design intelligence...</div>
+                </div>
+                <div class="article-footer">
+                  <div class="article-brand">Snowball</div>
+                  <div class="article-date">May 2026</div>
+                </div>
+              </div>
+            </div>
+            <div class="template-info">
+              <div class="template-name">Article / Thought Leadership</div>
+              <div class="template-size">1200 x 627px · LinkedIn Articles</div>
+              <div class="template-desc">1x/week. 800-1200 words. Establishes authority.</div>
+            </div>
+          </div>
+    
+          <!-- Story -->
+          <div class="template-card">
+            <div class="template-preview">
+              <div class="post-square tpl-story" style="background:var(--black)">
+                <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(201,168,76,0.08),transparent 70%)"></div>
+                <div style="position:relative;z-index:2;text-align:center">
+                  <div class="story-logo">SNOWBALL</div>
+                  <div class="story-number">8</div>
+                  <div class="story-label">Design Archetypes</div>
+                  <div class="story-sub">Each one a world. Each one a weapon.</div>
+                </div>
+              </div>
+            </div>
+            <div class="template-info">
+              <div class="template-name">Stat / Number Post</div>
+              <div class="template-size">1080 x 1080px · All Platforms</div>
+              <div class="template-desc">Big numbers. Minimal text. Maximum impact.</div>
+            </div>
+          </div>
+    
+          <!-- Process -->
+          <div class="template-card">
+            <div class="template-preview" style="padding:16px">
+              <div style="width:100%;background:var(--black);padding:24px">
+                <div class="process-title">How Snowball works</div>
+                <div class="process-step">
+                  <div class="step-num">01</div>
+                  <div><div class="step-name">Brief</div><div class="step-text">You submit your commission brief online</div></div>
+                </div>
+                <div class="process-step">
+                  <div class="step-num">02</div>
+                  <div><div class="step-name">Archetype</div><div class="step-text">We match your brand to one of 8 archetypes</div></div>
+                </div>
+                <div class="process-step">
+                  <div class="step-num">03</div>
+                  <div><div class="step-name">Delivery</div><div class="step-text">Live site in 72 hours. No revisions needed.</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="template-info">
+              <div class="template-name">Process Explainer</div>
+              <div class="template-size">1080 x 1080px · LinkedIn · Twitter</div>
+              <div class="template-desc">Use 2x/month. Simplifies the sales conversation.</div>
+            </div>
+          </div>
+    
+        </div>
+      </div>
+    
+      <!-- COPY TEMPLATES -->
+      <div class="section">
+        <div class="section-title">Caption Copy Bank — Ready to Post</div>
+        <div class="copy-grid">
+          
+          <div class="copy-card">
+            <div class="copy-platform">LinkedIn — Thought Leadership</div>
+            <div class="copy-text">Most design agencies sell you a website. We sell you a position.<br><br>There are 8 archetypes of luxury design language. Most brands don't know which one they belong to. That's why their sites feel generic.<br><br>Snowball maps your brand to its archetype in 48 hours. Then builds the site that makes you untouchable.<br><br>$3,500 starting. 72-hour delivery. Zero revisions needed.<br><br>Link in bio to commission yours.</div>
+            <div class="copy-chars">Characters: 412 · Best time: Tuesday 8am or Thursday 12pm</div>
+          </div>
+    
+          <div class="copy-card">
+            <div class="copy-platform">Twitter/X — Punchy Thread Opener</div>
+            <div class="copy-text">8 luxury design firms have dominated the industry for 40 years.<br><br>Pininfarina. Zagato. Bertone. Italdesign.<br><br>None of them have a scalable digital tool.<br><br>That gap is now worth $47B.<br><br>We're filling it.<br><br>Thread on how 👇</div>
+            <div class="copy-chars">Characters: 224 · Best time: Monday 9am · Pin this tweet</div>
+          </div>
+    
+          <div class="copy-card">
+            <div class="copy-platform">Instagram — Visual Caption</div>
+            <div class="copy-text">Dark Precision. Fluid Elegance. Avant-Garde. Wedge Futurist.<br><br>These aren't just words. They're entire worlds of design language, each one capable of making your brand feel like it belongs in a different league.<br><br>Snowball doesn't build websites. We build positions.<br><br>Which archetype is yours? 👇</div>
+            <div class="copy-chars">Characters: 318 · Add 8 hashtags below · Use carousel format</div>
+          </div>
+    
+          <div class="copy-card">
+            <div class="copy-platform">LinkedIn — Case Study Post</div>
+            <div class="copy-text">Delivered a Dark Precision site to an independent automotive design studio last week.<br><br>72 hours. $4,500 commission. Zero revision requests.<br><br>The client's exact words: "This looks like something Pininfarina would charge $80K for."<br><br>That's the Snowball standard. DM to commission yours.</div>
+            <div class="copy-chars">Characters: 302 · Post after every delivery · Add project image</div>
+          </div>
+    
+          <div class="copy-card">
+            <div class="copy-platform">Twitter/X — Daily Value Post</div>
+            <div class="copy-text">Luxury design rule #7:<br><br>Never use more than 2 typefaces. Ever.<br><br>Serif for headlines (Playfair, Cormorant, Editorial New)<br>Sans for body (Inter, Neue Haas, Suisse)<br><br>The moment you add a third font you've left luxury behind.<br><br>Save this.</div>
+            <div class="copy-chars">Characters: 256 · Best time: Daily 7am · High save/share rate</div>
+          </div>
+    
+          <div class="copy-card">
+            <div class="copy-platform">LinkedIn — Direct Pitch</div>
+            <div class="copy-text">If you run a design studio, architecture firm, or luxury product brand — and your website was built by a generalist agency — you have a positioning problem.<br><br>Generalist agencies build generalist sites. You need a site that speaks the exact language of your industry.<br><br>Snowball specializes in exactly this. Commission brief takes 5 minutes. Site delivered in 72 hours.<br><br>Comment "BRIEF" and I'll send you the link.</div>
+            <div class="copy-chars">Characters: 478 · Use 1x/month · High conversion rate</div>
+          </div>
+    
+        </div>
+      </div>
+    
+      <!-- HASHTAG BANK -->
+      <div class="section">
+        <div class="section-title">Hashtag Bank — 3 Sets Ready to Rotate</div>
+        <div class="hashtag-grid">
+          <div class="hashtag-card">
+            <div class="hashtag-category">Set A — Design Authority</div>
+            <div class="hashtag-list">
+              <span class="hashtag">#LuxuryDesign</span>
+              <span class="hashtag">#DesignIntelligence</span>
+              <span class="hashtag">#WebDesign</span>
+              <span class="hashtag">#UIDesign</span>
+              <span class="hashtag">#DigitalLuxury</span>
+              <span class="hashtag">#BrandDesign</span>
+              <span class="hashtag">#DesignStudio</span>
+              <span class="hashtag">#AutomotiveDesign</span>
+            </div>
+          </div>
+          <div class="hashtag-card">
+            <div class="hashtag-category">Set B — Business / SaaS</div>
+            <div class="hashtag-list">
+              <span class="hashtag">#SaaS</span>
+              <span class="hashtag">#DesignTool</span>
+              <span class="hashtag">#Entrepreneur</span>
+              <span class="hashtag">#StartupLife</span>
+              <span class="hashtag">#DesignBusiness</span>
+              <span class="hashtag">#FreelanceDesign</span>
+              <span class="hashtag">#AgencyLife</span>
+              <span class="hashtag">#CreativeEntrepreneur</span>
+            </div>
+          </div>
+          <div class="hashtag-card">
+            <div class="hashtag-category">Set C — Niche Reach</div>
+            <div class="hashtag-list">
+              <span class="hashtag">#Pininfarina</span>
+              <span class="hashtag">#IndustrialDesign</span>
+              <span class="hashtag">#ProductDesign</span>
+              <span class="hashtag">#ArchitectureDesign</span>
+              <span class="hashtag">#LuxuryBrand</span>
+              <span class="hashtag">#DesignThinking</span>
+              <span class="hashtag">#PremiumDesign</span>
+              <span class="hashtag">#DesignLeadership</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+      <!-- POSTING SCHEDULE -->
+      <div class="section">
+        <div class="section-title">7-Day Posting Schedule — Optimal Times</div>
+        <div class="schedule-grid">
+          <div class="day-card">
+            <div class="day-name">Mon</div>
+            <div class="day-post">LinkedIn Thread Opener</div>
+            <div class="day-time">9:00 AM</div>
+            <div class="day-post">Twitter Value Post</div>
+            <div class="day-time">7:00 AM</div>
+          </div>
+          <div class="day-card">
+            <div class="day-name">Tue</div>
+            <div class="day-post">Instagram Quote Post</div>
+            <div class="day-time">11:00 AM</div>
+            <div class="day-post">LinkedIn Thought Leadership</div>
+            <div class="day-time">8:00 AM</div>
+          </div>
+          <div class="day-card">
+            <div class="day-name">Wed</div>
+            <div class="day-post">Twitter Design Tip</div>
+            <div class="day-time">7:00 AM</div>
+            <div class="day-post">Instagram Archetype</div>
+            <div class="day-time">6:00 PM</div>
+          </div>
+          <div class="day-card">
+            <div class="day-name">Thu</div>
+            <div class="day-post">LinkedIn Case Study</div>
+            <div class="day-time">12:00 PM</div>
+            <div class="day-post">Twitter Thread</div>
+            <div class="day-time">9:00 AM</div>
+          </div>
+          <div class="day-card">
+            <div class="day-name">Fri</div>
+            <div class="day-post">Instagram Stat Post</div>
+            <div class="day-time">10:00 AM</div>
+            <div class="day-post">LinkedIn Direct Pitch</div>
+            <div class="day-time">8:00 AM</div>
+          </div>
+          <div class="day-card day-off">
+            <div class="day-name">Sat</div>
+            <div class="day-post">Rest / Schedule</div>
+            <div class="day-time">—</div>
+          </div>
+          <div class="day-card">
+            <div class="day-name">Sun</div>
+            <div class="day-post">Twitter Inspiration</div>
+            <div class="day-time">7:00 PM</div>
+            <div class="day-post">Instagram Story</div>
+            <div class="day-time">8:00 PM</div>
+          </div>
+        </div>
+      </div>
+    
+      <!-- BIO TEMPLATES -->
+      <div class="section">
+        <div class="section-title">Platform Bio Templates — Copy and Paste</div>
+        <div class="bio-grid">
+          <div class="bio-card">
+            <div class="bio-platform">LinkedIn (220 chars)</div>
+            <div class="bio-text">Founder @ Snowball Design Intelligence | We build luxury digital experiences for design studios, automotive brands, and architecture firms | 8 archetypes | Commission from $3.5K | snowball.design</div>
+            <div class="bio-chars">187 characters</div>
+          </div>
+          <div class="bio-card">
+            <div class="bio-platform">Twitter/X (160 chars)</div>
+            <div class="bio-text">Luxury design intelligence. 8 archetypes. Sites that rival Pininfarina-level studios. Commission yours from $3.5K. snowball.design</div>
+            <div class="bio-chars">131 characters</div>
+          </div>
+          <div class="bio-card">
+            <div class="bio-platform">Instagram (150 chars)</div>
+            <div class="bio-text">Design Intelligence Platform<br>8 luxury archetypes<br>Sites from $3,500<br>72hr delivery<br>Commission below 👇<br>snowball.design</div>
+            <div class="bio-chars">118 characters · Use line breaks</div>
+          </div>
+        </div>
+      </div>
+    
+      <!-- DOWNLOAD SECTION -->
+      <div class="download-section">
+        <div class="download-title">Kit Complete</div>
+        <div class="download-sub">All assets above are ready to copy, screenshot, and deploy. Print this page as PDF for your brand reference file.</div>
+        <a class="btn" onclick="window.print()">Print / Save as PDF</a>
+        <a class="btn btn-outline" href="snowball_hero_site.html">View Hero Site</a>
+      </div>
+    
+    </main>
+    </body>
+    </html>

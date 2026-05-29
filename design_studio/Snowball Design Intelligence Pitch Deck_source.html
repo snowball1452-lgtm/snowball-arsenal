@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Space Grotesk',sans-serif; background:#0a0a0a; }
+.slide { width:1920px; height:1080px; position:relative; overflow:hidden; page-break-after:always; }
+
+/* SLIDE 1 - TITLE */
+.slide-1 { background:#0a0a0a; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:0 160px; }
+.slide-1 .bg-img { position:absolute; top:0; right:0; width:55%; height:100%; object-fit:cover; opacity:0.25; }
+.slide-1 .bg-gradient { position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(90deg, #0a0a0a 45%, transparent 100%); }
+.slide-1 .tag { font-family:'Space Mono',monospace; font-size:18px; letter-spacing:0.4em; color:#c9a84c; text-transform:uppercase; margin-bottom:40px; display:flex; align-items:center; gap:20px; }
+.slide-1 .tag::before { content:''; width:60px; height:1px; background:#c9a84c; }
+.slide-1 h1 { font-size:120px; font-weight:700; line-height:0.9; letter-spacing:-0.03em; color:#f0f0e8; margin-bottom:48px; }
+.slide-1 h1 span { color:#c9a84c; }
+.slide-1 .sub { font-size:28px; color:rgba(240,240,232,0.5); font-weight:300; max-width:600px; line-height:1.5; margin-bottom:60px; }
+.slide-1 .cta-pill { display:inline-flex; align-items:center; gap:16px; background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.3); padding:16px 32px; font-family:'Space Mono',monospace; font-size:14px; letter-spacing:0.2em; color:#c9a84c; text-transform:uppercase; }
+.slide-1 .corner-mark { position:absolute; bottom:60px; right:100px; font-family:'Space Mono',monospace; font-size:13px; color:rgba(240,240,232,0.2); letter-spacing:0.2em; text-align:right; }
+
+/* SLIDE 2 - PROBLEM */
+.slide-2 { background:#0f0f0f; display:grid; grid-template-columns:1fr 1fr; }
+.slide-2 .left { padding:100px 80px; display:flex; flex-direction:column; justify-content:center; border-right:1px solid rgba(201,168,76,0.15); }
+.slide-2 .right { padding:100px 80px; display:flex; flex-direction:column; justify-content:center; background:#111418; }
+.slide-2 .s-tag { font-family:'Space Mono',monospace; font-size:13px; letter-spacing:0.4em; color:#c9a84c; text-transform:uppercase; margin-bottom:32px; display:flex; align-items:center; gap:16px; }
+.slide-2 .s-tag::before { content:''; width:40px; height:1px; background:#c9a84c; }
+.slide-2 h2 { font-size:72px; font-weight:700; line-height:1; letter-spacing:-0.02em; color:#f0f0e8; margin-bottom:40px; }
+.slide-2 .big-stat { font-size:140px; font-weight:700; line-height:1; color:#c9a84c; font-family:'Space Mono',monospace; margin-bottom:16px; }
+.slide-2 .stat-label { font-size:22px; color:rgba(240,240,232,0.5); font-weight:300; max-width:400px; line-height:1.5; }
+.slide-2 p { font-size:24px; color:rgba(240,240,232,0.6); line-height:1.7; font-weight:300; }
+.slide-2 .prob-list { margin-top:40px; display:flex; flex-direction:column; gap:20px; }
+.slide-2 .prob-item { display:flex; align-items:flex-start; gap:20px; padding:20px 24px; background:rgba(201,168,76,0.05); border-left:3px solid rgba(201,168,76,0.4); }
+.slide-2 .prob-icon { color:#c9a84c; flex-shrink:0; margin-top:2px; }
+.slide-2 .prob-text { font-size:20px; color:rgba(240,240,232,0.7); line-height:1.5; }
+
+/* SLIDE 3 - MARKET METRICS */
+.slide-3 { background:#0a0a0a; padding:80px 120px; display:flex; flex-direction:column; justify-content:center; }
+.slide-3 .s-tag { font-family:'Space Mono',monospace; font-size:13px; letter-spacing:0.4em; color:#c9a84c; text-transform:uppercase; margin-bottom:24px; display:flex; align-items:center; gap:16px; }
+.slide-3 .s-tag::before { content:''; width:40px; height:1px; background:#c9a84c; }
+.slide-3 h2 { font-size:64px; font-weight:700; color:#f0f0e8; margin-bottom:64px; letter-spacing:-0.02em; }
+.slide-3 .metrics-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; }
+.slide-3 .metric-card { background:#111418; padding:48px 40px; border:1px solid rgba(201,168,76,0.1); position:relative; }
+.slide-3 .metric-card::before { content:''; position:absolute; top:0; left:0; width:3px; height:60px; background:#c9a84c; }
+.slide-3 .metric-num { font-family:'Space Mono',monospace; font-size:72px; font-weight:700; color:#c9a84c; line-height:1; margin-bottom:12px; }
+.slide-3 .metric-unit { font-size:28px; }
+.slide-3 .metric-label { font-size:18px; color:rgba(240,240,232,0.5); text-transform:uppercase; letter-spacing:0.1em; font-family:'Space Mono',monospace; margin-bottom:12px; }
+.slide-3 .metric-sub { font-size:16px; color:rgba(240,240,232,0.35); line-height:1.5; }
+
+/* SLIDE 4 - SOLUTION */
+.slide-4 { background:#0f0f0f; padding:80px 120px; display:flex; flex-direction:column; justify-content:center; }
+.slide-4 .s-tag { font-family:'Space Mono',monospace; font-size:13px; letter-spacing:0.4em; color:#c9a84c; text-transform:uppercase; margin-bottom:24px; display:flex; align-items:center; gap:16px; }
+.slide-4 .s-tag::before { content:''; width:40px; height:1px; background:#c9a84c; }
+.slide-4 h2 { font-size:64px; font-weight:700; color:#f0f0e8; margin-bottom:16px; letter-spacing:-0.02em; }
+.slide-4 .headline-sub { font-size:28px; color:#c9a84c; font-weight:300; margin-bottom:56px; }
+.slide-4 .features-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+.slide-4 .feat-card { background:#111418; border:1px solid rgba(201,168,76,0.12); padding:40px; transition:all 0.3s; }
+.slide-4 .feat-icon { width:56px; height:56px; background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.2); display:flex; align-items:center; justify-content:center; margin-bottom:24px; color:#c9a84c; }
+.slide-4 .feat-title { font-size:24px; font-weight:600; color:#f0f0e8; margin-bottom:12px; }
+.slide-4 .feat-desc { font-size:17px; color:rgba(240,240,232,0.5); line-height:1.6; }
+
+/* SLIDE 5 - ARCHETYPES */
+.slide-5 { background:#0a0a0a; padding:80px 100px; display:flex; flex-direction:column; justify-content:center; }
+.slide-5 .s-tag { font-family:'Space Mono',monospace; font-size:13px; letter-spacing:0.4em; color:#c9a84c; text-transform:uppercase; margin-bottom:24px; display:flex; align-items:center; gap:16px; }
+.slide-5 .s-tag::before { content:''; width:40px; height:1px; background:#c9a84c; }
+.slide-5 h2 { font-size:56px; font-weight:700; color:#f0f0e8; margin-bottom:48px; letter-spacing:-0.02em; }
+.slide-5 .arch-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; }
+.slide-5 .arch-card { padding:32px 28px; border:1px solid rgba(201,168,76,0.1); position:relative; overflow:hidden; }
+.slide-5 .arch-card:nth-child(1) { background:linear-gradient(135deg,#0f0f0f,#1a1410); }
+.slide-5 .arch-card:nth-child(2) { background:linear-gradient(135deg,#0f0f0f,#141210); }
+.slide-5 .arch-card:nth-child(3) { background:linear-gradient(135deg,#0f0f0f,#140f0f); }
+.slide-5 .arch-card:nth-child(4) { background:linear-gradient(135deg,#0f0f0f,#0f1014); }
+.slide-5 .arch-card:nth-child(5) { background:linear-gradient(135deg,#0f0f0f,#100f14); }
+.slide-5 .arch-card:nth-child(6) { background:linear-gradient(135deg,#0f0f0f,#0f1410); }
+.slide-5 .arch-card:nth-child(7) { background:linear-gradient(135deg,#0f0f0f,#14140f); }
+.slide-5 .arch-card:nth-child(8) { background:linear-gradient(135deg,#0f0f0f,#0f1414); }
+.slide-5 .arch-num { font-family:'Space Mono',monospace; font-size:11px; color:#c9a84c; letter-spacing:0.3em; margin-bottom:16px; opacity:0.6; }
+.slide-5 .arch-name { font-size:20px; font-weight:700; color:#f0f0e8; margin-bottom:8px; }
+.slide-5 .arch-inspired { font-size:13px; color:rgba(240,240,232,0.35); font-family:'Space Mono',monospace; letter-spacing:0.1em; margin-bottom:12px; }
+.slide-5 .arch-palette { display:flex; gap:4px; }
+.slide-5 .arch-swatch { width:16px; height:16px; border-radius:50%; }
+
+/* SLIDE 6 - HOW IT WORKS */
+.slide-6 { background:#0f0f0f; padding:80px 120px; display:flex; flex-direction:column; justify-content:center; }
+.slide-6 .s-tag { font-family:'Space Mono',monospace; font-size:13px; letter-spacing:0.4em; color:#c9a84c; text-transform:uppercase; margin-bottom:24px; display:flex; align-items:center; gap:16px; }
+.slide-6 .s-tag::before { content:''; width:40px; height:1px; background:#c9a84c; }
+.slide-6 h2 { font-size:64px; font-weight:700; color:#f0f0e8; margin-bottom:16px; letter-spacing:-0.02em; }
+.slide-6 .timeline-sub { font-size:26px; color:rgba(240,240,232,0.4); margin-bottom:64px; font-weight:300; }
+.slide-6 .timeline { display:flex; gap:0; position:relative; }
+.slide-6 .timeline::before { content:''; position:absolute; top:40px; left:60px; right:60px; height:1px; background:rgba(201,168,76,0.2); z-index:0; }
+.slide-6 .t-step { flex:1; display:flex; flex-direction:column; align-items:center; position:relative; z-index:1; }
+.slide-6 .t-dot { width:80px; height:80px; background:#c9a84c; display:flex; align-items:center; justify-content:center; margin-bottom:32px; font-family:'Space Mono',monospace; font-size:20px; font-weight:700; color:#0a0a0a; }
+.slide-6 .t-day { font-family:'Space Mono',monospace; font-size:13px; color:#c9a84c; letter-spacing:0.2em; margin-bottom:12px; }
+.slide-6 .t-title { font-size:22px; font-weight:700; color:#f0f0e8; margin-bottom:8px; text-align:center; }
+.slide-6 .t-desc { font-size:15px; color:rgba(240,240,232,0.4); text-align:center; line-height:1.5; max-width:200px; }
+.slide-6 .badge { margin-top:48px; display:inline-flex; align-items:center; gap:16px; background:rgba(201,168,76,0.08); border:1px solid rgba(201,168,76,0.2); padding:16px 32px; font-family:'Space Mono',monospace; font-size:14px; color:#c9a84c; letter-spacing:0.15em; align-self:center; }
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: TITLE -->
+<section class="slide slide-1">
+  <img src="IMAGE_PLACEHOLDER:generated_image_20260528_192544_1.png" class="bg-img" alt="Snowball">
+  <div class="bg-gradient"></div>
+  <div class="tag">Design Intelligence Platform</div>
+  <h1>SNOW<span>BALL</span><br>DESIGN</h1>
+  <p class="sub">The world's first luxury design intelligence platform. 8 archetypes. 7 days. $0 copyright exposure.</p>
+  <div class="cta-pill">
+    <i data-lucide="zap" style="width:18px;height:18px"></i>
+    Commissions from $3,500
+  </div>
+  <div class="corner-mark">snowball.design<br>Chad Snowball, Founder</div>
+</section>
+
+<!-- SLIDE 2: PROBLEM -->
+<section class="slide slide-2">
+  <div class="left">
+    <div class="s-tag">The Problem</div>
+    <h2>Your site doesn't match your work.</h2>
+    <p>Luxury design studios, manufacturers, and creative firms are losing high-value clients — not because their work is inferior, but because their digital presence fails to communicate the premium quality they deliver.</p>
+    <div class="prob-list">
+      <div class="prob-item">
+        <i data-lucide="x-circle" class="prob-icon" style="width:24px;height:24px"></i>
+        <span class="prob-text">Generic templates built for any business, not luxury design</span>
+      </div>
+      <div class="prob-item">
+        <i data-lucide="x-circle" class="prob-icon" style="width:24px;height:24px"></i>
+        <span class="prob-text">Discovery-stage prospects going cold after visiting the site</span>
+      </div>
+      <div class="prob-item">
+        <i data-lucide="x-circle" class="prob-icon" style="width:24px;height:24px"></i>
+        <span class="prob-text">No platform exists built specifically for this vertical</span>
+      </div>
+    </div>
+  </div>
+  <div class="right">
+    <div class="big-stat">$50K<span style="font-size:60px">+</span></div>
+    <p class="stat-label">Average annual revenue lost per studio due to poor digital presence at the discovery stage</p>
+    <div style="margin-top:48px; padding-top:48px; border-top:1px solid rgba(201,168,76,0.15);">
+      <div class="big-stat" style="font-size:80px;">42K</div>
+      <p class="stat-label">Luxury design studios globally with an outdated or misaligned digital presence</p>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 3: MARKET -->
+<section class="slide slide-3">
+  <div class="s-tag">The Market Opportunity</div>
+  <h2>A massive, underserved niche</h2>
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-num">$4.2<span class="metric-unit">B</span></div>
+      <div class="metric-label">TAM</div>
+      <div class="metric-sub">Total addressable market for luxury design studio digital services globally</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-num">42K</div>
+      <div class="metric-label">Studios</div>
+      <div class="metric-sub">Luxury design firms, manufacturers, and creative studios in core verticals</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-num">8</div>
+      <div class="metric-label">Verticals</div>
+      <div class="metric-sub">Automotive, Marine, Aviation, Jewelry, Architecture, Industrial, Fashion, Technology</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-num">0</div>
+      <div class="metric-label">Competitors</div>
+      <div class="metric-sub">Zero platforms exist specifically built for the luxury design studio market</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 4: SOLUTION -->
+<section class="slide slide-4">
+  <div class="s-tag">The Solution</div>
+  <h2>Snowball Design Intelligence</h2>
+  <p class="headline-sub">The first platform built exclusively for luxury design studios</p>
+  <div class="features-grid">
+    <div class="feat-card">
+      <div class="feat-icon"><i data-lucide="layers" style="width:28px;height:28px"></i></div>
+      <h3 class="feat-title">8 Luxury Archetypes</h3>
+      <p class="feat-desc">Design DNA extracted from the world's top luxury design houses — Pininfarina, Zagato, Bertone and more — rebuilt as original, copyright-free systems.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon"><i data-lucide="zap" style="width:28px;height:28px"></i></div>
+      <h3 class="feat-title">7-Day Delivery</h3>
+      <p class="feat-desc">From signed brief to live site in 7 business days. A rigorous process that moves fast without sacrificing the quality luxury clients demand.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon"><i data-lucide="shield-check" style="width:28px;height:28px"></i></div>
+      <h3 class="feat-title">Zero Copyright Risk</h3>
+      <p class="feat-desc">Every archetype is 100% original. We extract design principles — not aesthetics — from reference brands. Fully ownable, fully safe.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon"><i data-lucide="brain" style="width:28px;height:28px"></i></div>
+      <h3 class="feat-title">AI Style Guardrails</h3>
+      <p class="feat-desc">Our intelligence layer flags design decisions that break the luxury aesthetic. Every site stays within the premium design envelope.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon"><i data-lucide="trending-up" style="width:28px;height:28px"></i></div>
+      <h3 class="feat-title">Learns and Grows</h3>
+      <p class="feat-desc">The platform monitors luxury design awards, brand relaunches, and Awwwards winners — continuously evolving its design intelligence.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon"><i data-lucide="repeat" style="width:28px;height:28px"></i></div>
+      <h3 class="feat-title">Infinitely Scalable</h3>
+      <p class="feat-desc">From done-for-you commissions to template licenses to full SaaS — three revenue streams, one compounding platform.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 5: ARCHETYPES -->
+<section class="slide slide-5">
+  <div class="s-tag">The Archetype System</div>
+  <h2>8 design languages. Infinite variations.</h2>
+  <div class="arch-grid">
+    <div class="arch-card">
+      <div class="arch-num">01 / VIII</div>
+      <div class="arch-name">Dark Precision</div>
+      <div class="arch-inspired">Obsidian + Gold</div>
+      <div class="arch-palette">
+        <div class="arch-swatch" style="background:#0a0a0a;border:1px solid #333"></div>
+        <div class="arch-swatch" style="background:#c9a84c"></div>
+        <div class="arch-swatch" style="background:#f0f0e8"></div>
+      </div>
+    </div>
+    <div class="arch-card">
+      <div class="arch-num">02 / VIII</div>
+      <div class="arch-name">Fluid Elegance</div>
+      <div class="arch-inspired">Cream + Warm Gold</div>
+      <div class="arch-palette">
+        <div class="arch-swatch" style="background:#f5f0e8"></div>
+        <div class="arch-swatch" style="background:#b8914a"></div>
+        <div class="arch-swatch" style="background:#2c2416"></div>
+      </div>
+    </div>
+    <div class="arch-card">
+      <div class="arch-num">03 / VIII</div>
+      <div class="arch-name">Avant-Garde</div>
+      <div class="arch-inspired">Black + Signal Red</div>
+      <div class="arch-palette">
+        <div class="arch-swatch" style="background:#080808;border:1px solid #333"></div>
+        <div class="arch-swatch" style="background:#e63329"></div>
+        <div class="arch-swatch" style="background:#f0f0e8"></div>
+      </div>
+    </div>
+    <div class="arch-card">
+      <div class="arch-num">04 / VIII</div>
+      <div class="arch-name">Wedge Futurist</div>
+      <div class="arch-inspired">Navy + Electric Blue</div>
+      <div class="arch-palette">
+        <div class="arch-swatch" style="background:#0a0f1a"></div>
+        <div class="arch-swatch" style="background:#3b82f6"></div>
+        <div class="arch-swatch" style="background:#e0e8f8"></div>
+      </div>
+    </div>
+    <div class="arch-card">
+      <div class="arch-num">05 / VIII</div>
+      <div class="arch-name">Brand Identity</div>
+      <div class="arch-inspired">Sand + Rust</div>
+      <div class="arch-palette">
+        <div class="arch-swatch" style="background:#f5f0e0"></div>
+        <div class="arch-swatch" style="background:#c4622d"></div>
+        <div class="arch-swatch" style="background:#1a1208"></div>
+      </div>
+    </div>
+    <div class="arch-card">
+      <div class="arch-num">06 / VIII</div>
+      <div class="arch-name">Transport Luxury</div>
+      <div class="arch-inspired">Navy + Gold</div>
+      <div class="arch-palette">
+        <div class="arch-swatch" style="background:#0a0f1c"></div>
+        <div class="arch-swatch" style="background:#c9a84c"></div>
+        <div class="arch-swatch" style="background:#e8ecf4"></div>
+      </div>
+    </div>
+    <div class="arch-card">
+      <div class="arch-num">07 / VIII</div>
+      <div class="arch-name">Future Concept</div>
+      <div class="arch-inspired">Void + Lime</div>
+      <div class="arch-palette">
+        <div class="arch-swatch" style="background:#050508;border:1px solid #333"></div>
+        <div class="arch-swatch" style="background:#a8e063"></div>
+        <div class="arch-swatch" style="background:#f0f0e8"></div>
+      </div>
+    </div>
+    <div class="arch-card">
+      <div class="arch-num">08 / VIII</div>
+      <div class="arch-name">Technical Sculpture</div>
+      <div class="arch-inspired">Charcoal + Teal</div>
+      <div class="arch-palette">
+        <div class="arch-swatch" style="background:#111418"></div>
+        <div class="arch-swatch" style="background:#00d4c8"></div>
+        <div class="arch-swatch" style="background:#f0f4f8"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 6: HOW IT WORKS -->
+<section class="slide slide-6">
+  <div class="s-tag">The Process</div>
+  <h2>Brief to live in 7 business days</h2>
+  <p class="timeline-sub">A precision-engineered process that moves fast without sacrificing luxury standards</p>
+  <div class="timeline">
+    <div class="t-step">
+      <div class="t-dot">01</div>
+      <div class="t-day">Day 1</div>
+      <div class="t-title">Brief</div>
+      <p class="t-desc">Client intake form, archetype selection, brand assets</p>
+    </div>
+    <div class="t-step">
+      <div class="t-dot">02</div>
+      <div class="t-day">Day 2</div>
+      <div class="t-title">Architecture</div>
+      <p class="t-desc">Sitemap, content structure, wireframe approval</p>
+    </div>
+    <div class="t-step">
+      <div class="t-dot">03</div>
+      <div class="t-day">Days 3-5</div>
+      <div class="t-title">Build</div>
+      <p class="t-desc">Full design and development in archetype system</p>
+    </div>
+    <div class="t-step">
+      <div class="t-dot">04</div>
+      <div class="t-day">Day 6</div>
+      <div class="t-title">Refine</div>
+      <p class="t-desc">Client review, 2 rounds of revisions, final approval</p>
+    </div>
+    <div class="t-step">
+      <div class="t-dot">05</div>
+      <div class="t-day">Day 7</div>
+      <div class="t-title">Launch</div>
+      <p class="t-desc">Deployment, DNS, SEO, and handover documentation</p>
+    </div>
+  </div>
+  <div class="badge">
+    <i data-lucide="check-circle" style="width:20px;height:20px"></i>
+    Guaranteed 7-day delivery or 20% refund
+  </div>
+</section>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

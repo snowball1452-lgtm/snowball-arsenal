@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snowball Design Intelligence — Portfolio Index</title>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;1,300&display=swap');
+    
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --bg: #08090C;
+      --surface: #10121A;
+      --border: #1E2030;
+      --gold: #C9A76E;
+      --white: #E8EAF0;
+      --grey: #6A7080;
+      --light: #9A9FAA;
+    }
+    
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
+    
+    /* HEADER */
+    .header {
+      padding: 4rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .header-brand {}
+    .header-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+    }
+    .header-logo span { color: var(--gold); font-style: normal; }
+    .header-tagline {
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--grey);
+    }
+    .header-meta {
+      text-align: right;
+    }
+    .header-meta-title {
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 0.5rem;
+    }
+    .header-meta-value {
+      font-size: 0.8rem;
+      color: var(--gold);
+    }
+    
+    /* HERO BANNER */
+    .hero-banner {
+      padding: 8rem 4rem;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-banner::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(201,167,110,0.06) 0%, transparent 60%);
+    }
+    .hero-banner-eyebrow {
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 2rem;
+    }
+    .hero-banner-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 5vw, 5rem);
+      font-weight: 400;
+      line-height: 1.1;
+      max-width: 800px;
+      margin-bottom: 2rem;
+    }
+    .hero-banner-title em { font-style: italic; color: var(--gold); }
+    .hero-banner-sub {
+      font-size: 0.85rem;
+      line-height: 1.8;
+      color: var(--grey);
+      max-width: 560px;
+      margin-bottom: 3rem;
+    }
+    .hero-stats {
+      display: flex;
+      gap: 5rem;
+      padding-top: 3rem;
+      border-top: 1px solid var(--border);
+    }
+    .hero-stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      color: var(--white);
+      line-height: 1;
+    }
+    .hero-stat-num span { color: var(--gold); }
+    .hero-stat-label {
+      font-size: 0.55rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-top: 0.4rem;
+    }
+    
+    /* SECTION TITLE */
+    .section-title {
+      padding: 4rem 4rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-title h2 {
+      font-size: 0.7rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--grey);
+    }
+    .section-title span {
+      font-size: 0.6rem;
+      color: var(--gold);
+      letter-spacing: 0.2em;
+    }
+    
+    /* PORTFOLIO GRID */
+    .portfolio-grid {
+      padding: 3rem 4rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: 2rem;
+    }
+    
+    .portfolio-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .portfolio-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-4px);
+    }
+    
+    .card-preview {
+      height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* Individual card color schemes */
+    .card-1 { background: linear-gradient(135deg, #050508 0%, #0D0B18 50%, #15100A 100%); }
+    .card-2 { background: linear-gradient(135deg, #0D0B09 0%, #1a1714 50%, #EDE8DC08 100%); }
+    .card-3 { background: linear-gradient(135deg, #050505 0%, #1A1A1A 100%); }
+    .card-4 { background: linear-gradient(135deg, #06080F 0%, #0D1120 100%); }
+    .card-5 { background: linear-gradient(135deg, #0C0A08 0%, #1A1612 100%); }
+    .card-6 { background: linear-gradient(135deg, #080C14 0%, #0E1520 100%); }
+    .card-7 { background: linear-gradient(135deg, #020408 0%, #060C14 100%); }
+    
+    .card-preview-text {
+      font-size: 5rem;
+      font-weight: 700;
+      opacity: 0.08;
+      letter-spacing: -0.05em;
+      user-select: none;
+      font-family: 'Inter', sans-serif;
+    }
+    .card-1 .card-preview-text { color: #C9A76E; font-size: 3rem; letter-spacing: 0.05em; }
+    .card-2 .card-preview-text { color: #C9A96E; font-style: italic; font-family: 'Playfair Display', serif; }
+    .card-3 .card-preview-text { color: #E8341C; }
+    .card-4 .card-preview-text { color: #2563FF; }
+    .card-5 .card-preview-text { color: #B85C2A; font-style: italic; font-family: 'Playfair Display', serif; }
+    .card-6 .card-preview-text { color: #D4A843; font-family: 'Inter', sans-serif; letter-spacing: 0.1em; }
+    .card-7 .card-preview-text { color: #AAFF00; font-style: italic; font-family: 'Playfair Display', serif; }
+    
+    .card-accent {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+    .portfolio-card:hover .card-accent { transform: scaleX(1); }
+    .card-1 .card-accent { background: linear-gradient(90deg, #C9A76E, #FFD89A); }
+    .card-2 .card-accent { background: linear-gradient(90deg, #C9A96E, #EDE8DC); }
+    .card-3 .card-accent { background: #E8341C; }
+    .card-4 .card-accent { background: linear-gradient(90deg, #2563FF, #00E5FF); }
+    .card-5 .card-accent { background: linear-gradient(90deg, #B85C2A, #E8A070); }
+    .card-6 .card-accent { background: linear-gradient(90deg, #D4A843, #F0C860); }
+    .card-7 .card-accent { background: linear-gradient(90deg, #00C853, #AAFF00); }
+    
+    .card-body {
+      padding: 2rem;
+      border-top: 1px solid var(--border);
+    }
+    .card-archetype {
+      font-size: 0.55rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.8rem;
+    }
+    .card-name {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+    .card-desc {
+      font-size: 0.7rem;
+      line-height: 1.7;
+      color: var(--grey);
+      margin-bottom: 1.5rem;
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-palette {
+      display: flex;
+      gap: 0.3rem;
+    }
+    .palette-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .card-open {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: gap 0.3s;
+    }
+    .portfolio-card:hover .card-open { gap: 1rem; }
+    
+    /* INSTRUCTIONS */
+    .instructions {
+      margin: 3rem 4rem;
+      padding: 3rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--gold);
+    }
+    .instructions-title {
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+    }
+    .instructions-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3rem;
+    }
+    .instruction-step {}
+    .instruction-num {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: rgba(201,167,110,0.2);
+      margin-bottom: 0.5rem;
+      font-family: 'Playfair Display', serif;
+    }
+    .instruction-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .instruction-desc {
+      font-size: 0.7rem;
+      line-height: 1.7;
+      color: var(--grey);
+    }
+    .instruction-code {
+      background: var(--bg);
+      padding: 0.3rem 0.8rem;
+      font-size: 0.65rem;
+      color: var(--gold);
+      font-family: monospace;
+      border-radius: 2px;
+      display: inline-block;
+      margin-top: 0.5rem;
+    }
+    
+    /* FOOTER */
+    .footer {
+      padding: 3rem 4rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4rem;
+    }
+    .footer-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-style: italic;
+    }
+    .footer-brand span { color: var(--gold); font-style: normal; }
+    .footer-copy {
+      font-size: 0.55rem;
+      color: var(--grey);
+      letter-spacing: 0.1em;
+    }
+    .footer-contact {
+      font-size: 0.6rem;
+      color: var(--gold);
+      text-decoration: none;
+      letter-spacing: 0.1em;
+    }
+    
+    @media (max-width: 768px) {
+      .header, .hero-banner, .section-title { padding: 2rem 1.5rem; }
+      .header { flex-direction: column; gap: 1.5rem; align-items: flex-start; }
+      .portfolio-grid { padding: 1.5rem; grid-template-columns: 1fr; }
+      .hero-stats { gap: 2.5rem; flex-wrap: wrap; }
+      .instructions { margin: 1.5rem; padding: 2rem; }
+      .instructions-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .footer { flex-direction: column; gap: 1.5rem; text-align: center; padding: 2rem 1.5rem; }
+    }
+    </style>
+    </head>
+    <body>
+    
+    <div class="header">
+      <div class="header-brand">
+        <div class="header-logo"><span>S</span>nowball Design Intelligence</div>
+        <div class="header-tagline">Design Archetype Portfolio — Internal Reference</div>
+      </div>
+      <div class="header-meta">
+        <div class="header-meta-title">Total Archetypes</div>
+        <div class="header-meta-value">7 of 8 Built</div>
+      </div>
+    </div>
+    
+    <section class="hero-banner">
+      <div class="hero-banner-eyebrow">The Snowball Portfolio</div>
+      <h1 class="hero-banner-title">
+        Seven archetypes. Seven <em>complete</em> design worlds. One platform.
+      </h1>
+      <p class="hero-banner-sub">Each site below represents a distinct design archetype — a fully original aesthetic language drawn from the philosophy of the world's top design houses. Open any file in a browser to preview a live, deployable site.</p>
+      <div class="hero-stats">
+        <div><div class="hero-stat-num">7<span>+</span></div><div class="hero-stat-label">Complete Sites</div></div>
+        <div><div class="hero-stat-num">100<span>%</span></div><div class="hero-stat-label">Original Code</div></div>
+        <div><div class="hero-stat-num">0<span>%</span></div><div class="hero-stat-label">IP Exposure</div></div>
+        <div><div class="hero-stat-num">$5<span>K</span></div><div class="hero-stat-label">Avg. Sale Price</div></div>
+      </div>
+    </section>
+    
+    <div class="section-title">
+      <h2>The Archetype Portfolio</h2>
+      <span>Click any card to open the site →</span>
+    </div>
+    
+    <div class="portfolio-grid">
+    
+      <a href="snowball_hero_site.html" class="portfolio-card">
+        <div class="card-preview card-1">
+          <div class="card-preview-text">SNOWBALL</div>
+          <div class="card-accent"></div>
+        </div>
+        <div class="card-body">
+          <div class="card-archetype">Archetype 01 — Dark Precision</div>
+          <div class="card-name">Snowball — Hero Site</div>
+          <div class="card-desc">The flagship. Obsidian black, gold accents, cinematic scroll. The full Snowball brand experience at maximum luxury output.</div>
+          <div class="card-meta">
+            <div class="card-palette">
+              <div class="palette-dot" style="background:#050508"></div>
+              <div class="palette-dot" style="background:#C9A76E"></div>
+              <div class="palette-dot" style="background:#FFD89A"></div>
+              <div class="palette-dot" style="background:#1A1A2E"></div>
+            </div>
+            <div class="card-open">Open site →</div>
+          </div>
+        </div>
+      </a>
+    
+      <a href="aurora_design_site.html" class="portfolio-card">
+        <div class="card-preview card-2">
+          <div class="card-preview-text">Aurora</div>
+          <div class="card-accent"></div>
+        </div>
+        <div class="card-body">
+          <div class="card-archetype">Archetype 02 — Fluid Elegance</div>
+          <div class="card-name">Aurora — Fluid Elegance</div>
+          <div class="card-desc">Ivory, cream, and warm gold. Cormorant Garamond typography. Inspired by the design philosophy of Pininfarina — where form becomes philosophy.</div>
+          <div class="card-meta">
+            <div class="card-palette">
+              <div class="palette-dot" style="background:#F5F0E8"></div>
+              <div class="palette-dot" style="background:#C9A96E"></div>
+              <div class="palette-dot" style="background:#0D0B09"></div>
+              <div class="palette-dot" style="background:#C4856A"></div>
+            </div>
+            <div class="card-open">Open site →</div>
+          </div>
+        </div>
+      </a>
+    
+      <a href="vortex_design_site.html" class="portfolio-card">
+        <div class="card-preview card-3">
+          <div class="card-preview-text">VORTEX</div>
+          <div class="card-accent"></div>
+        </div>
+        <div class="card-body">
+          <div class="card-archetype">Archetype 03 — Avant-Garde</div>
+          <div class="card-name">Vortex — Avant-Garde</div>
+          <div class="card-desc">Black, signal red, glitch effects. Space Mono typography. Angular, geometric, deliberately aggressive. Inspired by Zagato's avant-garde school.</div>
+          <div class="card-meta">
+            <div class="card-palette">
+              <div class="palette-dot" style="background:#050505"></div>
+              <div class="palette-dot" style="background:#E8341C"></div>
+              <div class="palette-dot" style="background:#F0EEE9"></div>
+              <div class="palette-dot" style="background:#1A1A1A"></div>
+            </div>
+            <div class="card-open">Open site →</div>
+          </div>
+        </div>
+      </a>
+    
+      <a href="prism_design_site.html" class="portfolio-card">
+        <div class="card-preview card-4">
+          <div class="card-preview-text">PRISM</div>
+          <div class="card-accent"></div>
+        </div>
+        <div class="card-body">
+          <div class="card-archetype">Archetype 04 — Wedge Futurist</div>
+          <div class="card-name">Prism — Wedge Futurist</div>
+          <div class="card-desc">Deep navy, electric blue, cyan. Syne typography. Geometric prism forms and scanline texture. Inspired by Bertone's futurist wedge design language.</div>
+          <div class="card-meta">
+            <div class="card-palette">
+              <div class="palette-dot" style="background:#06080F"></div>
+              <div class="palette-dot" style="background:#2563FF"></div>
+              <div class="palette-dot" style="background:#00E5FF"></div>
+              <div class="palette-dot" style="background:#E8ECF7"></div>
+            </div>
+            <div class="card-open">Open site →</div>
+          </div>
+        </div>
+      </a>
+    
+      <a href="mark_brand_site.html" class="portfolio-card">
+        <div class="card-preview card-5">
+          <div class="card-preview-text">Mark</div>
+          <div class="card-accent"></div>
+        </div>
+        <div class="card-body">
+          <div class="card-archetype">Archetype 05 — Brand Identity</div>
+          <div class="card-name">Mark — Brand Identity Studio</div>
+          <div class="card-desc">Warm sand, rust, ink. Instrument Serif typography. Editorial warmth meets precision craft. Inspired by Wearbrand.io's identity-first philosophy.</div>
+          <div class="card-meta">
+            <div class="card-palette">
+              <div class="palette-dot" style="background:#F2EDE4"></div>
+              <div class="palette-dot" style="background:#B85C2A"></div>
+              <div class="palette-dot" style="background:#1C1916"></div>
+              <div class="palette-dot" style="background:#5C6B3A"></div>
+            </div>
+            <div class="card-open">Open site →</div>
+          </div>
+        </div>
+      </a>
+    
+      <a href="apex_transport_site.html" class="portfolio-card">
+        <div class="card-preview card-6">
+          <div class="card-preview-text">APEX</div>
+          <div class="card-accent"></div>
+        </div>
+        <div class="card-body">
+          <div class="card-archetype">Archetype 06 — Transport Luxury</div>
+          <div class="card-name">Apex — Transport Design</div>
+          <div class="card-desc">Deep navy, steel, gold. Barlow Condensed typography. Built for aviation, marine, and automotive brands. Inspired by PriestmanGoode's transport intelligence.</div>
+          <div class="card-meta">
+            <div class="card-palette">
+              <div class="palette-dot" style="background:#080C14"></div>
+              <div class="palette-dot" style="background:#D4A843"></div>
+              <div class="palette-dot" style="background:#8FA3B8"></div>
+              <div class="palette-dot" style="background:#EEF2F7"></div>
+            </div>
+            <div class="card-open">Open site →</div>
+          </div>
+        </div>
+      </a>
+    
+      <a href="oracle_design_site.html" class="portfolio-card">
+        <div class="card-preview card-7">
+          <div class="card-preview-text">Oracle</div>
+          <div class="card-accent"></div>
+        </div>
+        <div class="card-body">
+          <div class="card-archetype">Archetype 07 — Future Concept</div>
+          <div class="card-name">Oracle — Future Design</div>
+          <div class="card-desc">Void black, lime green. Fraunces serif + Jakarta Sans. Speculative and forward-looking. Inspired by Seymourpowell's future-gazing design methodology.</div>
+          <div class="card-meta">
+            <div class="card-palette">
+              <div class="palette-dot" style="background:#020408"></div>
+              <div class="palette-dot" style="background:#AAFF00"></div>
+              <div class="palette-dot" style="background:#00C853"></div>
+              <div class="palette-dot" style="background:#E8F0E8"></div>
+            </div>
+            <div class="card-open">Open site →</div>
+          </div>
+        </div>
+      </a>
+    
+    </div>
+    
+    <div class="instructions">
+      <div class="instructions-title">Deployment Guide — Go Live in 60 Seconds</div>
+      <div class="instructions-grid">
+        <div class="instruction-step">
+          <div class="instruction-num">01</div>
+          <div class="instruction-title">Netlify Drop (Fastest)</div>
+          <div class="instruction-desc">Go to netlify.com/drop, drag any HTML file onto the page. Live URL in under 30 seconds. Free forever on the free tier.</div>
+          <div class="instruction-code">netlify.com/drop</div>
+        </div>
+        <div class="instruction-step">
+          <div class="instruction-num">02</div>
+          <div class="instruction-title">Vercel (Best Performance)</div>
+          <div class="instruction-desc">Install Vercel CLI, run the deploy command. Global CDN, automatic HTTPS, custom domain support. Free tier is more than enough.</div>
+          <div class="instruction-code">vercel deploy [filename].html</div>
+        </div>
+        <div class="instruction-step">
+          <div class="instruction-num">03</div>
+          <div class="instruction-title">GitHub Pages (Free Forever)</div>
+          <div class="instruction-desc">Push to a GitHub repo, enable Pages in settings. Rename your chosen file to index.html first. yourname.github.io/snowball is your URL.</div>
+          <div class="instruction-code">github.com → Settings → Pages</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <div class="footer-brand"><span>S</span>nowball Design Intelligence</div>
+      <p class="footer-copy">&copy; 2024 Snowball Design Intelligence. All rights reserved.</p>
+      <a href="mailto:studio@snowball.design" class="footer-contact">studio@snowball.design</a>
+    </div>
+    
+    </body>
+    </html>

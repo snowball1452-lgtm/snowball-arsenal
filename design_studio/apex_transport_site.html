@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APEX — Transport Design Intelligence</title>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,200;0,300;0,400;0,600;1,200;1,300&family=Barlow+Condensed:wght@300;400;600;700&display=swap');
+    
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --deep: #080C14;
+      --navy: #0E1520;
+      --steel: #1E2D42;
+      --silver: #8FA3B8;
+      --ice: #C8D8E8;
+      --white: #EEF2F7;
+      --gold: #D4A843;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--deep); color: var(--white); font-family: 'Barlow', sans-serif; overflow-x: hidden; cursor: none; }
+    
+    .cursor { width: 8px; height: 8px; background: var(--gold); position: fixed; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); border-radius: 50%; }
+    .cursor-ring { width: 40px; height: 40px; border: 1px solid rgba(212,168,67,0.5); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: all 0.15s ease; }
+    
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      padding: 1.5rem 4rem;
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(8,12,20,0.9); backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(212,168,67,0.15);
+    }
+    .nav-logo { font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem; font-weight: 700; letter-spacing: 0.3em; color: var(--white); }
+    .nav-logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 3rem; list-style: none; }
+    .nav-links a { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--silver); text-decoration: none; transition: color 0.3s; }
+    .nav-links a:hover { color: var(--gold); }
+    
+    .hero {
+      min-height: 100vh; display: flex; align-items: center;
+      padding: 10rem 4rem 6rem; position: relative; overflow: hidden;
+    }
+    .hero-runway {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 30vh;
+      background: linear-gradient(0deg, rgba(212,168,67,0.04) 0%, transparent 100%);
+    }
+    .hero-lines {
+      position: absolute; inset: 0; overflow: hidden;
+    }
+    .hero-lines::before {
+      content: ''; position: absolute; top: 0; left: 45%; width: 1px; height: 100%;
+      background: linear-gradient(180deg, transparent, rgba(212,168,67,0.2), transparent);
+      animation: line-move 3s ease-in-out infinite;
+    }
+    @keyframes line-move { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+    
+    .hero-content { position: relative; z-index: 2; max-width: 700px; }
+    .hero-category {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.7rem; letter-spacing: 0.5em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 2rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .hero-category::after { content: ''; flex: 1; max-width: 80px; height: 1px; background: var(--gold); }
+    .hero-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(4rem, 10vw, 8.5rem);
+      font-weight: 700; line-height: 0.92; letter-spacing: -0.01em;
+      text-transform: uppercase; margin-bottom: 3rem;
+    }
+    .hero-title .thin { font-weight: 200; font-style: italic; color: var(--silver); display: block; font-size: 0.7em; letter-spacing: 0.05em; }
+    .hero-title .gold { color: var(--gold); }
+    .hero-sub { font-size: 0.85rem; line-height: 1.8; color: var(--silver); max-width: 450px; margin-bottom: 3rem; font-weight: 300; }
+    .hero-btn {
+      display: inline-flex; align-items: center; gap: 1rem;
+      padding: 1rem 2.5rem; border: 1px solid var(--gold);
+      color: var(--white); text-decoration: none;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.8rem; letter-spacing: 0.3em; text-transform: uppercase; font-weight: 600;
+      transition: all 0.3s; position: relative; overflow: hidden;
+    }
+    .hero-btn::before {
+      content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+      background: var(--gold); transition: left 0.3s ease; z-index: -1;
+    }
+    .hero-btn:hover::before { left: 0; }
+    .hero-btn:hover { color: var(--deep); }
+    
+    .ticker {
+      background: linear-gradient(90deg, var(--gold), #E8C060, var(--gold));
+      padding: 0.6rem 0; overflow: hidden;
+    }
+    .ticker-track { display: flex; gap: 3rem; animation: tick 20s linear infinite; white-space: nowrap; }
+    @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .ticker-item { font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase; color: var(--deep); flex-shrink: 0; }
+    
+    .about { padding: 10rem 4rem; display: grid; grid-template-columns: 1fr 1fr; gap: 8rem; align-items: center; }
+    .about-eyebrow { font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-bottom: 2rem; }
+    .about-title { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 700; text-transform: uppercase; line-height: 1.1; margin-bottom: 2rem; }
+    .about-title span { color: var(--gold); }
+    .about-body { font-size: 0.8rem; line-height: 1.9; color: var(--silver); font-weight: 300; }
+    .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 3rem; }
+    .about-stat { padding: 2rem; background: var(--navy); border-left: 2px solid var(--gold); }
+    .about-stat-num { font-family: 'Barlow Condensed', sans-serif; font-size: 2.5rem; font-weight: 700; color: var(--white); }
+    .about-stat-num span { color: var(--gold); }
+    .about-stat-label { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--silver); margin-top: 0.3rem; }
+    .about-visual { height: 500px; background: var(--navy); position: relative; overflow: hidden; }
+    .about-visual-inner {
+      width: 100%; height: 100%;
+      background: linear-gradient(135deg, var(--steel) 0%, var(--navy) 50%, var(--deep) 100%);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .about-v-text { font-family: 'Barlow Condensed', sans-serif; font-size: 6rem; font-weight: 700; color: rgba(212,168,67,0.08); letter-spacing: 0.1em; text-transform: uppercase; text-align: center; }
+    
+    .services { padding: 8rem 4rem; background: var(--navy); }
+    .services-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4rem; border-bottom: 1px solid rgba(212,168,67,0.15); padding-bottom: 2rem; }
+    .services-title { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; text-transform: uppercase; }
+    .services-title span { color: var(--gold); }
+    .services-count { font-size: 0.65rem; color: var(--silver); letter-spacing: 0.2em; font-family: 'Barlow Condensed', sans-serif; }
+    .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+    .svc { padding: 3rem 2.5rem; background: var(--deep); border-top: 2px solid transparent; transition: border-color 0.3s, background 0.3s; }
+    .svc:hover { border-color: var(--gold); background: rgba(212,168,67,0.03); }
+    .svc-num { font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; color: var(--gold); letter-spacing: 0.3em; margin-bottom: 1.5rem; opacity: 0.6; }
+    .svc-name { font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; }
+    .svc-desc { font-size: 0.7rem; line-height: 1.8; color: var(--silver); font-weight: 300; }
+    
+    .cta { padding: 12rem 4rem; text-align: center; position: relative; overflow: hidden; }
+    .cta::before { content: 'APEX'; position: absolute; font-family: 'Barlow Condensed', sans-serif; font-size: 30vw; font-weight: 700; color: rgba(212,168,67,0.03); top: 50%; left: 50%; transform: translate(-50%,-50%); white-space: nowrap; letter-spacing: -0.02em; }
+    .cta-eyebrow { font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; letter-spacing: 0.5em; text-transform: uppercase; color: var(--gold); margin-bottom: 2rem; }
+    .cta-title { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(3rem, 8vw, 7rem); font-weight: 700; text-transform: uppercase; line-height: 0.9; margin-bottom: 3rem; letter-spacing: -0.01em; }
+    .cta-title span { color: var(--gold); }
+    
+    footer { background: var(--navy); padding: 3rem 4rem; border-top: 1px solid rgba(212,168,67,0.1); display: flex; justify-content: space-between; align-items: center; }
+    .footer-logo { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase; }
+    .footer-logo span { color: var(--gold); }
+    .footer-copy { font-size: 0.55rem; color: var(--silver); letter-spacing: 0.1em; }
+    
+    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    
+    @media (max-width: 768px) {
+      nav { padding: 1.5rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero { padding: 8rem 1.5rem 4rem; }
+      .about { grid-template-columns: 1fr; padding: 6rem 1.5rem; }
+      .about-visual { height: 300px; }
+      .services { padding: 6rem 1.5rem; }
+      .services-grid { grid-template-columns: 1fr; }
+      .cta { padding: 8rem 1.5rem; }
+      footer { flex-direction: column; gap: 1.5rem; text-align: center; padding: 2rem 1.5rem; }
+    }
+    </style>
+    </head>
+    <body>
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-ring" id="ring"></div>
+    <nav>
+      <div class="nav-logo">APE<span>X</span></div>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Capabilities</a></li>
+        <li><a href="#contact">Commission</a></li>
+      </ul>
+    </nav>
+    <section class="hero">
+      <div class="hero-runway"></div>
+      <div class="hero-lines"></div>
+      <div class="hero-content">
+        <div class="hero-category">Transport Design Intelligence</div>
+        <h1 class="hero-title">
+          <span class="thin">Engineered for</span>
+          Design at<br><span class="gold">Velocity</span>
+        </h1>
+        <p class="hero-sub">Apex designs for the brands that move the world. Aviation, marine, rail, automotive — the complete transport design intelligence.</p>
+        <a href="#contact" class="hero-btn">Commission a project →</a>
+      </div>
+    </section>
+    <div class="ticker">
+      <div class="ticker-track">
+        <span class="ticker-item">Aviation Design</span><span class="ticker-item"> · </span>
+        <span class="ticker-item">Marine Luxury</span><span class="ticker-item"> · </span>
+        <span class="ticker-item">Automotive Identity</span><span class="ticker-item"> · </span>
+        <span class="ticker-item">Rail Experience</span><span class="ticker-item"> · </span>
+        <span class="ticker-item">Transport Intelligence</span><span class="ticker-item"> · </span>
+        <span class="ticker-item">Aviation Design</span><span class="ticker-item"> · </span>
+        <span class="ticker-item">Marine Luxury</span><span class="ticker-item"> · </span>
+        <span class="ticker-item">Automotive Identity</span><span class="ticker-item"> · </span>
+        <span class="ticker-item">Rail Experience</span><span class="ticker-item"> · </span>
+        <span class="ticker-item">Transport Intelligence</span><span class="ticker-item"> · </span>
+      </div>
+    </div>
+    <section class="about" id="about">
+      <div>
+        <div class="about-eyebrow reveal">The Studio</div>
+        <h2 class="about-title reveal">Design built for <span>speed,</span> crafted for <span>eternity</span></h2>
+        <p class="about-body reveal">Apex was built for the brands that understand that design is not decoration — it is engineering. Every project we take on is approached with the same rigour as the vehicles we design for: tested, refined, and built to perform.</p>
+        <div class="about-stats reveal">
+          <div class="about-stat"><div class="about-stat-num">8<span>+</span></div><div class="about-stat-label">Archetypes</div></div>
+          <div class="about-stat"><div class="about-stat-num">24<span>h</span></div><div class="about-stat-label">Turnaround</div></div>
+          <div class="about-stat"><div class="about-stat-num">0<span>%</span></div><div class="about-stat-label">IP Risk</div></div>
+          <div class="about-stat"><div class="about-stat-num">100<span>%</span></div><div class="about-stat-label">Original</div></div>
+        </div>
+      </div>
+      <div class="about-visual reveal">
+        <div class="about-visual-inner">
+          <div class="about-v-text">APEX<br>DESIGN</div>
+        </div>
+      </div>
+    </section>
+    <section class="services" id="services">
+      <div class="services-header reveal">
+        <h2 class="services-title">Design <span>Capabilities</span></h2>
+        <span class="services-count">06 Disciplines</span>
+      </div>
+      <div class="services-grid">
+        <div class="svc reveal"><div class="svc-num">01</div><h3 class="svc-name">Brand Architecture</h3><p class="svc-desc">Complete identity systems for transport brands. From initial mark to full system rollout across every application.</p></div>
+        <div class="svc reveal"><div class="svc-num">02</div><h3 class="svc-name">Interior Design Language</h3><p class="svc-desc">Cabin, cockpit, and passenger environment design for aviation, marine, and automotive clients.</p></div>
+        <div class="svc reveal"><div class="svc-num">03</div><h3 class="svc-name">Digital Experience</h3><p class="svc-desc">Digital platforms and applications designed to match the physical luxury of the brand.</p></div>
+        <div class="svc reveal"><div class="svc-num">04</div><h3 class="svc-name">Product Aesthetics</h3><p class="svc-desc">Industrial design consultancy for manufactured objects, equipment, and product lines.</p></div>
+        <div class="svc reveal"><div class="svc-num">05</div><h3 class="svc-name">Motion Identity</h3><p class="svc-desc">Animation systems, brand films, and motion language for brands that exist in time as well as space.</p></div>
+        <div class="svc reveal"><div class="svc-num">06</div><h3 class="svc-name">Design Strategy</h3><p class="svc-desc">Long-term design direction for organisations in transformation. Embedded intelligence. Permanent results.</p></div>
+      </div>
+    </section>
+    <section class="cta" id="contact">
+      <p class="cta-eyebrow reveal">Ready for Departure</p>
+      <h2 class="cta-title reveal">Build at <span>Apex</span><br>velocity</h2>
+      <a href="mailto:studio@apex.design" class="hero-btn reveal">Commission a project →</a>
+    </section>
+    <footer>
+      <div class="footer-logo">APE<span>X</span></div>
+      <p class="footer-copy">&copy; 2024 Apex Transport Design Intelligence</p>
+      <p class="footer-copy">studio@apex.design</p>
+    </footer>
+    <script>
+    const cursor=document.getElementById('cursor'),ring=document.getElementById('ring');
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+    function a(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(a);}a();
+    const reveals=document.querySelectorAll('.reveal');
+    const obs=new IntersectionObserver(entries=>{entries.forEach((e,i)=>{if(e.isIntersecting)setTimeout(()=>e.target.classList.add('visible'),i*70);});},{threshold:0.1});
+    reveals.forEach(el=>obs.observe(el));
+    </script>
+    </body>
+    </html>

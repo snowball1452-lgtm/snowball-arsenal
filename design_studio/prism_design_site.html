@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRISM — Future Design Intelligence</title>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Syne+Mono&display=swap');
+    
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --bg: #06080F;
+      --surface: #0D1120;
+      --blue: #2563FF;
+      --cyan: #00E5FF;
+      --white: #E8ECF7;
+      --grey: #4A5070;
+      --light: #8A90A8;
+    }
+    
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Syne', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+    
+    .cursor {
+      width: 6px; height: 6px;
+      background: var(--cyan);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(0,229,255,0.4);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: all 0.15s ease;
+    }
+    
+    /* SCANLINE effect */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.03) 2px,
+        rgba(0,0,0,0.03) 4px
+      );
+      pointer-events: none;
+      z-index: 100;
+    }
+    
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 1.5rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(6,8,15,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(37,99,255,0.15);
+    }
+    .nav-logo {
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .nav-links {
+      display: flex;
+      gap: 3rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--light);
+      text-decoration: none;
+      font-family: 'Syne Mono', monospace;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--cyan); }
+    .nav-cta {
+      padding: 0.5rem 1.5rem;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      color: var(--bg) !important;
+      font-weight: 600 !important;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    }
+    
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 10rem 4rem 6rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    .hero-prism {
+      position: absolute;
+      right: -5%;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 55%;
+      height: 80vh;
+      background: linear-gradient(135deg, 
+        rgba(37,99,255,0.15) 0%, 
+        rgba(0,229,255,0.08) 40%,
+        transparent 70%
+      );
+      clip-path: polygon(30% 0%, 100% 20%, 100% 80%, 30% 100%, 0% 50%);
+      animation: prismFloat 8s ease-in-out infinite;
+    }
+    @keyframes prismFloat {
+      0%, 100% { transform: translateY(-50%) scale(1); }
+      50% { transform: translateY(-52%) scale(1.02); }
+    }
+    .hero-prism-2 {
+      position: absolute;
+      right: 15%;
+      top: 10%;
+      width: 300px; height: 300px;
+      background: linear-gradient(45deg, rgba(37,99,255,0.08), rgba(0,229,255,0.05));
+      clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+      animation: prismFloat 6s ease-in-out infinite 2s;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 700px;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      border: 1px solid rgba(0,229,255,0.3);
+      border-radius: 2px;
+      font-family: 'Syne Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--cyan);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 3rem;
+    }
+    .badge-dot {
+      width: 6px; height: 6px;
+      background: var(--cyan);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .hero-title {
+      font-size: clamp(3.5rem, 8vw, 7rem);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      margin-bottom: 2rem;
+    }
+    .hero-title .accent {
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-title .outline {
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(232,236,247,0.2);
+    }
+    .hero-sub {
+      font-size: 0.85rem;
+      line-height: 1.8;
+      color: var(--light);
+      max-width: 480px;
+      margin-bottom: 3rem;
+      font-weight: 400;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 2.5rem;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      color: var(--bg);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+      transition: all 0.3s;
+    }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-secondary {
+      font-size: 0.7rem;
+      color: var(--light);
+      text-decoration: none;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-family: 'Syne Mono', monospace;
+      border-bottom: 1px solid var(--grey);
+      padding-bottom: 0.2rem;
+      transition: all 0.3s;
+    }
+    .btn-secondary:hover { color: var(--cyan); border-color: var(--cyan); }
+    .hero-metrics {
+      display: flex;
+      gap: 4rem;
+      margin-top: 5rem;
+      padding-top: 3rem;
+      border-top: 1px solid rgba(37,99,255,0.15);
+    }
+    .metric-num {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--white), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .metric-label {
+      font-family: 'Syne Mono', monospace;
+      font-size: 0.55rem;
+      color: var(--light);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-top: 0.3rem;
+    }
+    
+    /* TICKER */
+    .ticker {
+      padding: 1rem 0;
+      background: linear-gradient(90deg, var(--blue), var(--cyan), var(--blue));
+      overflow: hidden;
+    }
+    .ticker-track {
+      display: flex;
+      gap: 4rem;
+      animation: ticker 25s linear infinite;
+      white-space: nowrap;
+    }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .ticker-item {
+      font-family: 'Syne Mono', monospace;
+      font-size: 0.6rem;
+      font-weight: 400;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--bg);
+      flex-shrink: 0;
+      opacity: 0.8;
+    }
+    
+    /* ABOUT */
+    .about {
+      padding: 12rem 4rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8rem;
+      align-items: center;
+    }
+    .about-visual {
+      position: relative;
+      height: 500px;
+    }
+    .about-shape {
+      position: absolute;
+      width: 300px; height: 300px;
+      background: linear-gradient(135deg, rgba(37,99,255,0.2), rgba(0,229,255,0.1));
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: rotate 20s linear infinite;
+    }
+    @keyframes rotate { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+    .about-shape-2 {
+      position: absolute;
+      width: 200px; height: 200px;
+      border: 1px solid rgba(0,229,255,0.2);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: rotate 15s linear infinite reverse;
+    }
+    .about-inner-text {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      color: var(--cyan);
+      text-align: center;
+      font-family: 'Syne Mono', monospace;
+    }
+    .about-eyebrow {
+      font-family: 'Syne Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--cyan);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+    }
+    .about-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 2rem;
+      letter-spacing: -0.02em;
+    }
+    .about-title span { color: var(--cyan); }
+    .about-body {
+      font-size: 0.8rem;
+      line-height: 1.9;
+      color: var(--light);
+      margin-bottom: 3rem;
+    }
+    .about-features {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .feature {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.75rem;
+      color: var(--light);
+    }
+    .feature-icon {
+      width: 20px; height: 20px;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+      flex-shrink: 0;
+    }
+    
+    /* SERVICES */
+    .services {
+      padding: 10rem 4rem;
+      background: var(--surface);
+      border-top: 1px solid rgba(37,99,255,0.1);
+      border-bottom: 1px solid rgba(37,99,255,0.1);
+    }
+    .section-header {
+      text-align: center;
+      margin-bottom: 6rem;
+    }
+    .section-eyebrow {
+      font-family: 'Syne Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--cyan);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+    .section-title {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+    .section-title span { color: var(--cyan); }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+    .service-card {
+      padding: 3rem;
+      background: var(--bg);
+      border: 1px solid rgba(37,99,255,0.1);
+      transition: border-color 0.3s, background 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 2px;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+    .service-card:hover::before { transform: scaleX(1); }
+    .service-card:hover { border-color: rgba(0,229,255,0.2); background: rgba(37,99,255,0.04); }
+    .service-num {
+      font-family: 'Syne Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--cyan);
+      letter-spacing: 0.2em;
+      margin-bottom: 2rem;
+      opacity: 0.6;
+    }
+    .service-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      letter-spacing: -0.01em;
+    }
+    .service-desc {
+      font-size: 0.7rem;
+      line-height: 1.8;
+      color: var(--light);
+    }
+    
+    /* CTA */
+    .cta {
+      padding: 14rem 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(37,99,255,0.1) 0%, transparent 60%);
+    }
+    .cta-eyebrow {
+      font-family: 'Syne Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--cyan);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+    }
+    .cta-title {
+      font-size: clamp(3rem, 7vw, 6rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 3rem;
+    }
+    .cta-title span {
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .cta-sub {
+      font-size: 0.85rem;
+      color: var(--light);
+      margin-bottom: 3rem;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    footer {
+      background: var(--surface);
+      padding: 3rem 4rem;
+      border-top: 1px solid rgba(37,99,255,0.15);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-logo {
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .footer-copy {
+      font-family: 'Syne Mono', monospace;
+      font-size: 0.55rem;
+      color: var(--grey);
+      letter-spacing: 0.1em;
+    }
+    
+    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    
+    @media (max-width: 768px) {
+      .about { grid-template-columns: 1fr; gap: 4rem; padding: 6rem 2rem; }
+      .about-visual { height: 300px; }
+      .services { padding: 6rem 2rem; }
+      .services-grid { grid-template-columns: 1fr; }
+      .hero { padding: 8rem 2rem 4rem; }
+      .hero-prism { display: none; }
+      .hero-metrics { gap: 2rem; flex-wrap: wrap; }
+      footer { flex-direction: column; gap: 1.5rem; text-align: center; padding: 2rem; }
+      nav { padding: 1.5rem 2rem; }
+      .nav-links { display: none; }
+    }
+    </style>
+    </head>
+    <body>
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-ring" id="ring"></div>
+    
+    <nav>
+      <div class="nav-logo">PRISM</div>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#contact" class="nav-cta">Get Started</a></li>
+      </ul>
+    </nav>
+    
+    <section class="hero">
+      <div class="hero-bg">
+        <div class="hero-prism"></div>
+        <div class="hero-prism-2"></div>
+      </div>
+      <div class="hero-content">
+        <div class="hero-badge"><div class="badge-dot"></div>Design Intelligence — Active</div>
+        <h1 class="hero-title">
+          <span class="accent">Future</span><br>
+          <span class="outline">Design</span><br>
+          Systems
+        </h1>
+        <p class="hero-sub">Prism builds design intelligence for the brands defining tomorrow. Geometric precision. Futurist aesthetics. Zero compromise.</p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn-primary">Start a project →</a>
+          <a href="#services" class="btn-secondary">View capabilities</a>
+        </div>
+        <div class="hero-metrics">
+          <div>
+            <div class="metric-num">8+</div>
+            <div class="metric-label">Archetypes</div>
+          </div>
+          <div>
+            <div class="metric-num">100%</div>
+            <div class="metric-label">Original</div>
+          </div>
+          <div>
+            <div class="metric-num">24h</div>
+            <div class="metric-label">Concept Time</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <div class="ticker">
+      <div class="ticker-track">
+        <span class="ticker-item">Futurist Design</span><span class="ticker-item"> — </span>
+        <span class="ticker-item">Brand Intelligence</span><span class="ticker-item"> — </span>
+        <span class="ticker-item">Digital Architecture</span><span class="ticker-item"> — </span>
+        <span class="ticker-item">Industrial Systems</span><span class="ticker-item"> — </span>
+        <span class="ticker-item">Motion Language</span><span class="ticker-item"> — </span>
+        <span class="ticker-item">Luxury Positioning</span><span class="ticker-item"> — </span>
+        <span class="ticker-item">Futurist Design</span><span class="ticker-item"> — </span>
+        <span class="ticker-item">Brand Intelligence</span><span class="ticker-item"> — </span>
+        <span class="ticker-item">Digital Architecture</span><span class="ticker-item"> — </span>
+        <span class="ticker-item">Industrial Systems</span><span class="ticker-item"> — </span>
+      </div>
+    </div>
+    
+    <section class="about" id="about">
+      <div class="about-visual reveal">
+        <div class="about-shape"></div>
+        <div class="about-shape-2"></div>
+        <div class="about-inner-text">PRISM<br>DESIGN</div>
+      </div>
+      <div class="about-text">
+        <div class="about-eyebrow reveal">Our Philosophy</div>
+        <h2 class="about-title reveal">Design as a <span>competitive weapon</span></h2>
+        <p class="about-body reveal">In the future economy, design is not decoration — it is infrastructure. Prism builds the design systems that give ambitious brands an unfair advantage. Every geometric decision is engineered. Every aesthetic choice is strategic.</p>
+        <div class="about-features reveal">
+          <div class="feature"><div class="feature-icon"></div>8 proprietary design archetypes</div>
+          <div class="feature"><div class="feature-icon"></div>Zero copyright exposure — 100% original</div>
+          <div class="feature"><div class="feature-icon"></div>AI-assisted style intelligence engine</div>
+          <div class="feature"><div class="feature-icon"></div>Scales from startup to enterprise</div>
+        </div>
+      </div>
+    </section>
+    
+    <section class="services" id="services">
+      <div class="section-header">
+        <div class="section-eyebrow reveal">What We Build</div>
+        <h2 class="section-title reveal">Design <span>capabilities</span></h2>
+      </div>
+      <div class="services-grid">
+        <div class="service-card reveal">
+          <div class="service-num">01 //</div>
+          <h3 class="service-name">Brand Architecture</h3>
+          <p class="service-desc">Complete identity systems. Logo marks, type hierarchies, color systems, and the full grammar of your visual language.</p>
+        </div>
+        <div class="service-card reveal">
+          <div class="service-num">02 //</div>
+          <h3 class="service-name">Digital Design</h3>
+          <p class="service-desc">Web experiences built to the same standard as your physical brand. No templates. Pure design intelligence.</p>
+        </div>
+        <div class="service-card reveal">
+          <div class="service-num">03 //</div>
+          <h3 class="service-name">Industrial Aesthetics</h3>
+          <p class="service-desc">Product and industrial design language that extends your brand into the physical world with the same precision.</p>
+        </div>
+        <div class="service-card reveal">
+          <div class="service-num">04 //</div>
+          <h3 class="service-name">Motion Systems</h3>
+          <p class="service-desc">Animation language, brand films, and motion guidelines that add the dimension of time to your brand.</p>
+        </div>
+        <div class="service-card reveal">
+          <div class="service-num">05 //</div>
+          <h3 class="service-name">Spatial Identity</h3>
+          <p class="service-desc">Environments and experiences designed as brand extensions. Every surface a message. Every space a statement.</p>
+        </div>
+        <div class="service-card reveal">
+          <div class="service-num">06 //</div>
+          <h3 class="service-name">Design Strategy</h3>
+          <p class="service-desc">Long-term design direction. We embed as your design intelligence layer, ensuring every decision compounds toward the brand you are becoming.</p>
+        </div>
+      </div>
+    </section>
+    
+    <section class="cta" id="contact">
+      <div class="cta-bg"></div>
+      <div class="cta-eyebrow reveal">Ready to Build?</div>
+      <h2 class="cta-title reveal">Design the <span>future</span></h2>
+      <p class="cta-sub reveal">Commission a project or request a capabilities deck. We respond within 24 hours.</p>
+      <a href="mailto:hello@prism.design" class="btn-primary reveal">Begin a conversation →</a>
+    </section>
+    
+    <footer>
+      <div class="footer-logo">PRISM</div>
+      <p class="footer-copy">&copy; 2024 Prism Design Intelligence</p>
+      <p class="footer-copy">hello@prism.design</p>
+    </footer>
+    
+    <script>
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+    });
+    function anim() {
+      rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(anim);
+    }
+    anim();
+    const reveals = document.querySelectorAll('.reveal');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach((e, i) => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 80); });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => obs.observe(el));
+    </script>
+    </body>
+    </html>

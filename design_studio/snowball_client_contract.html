@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snowball Design Intelligence — Client Service Agreement</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+      :root {
+        --black: #0a0a0a; --charcoal: #111418; --gold: #c9a84c;
+        --white: #f0f0e8; --grey: #6b7280; --border: rgba(201,168,76,0.2);
+      }
+      * { margin:0; padding:0; box-sizing:border-box; }
+      body { background: #fafaf8; color: #1a1a1a; font-family: 'Space Grotesk', sans-serif; padding: 80px; max-width: 900px; margin: 0 auto; line-height: 1.7; }
+      
+      .doc-header { border-bottom: 3px solid #1a1a1a; padding-bottom: 40px; margin-bottom: 48px; display: flex; justify-content: space-between; align-items: flex-end; }
+      .doc-brand { font-family: 'Space Mono', monospace; font-size: 20px; font-weight: 700; color: #1a1a1a; letter-spacing: 0.1em; }
+      .doc-brand span { color: #c9a84c; }
+      .doc-type { font-family: 'Space Mono', monospace; font-size: 11px; color: #6b7280; letter-spacing: 0.3em; text-transform: uppercase; text-align: right; }
+      
+      h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.01em; }
+      .doc-version { font-family: 'Space Mono', monospace; font-size: 11px; color: #6b7280; margin-bottom: 48px; }
+      
+      .parties-block { background: #f0efe8; border-left: 4px solid #c9a84c; padding: 32px; margin-bottom: 48px; }
+      .party-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+      .party-label { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.3em; color: #6b7280; text-transform: uppercase; margin-bottom: 12px; }
+      .party-field { border-bottom: 1px solid #c9a84c; padding-bottom: 4px; margin-bottom: 12px; font-size: 14px; color: #6b7280; min-height: 24px; }
+      .party-field.filled { color: #1a1a1a; font-weight: 500; }
+      
+      h2 { font-size: 16px; font-weight: 700; margin: 40px 0 12px; color: #1a1a1a; font-family: 'Space Mono', monospace; letter-spacing: 0.05em; text-transform: uppercase; display: flex; align-items: center; gap: 12px; }
+      h2::before { content: ''; display: block; width: 24px; height: 2px; background: #c9a84c; }
+      
+      p { font-size: 14px; color: #3a3a3a; margin-bottom: 12px; }
+      
+      .clause { margin-bottom: 32px; padding-bottom: 32px; border-bottom: 1px solid #e8e7e0; }
+      .clause:last-child { border-bottom: none; }
+      
+      .clause-num { font-family: 'Space Mono', monospace; font-size: 10px; color: #c9a84c; letter-spacing: 0.3em; margin-bottom: 8px; }
+      
+      ul { padding-left: 20px; margin: 12px 0; }
+      li { font-size: 14px; color: #3a3a3a; margin-bottom: 6px; }
+      
+      .fee-table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+      .fee-table th { background: #1a1a1a; color: #f0f0e8; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.2em; padding: 12px 16px; text-align: left; text-transform: uppercase; }
+      .fee-table td { padding: 12px 16px; border-bottom: 1px solid #e8e7e0; font-size: 14px; color: #3a3a3a; }
+      .fee-table tr:last-child td { border-bottom: none; background: #f0efe8; font-weight: 600; }
+      
+      .fill-field { display: inline-block; border-bottom: 1px solid #c9a84c; min-width: 180px; color: #6b7280; font-style: italic; }
+      
+      .sig-block { margin-top: 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
+      .sig-party { }
+      .sig-label { font-family: 'Space Mono', monospace; font-size: 10px; color: #6b7280; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 40px; }
+      .sig-line { border-bottom: 1px solid #1a1a1a; margin-bottom: 8px; height: 40px; }
+      .sig-field-label { font-family: 'Space Mono', monospace; font-size: 10px; color: #6b7280; letter-spacing: 0.1em; margin-bottom: 16px; }
+      
+      .notice-box { background: #fff8e8; border: 1px solid #c9a84c; padding: 20px 24px; margin: 24px 0; font-size: 13px; color: #6b7280; }
+      .notice-box strong { color: #1a1a1a; }
+      
+      .footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid #e8e7e0; font-family: 'Space Mono', monospace; font-size: 10px; color: #9ca3af; display: flex; justify-content: space-between; }
+    
+      @media print {
+        body { padding: 40px; }
+        .notice-box { display: none; }
+      }
+    </style>
+    </head>
+    <body>
+    
+    <div class="doc-header">
+      <div>
+        <div class="doc-brand">SNOW<span>BALL</span></div>
+        <div style="font-family: Space Mono, monospace; font-size: 10px; color: #9ca3af; margin-top: 4px; letter-spacing: 0.2em;">DESIGN INTELLIGENCE</div>
+      </div>
+      <div class="doc-type">Client Service Agreement<br>+ Mutual NDA<br>Document v1.0</div>
+    </div>
+    
+    <h1>Client Service Agreement &amp; Mutual Non-Disclosure Agreement</h1>
+    <div class="doc-version">Version 1.0 — Snowball Design Intelligence — For use with all commission engagements</div>
+    
+    <div class="notice-box">
+      <strong>LEGAL NOTICE:</strong> This template is provided as a starting framework. Snowball Design Intelligence recommends having this document reviewed by a qualified attorney in your jurisdiction before use. All bracketed fields must be completed before execution. This document does not constitute legal advice.
+    </div>
+    
+    <!-- PARTIES -->
+    <div class="parties-block">
+      <div style="font-family: Space Mono, monospace; font-size: 11px; color: #6b7280; letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 24px;">This Agreement is entered into as of</div>
+      <div style="border-bottom: 1px solid #c9a84c; margin-bottom: 32px; padding-bottom: 8px; font-size: 18px; color: #6b7280; font-style: italic;">_______________ day of _______________, 20____</div>
+      
+      <div class="party-grid">
+        <div>
+          <div class="party-label">Service Provider ("Snowball")</div>
+          <div class="party-field filled">Snowball Design Intelligence</div>
+          <div class="party-field filled">Chad Snowball, Founder</div>
+          <div class="party-field filled">chad@snowball.design</div>
+          <div class="party-field filled">snowball.design</div>
+        </div>
+        <div>
+          <div class="party-label">Client ("Client")</div>
+          <div class="party-field">Company / Individual Name: _______________</div>
+          <div class="party-field">Authorized Representative: _______________</div>
+          <div class="party-field">Email Address: _______________</div>
+          <div class="party-field">Billing Address: _______________</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- SECTION 1 -->
+    <div class="clause">
+      <h2>1. Scope of Services</h2>
+      <div class="clause-num">CLAUSE 1.1 — 1.4</div>
+      <p><strong>1.1 Project Description.</strong> Snowball agrees to provide the following services (the "Services") as detailed in the Project Brief submitted by Client and accepted by Snowball:</p>
+      <div style="background: #f0efe8; border-left: 3px solid #c9a84c; padding: 20px 24px; margin: 16px 0;">
+        <div style="font-family: Space Mono, monospace; font-size: 10px; color: #6b7280; margin-bottom: 8px;">PROJECT BRIEF SUMMARY</div>
+        <div style="font-size: 14px; color: #6b7280; font-style: italic;">[ To be completed from client intake form. Include: archetype selected, number of pages, deliverables list, launch date. ]</div>
+      </div>
+      <p><strong>1.2 Deliverables.</strong> The specific deliverables ("Deliverables") shall include all items listed in the Project Brief, which upon Client's acceptance shall be incorporated by reference into this Agreement.</p>
+      <p><strong>1.3 Change Orders.</strong> Any changes to the agreed Scope of Services must be submitted in writing by Client and accepted in writing by Snowball. Change orders may result in additional fees and revised timelines. Snowball shall provide a written estimate for all change orders before work commences.</p>
+      <p><strong>1.4 Exclusions.</strong> Services explicitly exclude: ongoing hosting fees (unless otherwise stated), third-party software licenses, stock photography beyond included allotment, domain registration, and any work not specified in the Project Brief.</p>
+    </div>
+    
+    <!-- SECTION 2 -->
+    <div class="clause">
+      <h2>2. Fees &amp; Payment Schedule</h2>
+      <div class="clause-num">CLAUSE 2.1 — 2.5</div>
+      <p><strong>2.1 Project Fee.</strong> The total fee for the Services is:</p>
+      
+      <table class="fee-table">
+        <tr><th>Milestone</th><th>Description</th><th>Amount</th><th>Due Date</th></tr>
+        <tr>
+          <td>Deposit (50%)</td>
+          <td>Due upon agreement signing. Work begins upon receipt.</td>
+          <td class="fill-field">$_______</td>
+          <td>Upon signing</td>
+        </tr>
+        <tr>
+          <td>Final Payment (50%)</td>
+          <td>Due upon delivery of final files, prior to site launch.</td>
+          <td class="fill-field">$_______</td>
+          <td>Upon delivery</td>
+        </tr>
+        <tr>
+          <td><strong>Total Project Fee</strong></td>
+          <td><strong>Complete commission</strong></td>
+          <td class="fill-field"><strong>$_______</strong></td>
+          <td></td>
+        </tr>
+      </table>
+      
+      <p><strong>2.2 Payment Methods.</strong> Snowball accepts payment via bank transfer (ACH/wire), Stripe (credit/debit card), or other methods as agreed in writing. All fees are in USD unless otherwise stated.</p>
+      <p><strong>2.3 Late Payment.</strong> Invoices unpaid after 7 days of the due date shall accrue interest at 1.5% per month. Snowball reserves the right to suspend all work until outstanding balances are cleared.</p>
+      <p><strong>2.4 Expenses.</strong> Pre-approved out-of-pocket expenses (stock photography, third-party fonts, premium plugins) shall be invoiced at cost plus 15% handling fee, with receipts provided.</p>
+      <p><strong>2.5 Refunds.</strong> The deposit is non-refundable once work has commenced. If Client cancels after deposit payment but before work commences, Snowball shall retain 25% of the deposit as a cancellation fee and refund the remainder.</p>
+    </div>
+    
+    <!-- SECTION 3 -->
+    <div class="clause">
+      <h2>3. Timeline &amp; Client Responsibilities</h2>
+      <div class="clause-num">CLAUSE 3.1 — 3.4</div>
+      <p><strong>3.1 Project Timeline.</strong> Snowball shall deliver the completed project within <span class="fill-field">_______ business days</span> of receiving (a) the signed Agreement, (b) the deposit payment, and (c) all required Client-supplied materials.</p>
+      <p><strong>3.2 Client Materials.</strong> Client agrees to provide all required materials (logo files, brand assets, copy, photography, login credentials) within 3 business days of signing. Delays in providing materials will extend the project timeline accordingly.</p>
+      <p><strong>3.3 Review &amp; Approval.</strong> Client shall provide consolidated feedback within 3 business days of each design presentation. The project includes up to <strong>2 rounds of revisions</strong>. Additional revisions are billed at $150/hour.</p>
+      <p><strong>3.4 Timeline Extensions.</strong> Project timeline may be extended by mutual written agreement. Snowball shall not be responsible for delays caused by Client's failure to provide timely feedback, materials, or approvals.</p>
+    </div>
+    
+    <!-- SECTION 4 -->
+    <div class="clause">
+      <h2>4. Intellectual Property &amp; Ownership</h2>
+      <div class="clause-num">CLAUSE 4.1 — 4.4</div>
+      <p><strong>4.1 Transfer of Ownership.</strong> Upon receipt of full payment, Snowball assigns to Client full ownership of the final Deliverables, including all design files and source code created specifically for this project.</p>
+      <p><strong>4.2 Snowball Retained Rights.</strong> Snowball retains the right to: (a) display the work in its portfolio; (b) use the work in marketing materials; (c) describe the nature of services provided. Client may request portfolio exclusion in writing — Snowball will honor reasonable requests for sensitive or confidential projects.</p>
+      <p><strong>4.3 Pre-Existing Materials.</strong> Snowball retains ownership of all pre-existing design systems, templates, frameworks, tools, and processes used to complete the project. Client receives a perpetual, royalty-free license to use these as incorporated into the Deliverables.</p>
+      <p><strong>4.4 Third-Party Assets.</strong> Client is responsible for obtaining and maintaining licenses for any third-party assets (fonts, stock photography, plugins) incorporated into the project. Snowball shall disclose all third-party assets used.</p>
+    </div>
+    
+    <!-- SECTION 5 — NDA -->
+    <div class="clause">
+      <h2>5. Mutual Non-Disclosure Agreement</h2>
+      <div class="clause-num">CLAUSE 5.1 — 5.5</div>
+      <p><strong>5.1 Definition of Confidential Information.</strong> "Confidential Information" means any non-public information disclosed by either party in connection with this Agreement, including but not limited to: business plans, financial data, client lists, product roadmaps, pricing, and proprietary processes.</p>
+      <p><strong>5.2 Obligations.</strong> Each party agrees to: (a) hold Confidential Information in strict confidence; (b) not disclose it to third parties without prior written consent; (c) use it only for purposes related to this Agreement; (d) apply at minimum the same protections used for its own confidential information.</p>
+      <p><strong>5.3 Exclusions.</strong> Confidentiality obligations do not apply to information that: (a) is or becomes publicly available through no fault of the receiving party; (b) was rightfully known prior to disclosure; (c) is independently developed; or (d) is required to be disclosed by law or court order.</p>
+      <p><strong>5.4 Duration.</strong> Confidentiality obligations survive termination of this Agreement for a period of <strong>3 years</strong> from the date of disclosure.</p>
+      <p><strong>5.5 Return of Materials.</strong> Upon request or termination, each party shall promptly return or destroy all Confidential Information of the other party and certify such destruction in writing.</p>
+    </div>
+    
+    <!-- SECTION 6 -->
+    <div class="clause">
+      <h2>6. Warranties &amp; Limitation of Liability</h2>
+      <div class="clause-num">CLAUSE 6.1 — 6.3</div>
+      <p><strong>6.1 Snowball Warranties.</strong> Snowball warrants that: (a) the Services will be performed with reasonable skill and care; (b) the Deliverables will not knowingly infringe third-party intellectual property rights; (c) Snowball has authority to enter into this Agreement.</p>
+      <p><strong>6.2 Client Warranties.</strong> Client warrants that: (a) all materials provided are owned by Client or Client has obtained necessary rights; (b) use of Client-provided materials will not infringe third-party rights; (c) Client has authority to enter into this Agreement.</p>
+      <p><strong>6.3 Limitation of Liability.</strong> In no event shall either party be liable for indirect, incidental, consequential, or punitive damages. Snowball's total liability for any claim arising from this Agreement shall not exceed the total fees paid by Client in the 3 months preceding the claim.</p>
+    </div>
+    
+    <!-- SECTION 7 -->
+    <div class="clause">
+      <h2>7. Termination</h2>
+      <div class="clause-num">CLAUSE 7.1 — 7.3</div>
+      <p><strong>7.1 Termination for Convenience.</strong> Either party may terminate this Agreement with 7 days written notice. In the event of termination, Client shall pay for all work completed to date, calculated on a pro-rata basis against the total project fee.</p>
+      <p><strong>7.2 Termination for Cause.</strong> Either party may terminate immediately upon written notice if the other party materially breaches this Agreement and fails to cure the breach within 7 days of written notice.</p>
+      <p><strong>7.3 Effect of Termination.</strong> Upon termination, Snowball shall deliver all work completed to date. Ownership of partially-completed work shall not transfer until all outstanding fees are paid in full.</p>
+    </div>
+    
+    <!-- SECTION 8 -->
+    <div class="clause">
+      <h2>8. General Provisions</h2>
+      <div class="clause-num">CLAUSE 8.1 — 8.5</div>
+      <p><strong>8.1 Governing Law.</strong> This Agreement shall be governed by the laws of the State of <span class="fill-field">_______________</span>, without regard to conflict of law provisions.</p>
+      <p><strong>8.2 Dispute Resolution.</strong> Any dispute arising from this Agreement shall first be subject to good-faith negotiation. If unresolved after 30 days, disputes shall be submitted to binding arbitration under the American Arbitration Association rules.</p>
+      <p><strong>8.3 Entire Agreement.</strong> This Agreement, together with the Project Brief, constitutes the entire agreement between the parties and supersedes all prior discussions, representations, or agreements relating to the subject matter.</p>
+      <p><strong>8.4 Amendments.</strong> This Agreement may only be modified by a written document signed by both parties.</p>
+      <p><strong>8.5 Severability.</strong> If any provision of this Agreement is found unenforceable, the remaining provisions shall continue in full force and effect.</p>
+    </div>
+    
+    <!-- SIGNATURES -->
+    <div class="sig-block">
+      <div class="sig-party">
+        <div class="sig-label">Snowball Design Intelligence</div>
+        <div class="sig-line"></div>
+        <div class="sig-field-label">Signature</div>
+        <div class="sig-line" style="height: 24px;"></div>
+        <div class="sig-field-label">Printed Name: Chad Snowball</div>
+        <div class="sig-line" style="height: 24px;"></div>
+        <div class="sig-field-label">Title: Founder &amp; Design Director</div>
+        <div class="sig-line" style="height: 24px;"></div>
+        <div class="sig-field-label">Date</div>
+      </div>
+      <div class="sig-party">
+        <div class="sig-label">Client</div>
+        <div class="sig-line"></div>
+        <div class="sig-field-label">Signature</div>
+        <div class="sig-line" style="height: 24px;"></div>
+        <div class="sig-field-label">Printed Name</div>
+        <div class="sig-line" style="height: 24px;"></div>
+        <div class="sig-field-label">Title</div>
+        <div class="sig-line" style="height: 24px;"></div>
+        <div class="sig-field-label">Date</div>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <span>Snowball Design Intelligence — Client Service Agreement v1.0</span>
+      <span>Page 1 of 1 — snowball.design</span>
+    </div>
+    
+    </body>
+    </html>

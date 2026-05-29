@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Montserrat', sans-serif; }
+.slide {
+  width: 1920px;
+  height: 1080px;
+  position: relative;
+  overflow: hidden;
+  page-break-after: always;
+}
+
+/* SLIDE 1 - HERO TITLE */
+.slide-1 {
+  background: linear-gradient(135deg, #0a0f1e 0%, #0d1b3e 50%, #0a1628 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.slide-1::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse at 30% 50%, rgba(180,140,60,0.08) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 50%, rgba(100,160,255,0.06) 0%, transparent 60%);
+}
+.slide-1 .gold-line {
+  width: 120px; height: 2px;
+  background: linear-gradient(90deg, transparent, #c9a84c, transparent);
+  margin: 30px auto;
+}
+.slide-1 .brand-tag {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 8px;
+  color: #c9a84c;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.slide-1 h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 108px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.05;
+  max-width: 1400px;
+}
+.slide-1 .tagline {
+  font-size: 28px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.65);
+  letter-spacing: 3px;
+  margin-top: 10px;
+  text-transform: uppercase;
+}
+.slide-1 .corner-badge {
+  position: absolute;
+  bottom: 60px;
+  right: 80px;
+  text-align: right;
+}
+.slide-1 .corner-badge p {
+  font-size: 16px;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 2px;
+}
+.slide-1 .dots {
+  position: absolute;
+  top: 80px; left: 80px;
+  display: flex; gap: 10px;
+}
+.slide-1 .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #c9a84c;
+  opacity: 0.6;
+}
+
+/* SLIDE 2 - THE PROBLEM (METRICS) */
+.slide-2 {
+  background: #f8f7f4;
+  padding: 80px 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.slide-2 .section-label {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 6px;
+  color: #c9a84c;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.slide-2 h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 72px;
+  font-weight: 700;
+  color: #0a0f1e;
+  margin-bottom: 60px;
+  line-height: 1;
+}
+.slide-2 .metrics-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+}
+.slide-2 .metric-card {
+  background: white;
+  border-radius: 16px;
+  padding: 48px 36px;
+  border-top: 4px solid #c9a84c;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.06);
+}
+.slide-2 .metric-card .big-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 80px;
+  font-weight: 700;
+  color: #0d1b3e;
+  line-height: 1;
+}
+.slide-2 .metric-card .num-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #c9a84c;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin: 12px 0 16px;
+}
+.slide-2 .metric-card .num-desc {
+  font-size: 18px;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* SLIDE 3 - REGULATORY LANDSCAPE */
+.slide-3 {
+  background: linear-gradient(160deg, #0a0f1e 0%, #0d1b3e 100%);
+  padding: 80px 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.slide-3 .section-label {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 6px;
+  color: #c9a84c;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.slide-3 h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 68px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 56px;
+  line-height: 1;
+}
+.slide-3 .reg-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+.slide-3 .reg-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(201,168,76,0.25);
+  border-radius: 16px;
+  padding: 40px 36px;
+}
+.slide-3 .reg-card .reg-icon {
+  width: 48px; height: 48px;
+  background: rgba(201,168,76,0.15);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px;
+  color: #c9a84c;
+}
+.slide-3 .reg-card h3 {
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 12px;
+}
+.slide-3 .reg-card p {
+  font-size: 18px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.6;
+}
+.slide-3 .reg-card .tag {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 6px 14px;
+  background: rgba(201,168,76,0.15);
+  border-radius: 20px;
+  font-size: 13px;
+  color: #c9a84c;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* SLIDE 4 - 3-TIER SOLUTION */
+.slide-4 {
+  background: #f8f7f4;
+  padding: 80px 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.slide-4 .section-label {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 6px;
+  color: #c9a84c;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.slide-4 h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 68px;
+  font-weight: 700;
+  color: #0a0f1e;
+  margin-bottom: 56px;
+  line-height: 1;
+}
+.slide-4 .tiers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 36px;
+}
+.slide-4 .tier-card {
+  background: white;
+  border-radius: 20px;
+  padding: 48px 40px;
+  box-shadow: 0 12px 50px rgba(0,0,0,0.08);
+  position: relative;
+  overflow: hidden;
+}
+.slide-4 .tier-card.featured {
+  background: linear-gradient(160deg, #0a0f1e, #0d1b3e);
+  color: white;
+}
+.slide-4 .tier-card .tier-num {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: #c9a84c;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.slide-4 .tier-card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 38px;
+  font-weight: 700;
+  color: #0a0f1e;
+  margin-bottom: 8px;
+}
+.slide-4 .tier-card.featured h3 { color: white; }
+.slide-4 .tier-card .price {
+  font-size: 52px;
+  font-weight: 700;
+  color: #c9a84c;
+  margin: 20px 0;
+  font-family: 'Cormorant Garamond', serif;
+}
+.slide-4 .tier-card ul {
+  list-style: none;
+  margin-top: 8px;
+}
+.slide-4 .tier-card ul li {
+  font-size: 18px;
+  color: #555;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.slide-4 .tier-card.featured ul li { color: rgba(255,255,255,0.75); border-bottom-color: rgba(255,255,255,0.1); }
+.slide-4 .tier-card ul li .check { color: #c9a84c; flex-shrink: 0; }
+.slide-4 .tier-card .delivery {
+  margin-top: 24px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #c9a84c;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* SLIDE 5 - COMPARISON */
+.slide-5 {
+  background: linear-gradient(160deg, #0a0f1e 0%, #0d1b3e 100%);
+  padding: 80px 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.slide-5 .section-label {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 6px;
+  color: #c9a84c;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.slide-5 h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 68px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 56px;
+  line-height: 1;
+}
+.slide-5 .comp-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.slide-5 .comp-table th {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 24px 32px;
+  text-align: left;
+  color: rgba(255,255,255,0.4);
+}
+.slide-5 .comp-table th.highlight {
+  color: #c9a84c;
+  background: rgba(201,168,76,0.08);
+  border-radius: 12px 12px 0 0;
+}
+.slide-5 .comp-table td {
+  font-size: 22px;
+  color: rgba(255,255,255,0.75);
+  padding: 22px 32px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+.slide-5 .comp-table td.highlight {
+  color: white;
+  font-weight: 700;
+  background: rgba(201,168,76,0.06);
+}
+.slide-5 .comp-table td.gold { color: #c9a84c; font-weight: 700; }
+
+/* SLIDE 6 - MARKET OPPORTUNITY */
+.slide-6 {
+  background: #f8f7f4;
+  padding: 80px 100px;
+  display: flex;
+  align-items: center;
+  gap: 80px;
+}
+.slide-6 .left-col { flex: 1; }
+.slide-6 .section-label {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 6px;
+  color: #c9a84c;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.slide-6 h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 68px;
+  font-weight: 700;
+  color: #0a0f1e;
+  margin-bottom: 48px;
+  line-height: 1;
+}
+.slide-6 .stat-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.slide-6 .stat-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 24px 28px;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+  border-left: 5px solid #c9a84c;
+}
+.slide-6 .stat-row .stat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 52px;
+  font-weight: 700;
+  color: #0d1b3e;
+  min-width: 180px;
+  line-height: 1;
+}
+.slide-6 .stat-row .stat-info h4 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0a0f1e;
+}
+.slide-6 .stat-row .stat-info p {
+  font-size: 17px;
+  color: #888;
+  margin-top: 4px;
+}
+.slide-6 .right-col {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.slide-6 .chart-wrap {
+  width: 500px;
+  height: 500px;
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 12px 50px rgba(0,0,0,0.08);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.slide-6 .chart-wrap h4 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0a0f1e;
+  margin-bottom: 24px;
+  text-align: center;
+  letter-spacing: 1px;
+}
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: HERO -->
+<section class="slide slide-1">
+  <div class="dots">
+    <div class="dot"></div>
+    <div class="dot" style="opacity:0.4"></div>
+    <div class="dot" style="opacity:0.2"></div>
+  </div>
+  <div class="brand-tag">MedCore Compliance Solutions</div>
+  <div class="gold-line"></div>
+  <h1>Enterprise Healthcare<br>Compliance.</h1>
+  <div class="gold-line"></div>
+  <p class="tagline">Delivered in 48 Hours. Priced for Growth.</p>
+  <div class="corner-badge">
+    <p>CAPABILITIES BRIEFING 2025</p>
+  </div>
+</section>
+
+<!-- SLIDE 2: THE PROBLEM -->
+<section class="slide slide-2">
+  <div class="section-label">The Problem</div>
+  <h2>The $706B Documentation Gap</h2>
+  <div class="metrics-row">
+    <div class="metric-card">
+      <div class="big-num">82%</div>
+      <div class="num-label">Critical Bottleneck</div>
+      <div class="num-desc">of MedTech startups cite regulatory documentation as their #1 operational bottleneck</div>
+    </div>
+    <div class="metric-card">
+      <div class="big-num">$94K</div>
+      <div class="num-label">FDA Submission Cost</div>
+      <div class="num-desc">Average cost of 510(k) submission preparation at traditional firms</div>
+    </div>
+    <div class="metric-card">
+      <div class="big-num">14wk</div>
+      <div class="num-label">Average Delay</div>
+      <div class="num-desc">Time to complete healthcare onboarding documentation at mid-market firms</div>
+    </div>
+    <div class="metric-card">
+      <div class="big-num">$2.3M</div>
+      <div class="num-label">Revenue Delayed</div>
+      <div class="num-desc">Average annual revenue loss due to documentation gaps at MedTech firms</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 3: REGULATORY LANDSCAPE -->
+<section class="slide slide-3">
+  <div class="section-label">Regulatory Landscape 2025</div>
+  <h2>What Changed. What You Must Document.</h2>
+  <div class="reg-grid">
+    <div class="reg-card">
+      <div class="reg-icon"><i data-lucide="shield" style="width:24px;height:24px"></i></div>
+      <h3>HIPAA 2025</h3>
+      <p>Privacy Rule, Security Rule, and Breach Notification compliance require 47+ documented policies and annual workforce attestations.</p>
+      <span class="tag">47 REQUIRED POLICIES</span>
+    </div>
+    <div class="reg-card">
+      <div class="reg-icon"><i data-lucide="activity" style="width:24px;height:24px"></i></div>
+      <h3>FDA TEMPO Pilot</h3>
+      <p>New April 2026 digital health device pilot requires expanded SaMD documentation, PCCPs, and cybersecurity frameworks.</p>
+      <span class="tag">NEW APRIL 2026</span>
+    </div>
+    <div class="reg-card">
+      <div class="reg-icon"><i data-lucide="file-text" style="width:24px;height:24px"></i></div>
+      <h3>CMS Requirements</h3>
+      <p>Value-based care reporting, prior authorization workflows, and star ratings documentation now mandatory for reimbursement eligibility.</p>
+      <span class="tag">REIMBURSEMENT CRITICAL</span>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 4: 3-TIER SOLUTION -->
+<section class="slide slide-4">
+  <div class="section-label">Our Solution</div>
+  <h2>Three Tiers. One Deliverable.</h2>
+  <div class="tiers">
+    <div class="tier-card">
+      <div class="tier-num">Tier 01</div>
+      <h3>Compliance Package</h3>
+      <div class="price">$3,500</div>
+      <ul>
+        <li><i data-lucide="check" class="check" style="width:18px;height:18px"></i>HIPAA Privacy and Security Suite</li>
+        <li><i data-lucide="check" class="check" style="width:18px;height:18px"></i>FDA 510(k) Pre-Submission Checklist</li>
+        <li><i data-lucide="check" class="check" style="width:18px;height:18px"></i>47-Policy Compliance Library</li>
+        <li><i data-lucide="check" class="check" style="width:18px;height:18px"></i>Risk Analysis Framework</li>
+        <li><i data-lucide="check" class="check" style="width:18px;height:18px"></i>BAA Templates Included</li>
+      </ul>
+      <div class="delivery">Delivered in 48hrs</div>
+    </div>
+    <div class="tier-card featured">
+      <div class="tier-num">Tier 02</div>
+      <h3>Investor Package</h3>
+      <div class="price">$5,000</div>
+      <ul>
+        <li><i data-lucide="check" class="check" style="width:18px;height:18px"></i>Everything in Tier 01</li>
+        <li><i data-lucide="check" class="check" style="width:18px;height:18px"></i>12-Slide Investor Pitch Deck</li>
+        <li><i data-lucide="check" class="check" style="width:18px;height:18px"></i>Market Analysis Report</li>
+        <li><i data-lucide="check" class="check" style="width:18px;height:18px"></i>Competitive Landscape Brief</li>
+        <li><i data-lucide="check" class="check" style="width:18px;height:18px"></i>Due Diligence Data Room Guide</li>
+      </ul>
+      <div class="delivery">Delivered in 48hrs</div>
+    </div>
+    <div class="tier-card">
+      <div class="tier-num">Tier 03</div>
+      <h3>Enterprise Package</h3>
+      <div class="price">$7,500</div>
+      <ul>
+        <li><i data-lucide="check" class="check" style="width:18px;height:18px"></i>Everything in Tiers 01 and 02</li>
+        <li><i data-lucide="check" class="check" style="width:18px;height:18px"></i>25 Core SOPs Documented</li>
+        <li><i data-lucide="check" class="check" style="width:18px;height:18px"></i>60-Second Explainer Video</li>
+        <li><i data-lucide="check" class="check" style="width:18px;height:18px"></i>Onboarding Workflow Suite</li>
+        <li><i data-lucide="check" class="check" style="width:18px;height:18px"></i>Monthly Monitoring Retainer</li>
+      </ul>
+      <div class="delivery">Delivered in 72hrs</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 5: COMPARISON -->
+<section class="slide slide-5">
+  <div class="section-label">Why MedCore</div>
+  <h2>48 Hours vs. 12 Weeks.</h2>
+  <table class="comp-table">
+    <thead>
+      <tr>
+        <th>Factor</th>
+        <th>Law Firms</th>
+        <th>Consulting Firms</th>
+        <th>In-House Team</th>
+        <th class="highlight">MedCore</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Cost</td>
+        <td>$400-$800/hr</td>
+        <td>$250-$500/hr</td>
+        <td>$180K+/yr</td>
+        <td class="highlight gold">$3,500-$7,500</td>
+      </tr>
+      <tr>
+        <td>Turnaround</td>
+        <td>4-12 weeks</td>
+        <td>3-8 weeks</td>
+        <td>6-16 weeks</td>
+        <td class="highlight gold">48 Hours</td>
+      </tr>
+      <tr>
+        <td>Scalability</td>
+        <td>Low</td>
+        <td>Medium</td>
+        <td>Low</td>
+        <td class="highlight gold">Unlimited</td>
+      </tr>
+      <tr>
+        <td>AI-Powered</td>
+        <td>No</td>
+        <td>Rarely</td>
+        <td>No</td>
+        <td class="highlight gold">Yes</td>
+      </tr>
+      <tr>
+        <td>Ongoing Updates</td>
+        <td>Billed Hourly</td>
+        <td>Billed Hourly</td>
+        <td>Internal Cost</td>
+        <td class="highlight gold">Included</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- SLIDE 6: MARKET OPPORTUNITY -->
+<section class="slide slide-6">
+  <div class="left-col">
+    <div class="section-label">Market Opportunity</div>
+    <h2>A $706B Addressable Market</h2>
+    <div class="stat-stack">
+      <div class="stat-row">
+        <div class="stat-num">$663B</div>
+        <div class="stat-info">
+          <h4>Healthcare IT Market</h4>
+          <p>15.9% CAGR — fastest growing enterprise sector</p>
+        </div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-num">$29.1B</div>
+        <div class="stat-info">
+          <h4>Digital Health Investment</h4>
+          <p>2024 funding at all-time high — 18.7% CAGR</p>
+        </div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-num">$7.3B</div>
+        <div class="stat-info">
+          <h4>Compliance Software Market</h4>
+          <p>16.2% CAGR — projected to 2029</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="right-col">
+    <div class="chart-wrap">
+      <h4>Market Growth Projection ($B)</h4>
+      <canvas id="marketChart"></canvas>
+    </div>
+  </div>
+</section>
+
+<script>
+lucide.createIcons();
+new Chart(document.getElementById('marketChart'), {
+  type: 'bar',
+  data: {
+    labels: ['2022', '2023', '2024', '2025', '2026'],
+    datasets: [{
+      label: 'Healthcare IT ($B)',
+      data: [390, 450, 530, 620, 663],
+      backgroundColor: ['#0d1b3e','#0d1b3e','#0d1b3e','#0d1b3e','#c9a84c'],
+      borderRadius: 8
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: false, min: 300, grid: { color: 'rgba(0,0,0,0.05)' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+</script>
+</body>
+</html>

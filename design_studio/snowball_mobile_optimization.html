@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snowball — Mobile Optimization Guide</title>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Playfair+Display:wght@400;700;900&display=swap');
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--black:#030303;--gold:#C9A84C;--gold-light:#E8C97A;--white:#FAFAFA;--gray:#888;--dark:#0A0A0A;--card:#111;--border:rgba(201,168,76,0.2)}
+    body{background:var(--black);color:var(--white);font-family:'Inter',sans-serif;padding:40px;max-width:1200px;margin:0 auto}
+    h1{font-family:'Playfair Display',serif;font-size:48px;color:var(--gold);margin-bottom:12px}
+    .subtitle{color:var(--gray);font-size:16px;margin-bottom:60px;letter-spacing:1px}
+    .section{margin-bottom:60px}
+    .section-title{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:24px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+    .code-block{background:var(--dark);border:1px solid var(--border);padding:24px;border-radius:4px;font-family:monospace;font-size:13px;color:#e8c97a;line-height:1.8;overflow-x:auto;margin-bottom:16px;white-space:pre}
+    .note{background:rgba(201,168,76,0.05);border-left:3px solid var(--gold);padding:16px 20px;font-size:13px;color:var(--gray);line-height:1.6;margin-bottom:16px}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+    .card{background:var(--card);border:1px solid var(--border);padding:24px;border-radius:4px}
+    .card h3{font-size:14px;color:var(--white);margin-bottom:8px;font-weight:600}
+    .card p{font-size:12px;color:var(--gray);line-height:1.6}
+    .checklist{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+    .check-item{display:flex;align-items:flex-start;gap:10px;font-size:12px;color:var(--gray);line-height:1.5}
+    .check-dot{width:16px;height:16px;border-radius:50%;background:rgba(201,168,76,0.2);border:1px solid var(--gold);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--gold)}
+    .breakpoint-table{width:100%;border-collapse:collapse;margin-top:16px}
+    .breakpoint-table th{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);padding:10px 16px;text-align:left;border-bottom:1px solid var(--border)}
+    .breakpoint-table td{font-size:12px;color:var(--gray);padding:10px 16px;border-bottom:1px solid rgba(201,168,76,0.05)}
+    .breakpoint-table td:first-child{color:var(--white);font-weight:500}
+    </style>
+    </head>
+    <body>
+    <h1>Mobile Optimization</h1>
+    <p class="subtitle">Universal CSS patch + breakpoint system for all 8 Snowball archetype sites</p>
+    
+    <div class="section">
+      <div class="section-title">Universal Mobile CSS — Add to All 8 Sites</div>
+      <div class="note">Copy this CSS block and paste it at the END of the &lt;style&gt; tag in every archetype site. It overrides desktop styles at each breakpoint without breaking the design.</div>
+      <div class="code-block">/* ============================================
+       SNOWBALL UNIVERSAL MOBILE PATCH v1.0
+       Add to end of style tag in all 8 sites
+       ============================================ */
+    
+    /* TABLET — 768px to 1024px */
+    @media (max-width: 1024px) {
+      /* Navigation */
+      nav { padding: 16px 24px !important; }
+      .nav-links { gap: 24px !important; }
+      
+      /* Hero */
+      .hero { padding: 120px 40px 80px !important; }
+      .hero h1, .hero-title { font-size: clamp(48px, 8vw, 80px) !important; }
+      .hero-sub { font-size: 16px !important; }
+      
+      /* Grids */
+      .grid-3, .capabilities-grid, .services-grid { 
+        grid-template-columns: repeat(2, 1fr) !important; 
+      }
+      .grid-4, .stats-grid, .metrics-grid { 
+        grid-template-columns: repeat(2, 1fr) !important; 
+      }
+      
+      /* Two-column layouts */
+      .two-col, .split-layout, .content-split { 
+        grid-template-columns: 1fr !important; 
+      }
+      
+      /* Typography scaling */
+      h2, .section-headline { font-size: clamp(32px, 5vw, 56px) !important; }
+      h3, .card-title { font-size: clamp(18px, 2.5vw, 24px) !important; }
+    }
+    
+    /* MOBILE — up to 768px */
+    @media (max-width: 768px) {
+      /* CRITICAL: Hide desktop nav, show mobile menu */
+      .nav-links { display: none !important; }
+      .mobile-menu-btn { display: flex !important; }
+      .mobile-nav { display: block !important; }
+      
+      /* Body padding */
+      body { overflow-x: hidden; }
+      section { padding: 60px 20px !important; }
+      
+      /* Navigation */
+      nav { padding: 16px 20px !important; }
+      .nav-logo { font-size: 20px !important; }
+      
+      /* Hero section */
+      .hero, [class*="hero"] { 
+        padding: 100px 20px 60px !important;
+        min-height: 90vh !important;
+        text-align: center !important;
+      }
+      .hero h1, .hero-title, [class*="hero"] h1 { 
+        font-size: clamp(36px, 10vw, 56px) !important;
+        line-height: 1.1 !important;
+      }
+      .hero-sub, .hero p { 
+        font-size: 14px !important; 
+        max-width: 100% !important;
+      }
+      .hero-cta, .cta-group { 
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 12px !important;
+      }
+      .hero-cta a, .btn, [class*="btn"] { 
+        width: 100% !important;
+        text-align: center !important;
+        max-width: 280px !important;
+      }
+      
+      /* Marquee - keep as is, just adjust speed */
+      .marquee-content { animation-duration: 20s !important; }
+      
+      /* All grids become single column on mobile */
+      .grid-2, .grid-3, .grid-4,
+      [class*="grid"], [class*="capabilities"],
+      [class*="services"], [class*="stats"],
+      [class*="metrics"], [class*="features"] {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+      }
+      
+      /* Two column → single */
+      .two-col, .split-layout, .content-split,
+      [class*="split"], [class*="two-col"] {
+        grid-template-columns: 1fr !important;
+        gap: 40px !important;
+      }
+      
+      /* Cards */
+      [class*="card"] { padding: 24px !important; }
+      
+      /* Typography */
+      h2, .section-headline, [class*="section-title"] { 
+        font-size: clamp(28px, 8vw, 42px) !important; 
+      }
+      h3 { font-size: 18px !important; }
+      p { font-size: 14px !important; line-height: 1.7 !important; }
+      
+      /* Big numbers */
+      [class*="big-num"], [class*="stat-num"], 
+      [class*="metric-value"], [class*="large-text"] {
+        font-size: clamp(48px, 15vw, 80px) !important;
+      }
+      
+      /* Process steps */
+      [class*="process"], [class*="steps"] {
+        grid-template-columns: 1fr !important;
+      }
+      [class*="step-num"] { font-size: 48px !important; }
+      
+      /* Images */
+      img { max-width: 100% !important; height: auto !important; }
+      
+      /* Cursor effects - disable on mobile */
+      [class*="cursor"] { display: none !important; }
+      
+      /* Footer */
+      footer, [class*="footer"] { text-align: center !important; }
+      [class*="footer-grid"], [class*="footer-cols"] {
+        grid-template-columns: 1fr !important;
+        gap: 32px !important;
+      }
+      
+      /* Forms */
+      form, [class*="form"] { padding: 24px !important; }
+      input, textarea, select { 
+        width: 100% !important;
+        font-size: 16px !important; /* Prevents iOS zoom */
+      }
+    }
+    
+    /* SMALL MOBILE — up to 390px (iPhone 14/15 Pro) */
+    @media (max-width: 390px) {
+      section { padding: 48px 16px !important; }
+      .hero, [class*="hero"] { padding: 80px 16px 48px !important; }
+      .hero h1, .hero-title { font-size: clamp(32px, 9vw, 44px) !important; }
+      [class*="card"] { padding: 20px !important; }
+    }
+    
+    /* MOBILE NAV OVERLAY */
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      flex-direction: column;
+      gap: 5px;
+      padding: 4px;
+    }
+    .mobile-menu-btn span {
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: #C9A84C;
+      transition: all 0.3s;
+    }
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(3,3,3,0.98);
+      backdrop-filter: blur(20px);
+      z-index: 999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+    }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav a {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      color: #FAFAFA;
+      text-decoration: none;
+      letter-spacing: 2px;
+      transition: color 0.2s;
+    }
+    .mobile-nav a:hover { color: #C9A84C; }
+    .mobile-nav-close {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      background: none;
+      border: none;
+      color: #C9A84C;
+      font-size: 24px;
+      cursor: pointer;
+    }</div>
+    
+      <div class="note">Also add this HTML snippet to the &lt;nav&gt; element of each site, after the logo:</div>
+      <div class="code-block">&lt;!-- Mobile Menu Button (add to nav) --&gt;
+    &lt;button class="mobile-menu-btn" onclick="toggleMobileNav()"&gt;
+      &lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;
+    &lt;/button&gt;
+    
+    &lt;!-- Mobile Nav Overlay (add before closing body tag) --&gt;
+    &lt;div class="mobile-nav" id="mobileNav"&gt;
+      &lt;button class="mobile-nav-close" onclick="toggleMobileNav()"&gt;x&lt;/button&gt;
+      &lt;a href="#work" onclick="toggleMobileNav()"&gt;Work&lt;/a&gt;
+      &lt;a href="#about" onclick="toggleMobileNav()"&gt;About&lt;/a&gt;
+      &lt;a href="#process" onclick="toggleMobileNav()"&gt;Process&lt;/a&gt;
+      &lt;a href="#contact" onclick="toggleMobileNav()"&gt;Commission&lt;/a&gt;
+    &lt;/div&gt;
+    
+    &lt;!-- Mobile Nav Script (add to existing script tag) --&gt;
+    &lt;script&gt;
+    function toggleMobileNav() {
+      document.getElementById('mobileNav').classList.toggle('open');
+      document.body.style.overflow = 
+        document.getElementById('mobileNav').classList.contains('open') 
+        ? 'hidden' : '';
+    }
+    &lt;/script&gt;</div>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">Breakpoint Reference</div>
+      <table class="breakpoint-table">
+        <tr><th>Breakpoint</th><th>Width</th><th>Target Devices</th><th>Key Changes</th></tr>
+        <tr><td>Desktop XL</td><td>1440px+</td><td>Large monitors, MacBook Pro</td><td>Full layout, all columns, large typography</td></tr>
+        <tr><td>Desktop</td><td>1024-1440px</td><td>Laptops, standard monitors</td><td>Base design, as built</td></tr>
+        <tr><td>Tablet</td><td>768-1024px</td><td>iPad, small laptops</td><td>2-col grids, scaled typography</td></tr>
+        <tr><td>Mobile</td><td>390-768px</td><td>iPhone, Android phones</td><td>Single col, mobile nav, 16px inputs</td></tr>
+        <tr><td>Small Mobile</td><td>up to 390px</td><td>iPhone SE, older phones</td><td>Tighter padding, smaller type</td></tr>
+      </table>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">Mobile Optimization Checklist</div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Layout</h3>
+          <div class="checklist">
+            <div class="check-item"><div class="check-dot">✓</div>All grids collapse to single column</div>
+            <div class="check-item"><div class="check-dot">✓</div>No horizontal scroll at any breakpoint</div>
+            <div class="check-item"><div class="check-dot">✓</div>Hero section fills 90vh on mobile</div>
+            <div class="check-item"><div class="check-dot">✓</div>Two-column layouts stack vertically</div>
+            <div class="check-item"><div class="check-dot">✓</div>Footer columns collapse to single</div>
+            <div class="check-item"><div class="check-dot">✓</div>Images never overflow container</div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Navigation</h3>
+          <div class="checklist">
+            <div class="check-item"><div class="check-dot">✓</div>Desktop nav hidden on mobile</div>
+            <div class="check-item"><div class="check-dot">✓</div>Hamburger menu visible and functional</div>
+            <div class="check-item"><div class="check-dot">✓</div>Mobile overlay nav full screen</div>
+            <div class="check-item"><div class="check-dot">✓</div>Body scroll locked when nav open</div>
+            <div class="check-item"><div class="check-dot">✓</div>Nav links close overlay on tap</div>
+            <div class="check-item"><div class="check-dot">✓</div>Logo always visible, properly sized</div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Typography</h3>
+          <div class="checklist">
+            <div class="check-item"><div class="check-dot">✓</div>clamp() used for fluid type scaling</div>
+            <div class="check-item"><div class="check-dot">✓</div>Min body text 14px on mobile</div>
+            <div class="check-item"><div class="check-dot">✓</div>Min input text 16px (prevents iOS zoom)</div>
+            <div class="check-item"><div class="check-dot">✓</div>Line heights 1.6-1.8 for readability</div>
+            <div class="check-item"><div class="check-dot">✓</div>Letter spacing reduced on small screens</div>
+            <div class="check-item"><div class="check-dot">✓</div>Headings don't overflow viewport</div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Performance</h3>
+          <div class="checklist">
+            <div class="check-item"><div class="check-dot">✓</div>Custom cursor disabled on touch devices</div>
+            <div class="check-item"><div class="check-dot">✓</div>Heavy animations reduced on mobile</div>
+            <div class="check-item"><div class="check-dot">✓</div>Marquee speed adjusted for mobile</div>
+            <div class="check-item"><div class="check-dot">✓</div>Parallax effects disabled on mobile</div>
+            <div class="check-item"><div class="check-dot">✓</div>Touch-friendly tap targets 44x44px+</div>
+            <div class="check-item"><div class="check-dot">✓</div>No hover-only interactions on mobile</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    </body>
+    </html>

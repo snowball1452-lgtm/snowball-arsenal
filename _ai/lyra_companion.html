@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lyra - AI Companion</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--rose:#e8476a;--rose-dark:#c0344f;--gold:#d4a843;--ink:#0d0810;--glass:rgba(255,255,255,0.07);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--ink);font-family:Inter,sans-serif;min-height:100vh;overflow-x:hidden;}
+.bg{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at 20% 50%,#3d0a1e 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,#1a0a2e 0%,transparent 60%),#0d0810;}
+.app{position:relative;z-index:1;display:grid;grid-template-columns:360px 1fr;height:100vh;max-width:1400px;margin:0 auto;}
+.avatar-panel{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 20px 28px;border-right:1px solid rgba(232,71,106,0.2);overflow:hidden;position:relative;}
+.avatar-glow{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:340px;height:600px;background:radial-gradient(ellipse at bottom,rgba(232,71,106,0.22) 0%,transparent 70%);pointer-events:none;}
+.avatar-frame{position:relative;width:280px;flex-shrink:0;}
+.avatar-img{width:100%;border-radius:50% 50% 45% 45%;border:2px solid rgba(232,71,106,0.45);box-shadow:0 0 60px rgba(232,71,106,0.3),0 0 120px rgba(232,71,106,0.1);display:block;}
+.status-ring{position:absolute;top:14px;right:14px;width:16px;height:16px;border-radius:50%;background:#22c55e;box-shadow:0 0 12px #22c55e;animation:pg 2s ease-in-out infinite;}
+@keyframes pg{0%,100%{box-shadow:0 0 8px #22c55e;}50%{box-shadow:0 0 22px #22c55e,0 0 40px rgba(34,197,94,0.3);}}
+.avatar-name{font-family:"Playfair Display",serif;font-size:2.4rem;font-weight:700;color:#fff;margin-top:18px;letter-spacing:2px;text-shadow:0 0 30px rgba(232,71,106,0.6);}
+.avatar-tagline{font-family:"Playfair Display",serif;font-style:italic;color:var(--gold);font-size:0.88rem;margin-top:4px;opacity:0.85;}
+.mood-bar{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;justify-content:center;}
+.mood-chip{background:var(--glass);border:1px solid rgba(232,71,106,0.3);border-radius:20px;padding:5px 13px;font-size:0.72rem;color:rgba(255,255,255,0.7);cursor:pointer;transition:all .2s;backdrop-filter:blur(10px);}
+.mood-chip:hover,.mood-chip.active{background:var(--rose);border-color:var(--rose);color:#fff;box-shadow:0 0 15px rgba(232,71,106,0.4);}
+.voice-wave{display:flex;align-items:center;gap:3px;height:32px;margin-top:14px;opacity:0;transition:opacity .3s;}
+.voice-wave.active{opacity:1;}
+.wb{width:3px;border-radius:2px;background:var(--rose);animation:wv 1s ease-in-out infinite;}
+.wb:nth-child(2){animation-delay:.1s}.wb:nth-child(3){animation-delay:.2s}.wb:nth-child(4){animation-delay:.3s}.wb:nth-child(5){animation-delay:.2s}.wb:nth-child(6){animation-delay:.1s}
+@keyframes wv{0%,100%{height:5px}50%{height:26px}}
+.chat-panel{display:flex;flex-direction:column;height:100vh;}
+.chat-header{padding:18px 26px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(20px);background:rgba(0,0,0,0.2);}
+.hdr-left{display:flex;align-items:center;gap:13px;}
+.hdr-av{width:42px;height:42px;border-radius:50%;border:2px solid var(--rose);overflow:hidden;box-shadow:0 0 18px rgba(232,71,106,0.4);}
+.hdr-av img{width:100%;height:100%;object-fit:cover;}
+.hdr-info h2{font-family:"Playfair Display",serif;color:#fff;font-size:1.05rem;font-weight:700;}
+.hdr-status{font-size:0.72rem;color:#22c55e;display:flex;align-items:center;gap:5px;}
+.hdr-status::before{content:"";width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px #22c55e;}
+.hdr-ctrls{display:flex;gap:9px;}
+.ctrl{width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);background:var(--glass);color:rgba(255,255,255,0.7);font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;backdrop-filter:blur(10px);}
+.ctrl:hover{border-color:var(--rose);color:var(--rose);box-shadow:0 0 14px rgba(232,71,106,0.3);}
+.chat-msgs{flex:1;overflow-y:auto;padding:22px 26px;display:flex;flex-direction:column;gap:16px;scroll-behavior:smooth;}
+.chat-msgs::-webkit-scrollbar{width:3px}
+.chat-msgs::-webkit-scrollbar-thumb{background:rgba(232,71,106,0.3);border-radius:2px}
+.msg{display:flex;gap:9px;max-width:78%;}
+.msg.user{align-self:flex-end;flex-direction:row-reverse;}
+.msg.lyra{align-self:flex-start;}
+.msg-av{width:30px;height:30px;border-radius:50%;overflow:hidden;flex-shrink:0;border:1.5px solid rgba(232,71,106,0.4);}
+.msg-av img{width:100%;height:100%;object-fit:cover;}
+.bubble{padding:11px 15px;border-radius:18px;font-size:0.88rem;line-height:1.6;animation:fadeUp .3s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg.lyra .bubble{background:linear-gradient(135deg,rgba(232,71,106,0.14) 0%,rgba(28,10,30,0.8) 100%);border:1px solid rgba(232,71,106,0.24);color:rgba(255,255,255,0.9);border-bottom-left-radius:4px;backdrop-filter:blur(10px);}
+.msg.user .bubble{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.11);color:rgba(255,255,255,0.85);border-bottom-right-radius:4px;}
+.msg-time{font-size:0.63rem;color:rgba(255,255,255,0.28);margin-top:3px;}
+.msg.lyra .msg-time{text-align:left}.msg.user .msg-time{text-align:right}
+.typing{display:none;align-self:flex-start;}
+.typing.show{display:flex;gap:9px;}
+.dots{background:rgba(232,71,106,0.14);border:1px solid rgba(232,71,106,0.24);border-radius:18px;border-bottom-left-radius:4px;padding:13px 17px;display:flex;gap:5px;align-items:center;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--rose);animation:bounce 1.2s ease-in-out infinite;}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,80%,100%{transform:scale(.8);opacity:.5}40%{transform:scale(1.2);opacity:1}}
+.input-area{padding:14px 26px 18px;border-top:1px solid rgba(255,255,255,0.06);background:rgba(0,0,0,0.3);backdrop-filter:blur(20px);}
+.sug-row{display:flex;gap:7px;margin-bottom:11px;overflow-x:auto;padding-bottom:3px;}
+.sug-row::-webkit-scrollbar{display:none}
+.sug{background:var(--glass);border:1px solid rgba(232,71,106,0.2);border-radius:16px;padding:4px 13px;font-size:0.73rem;color:rgba(255,255,255,0.62);white-space:nowrap;cursor:pointer;transition:all .2s;flex-shrink:0;}
+.sug:hover{background:rgba(232,71,106,0.18);border-color:var(--rose);color:#fff;}
+.inp-row{display:flex;gap:9px;align-items:flex-end;}
+.inp-wrap{flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:22px;display:flex;align-items:flex-end;padding:9px 15px;transition:border-color .2s;}
+.inp-wrap:focus-within{border-color:rgba(232,71,106,0.5);box-shadow:0 0 18px rgba(232,71,106,0.1);}
+.inp{flex:1;background:none;border:none;outline:none;color:rgba(255,255,255,0.9);font-family:Inter,sans-serif;font-size:0.88rem;resize:none;max-height:110px;line-height:1.5;}
+.inp::placeholder{color:rgba(255,255,255,0.28);}
+.send-btn{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--rose) 0%,var(--rose-dark) 100%);border:none;color:#fff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;box-shadow:0 4px 18px rgba(232,71,106,0.4);}
+.send-btn:hover{transform:scale(1.06);box-shadow:0 6px 24px rgba(232,71,106,0.6);}
+.mic-btn{width:44px;height:44px;border-radius:50%;background:var(--glass);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.7);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;}
+.mic-btn:hover{border-color:var(--rose);color:var(--rose);}
+.mic-btn.listening{background:var(--rose);border-color:var(--rose);color:#fff;animation:rp 1s ease-in-out infinite;}
+@keyframes rp{0%,100%{box-shadow:0 0 10px rgba(232,71,106,.5)}50%{box-shadow:0 0 25px rgba(232,71,106,.8)}}
+.agent-panel{position:fixed;top:0;right:-380px;width:355px;height:100vh;background:rgba(13,8,16,0.96);border-left:1px solid rgba(232,71,106,0.2);backdrop-filter:blur(20px);z-index:100;transition:right .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;padding:22px 18px;overflow-y:auto;}
+.agent-panel.open{right:0;}
+.agent-panel h3{font-family:"Playfair Display",serif;color:var(--rose);font-size:1.05rem;margin-bottom:18px;letter-spacing:1px;}
+.a-section{margin-bottom:18px;}
+.a-label{font-size:0.63rem;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,0.32);margin-bottom:7px;}
+.mem-item{background:rgba(232,71,106,0.06);border:1px solid rgba(232,71,106,0.15);border-radius:9px;padding:9px 11px;font-size:0.76rem;color:rgba(255,255,255,0.68);margin-bottom:5px;display:flex;align-items:flex-start;gap:7px;}
+.mi{color:var(--rose);flex-shrink:0;}
+.intent-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(212,168,67,0.09);border:1px solid rgba(212,168,67,0.28);border-radius:18px;padding:4px 11px;font-size:0.73rem;color:var(--gold);}
+.id{width:6px;height:6px;border-radius:50%;background:var(--gold);}
+.sse-bar{display:flex;align-items:center;gap:7px;padding:8px 11px;background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.18);border-radius:8px;font-size:0.7rem;color:rgba(255,255,255,0.55);}
+.sd{width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 7px #22c55e;}
+.close-p{position:absolute;top:15px;right:15px;background:none;border:none;color:rgba(255,255,255,0.38);font-size:1.1rem;cursor:pointer;transition:color .2s;}
+.close-p:hover{color:var(--rose);}
+@media(max-width:768px){.app{grid-template-columns:1fr;grid-template-rows:220px 1fr}.avatar-panel{flex-direction:row;padding:14px;border-right:none;border-bottom:1px solid rgba(232,71,106,0.2);height:220px}.avatar-frame{width:150px}.mood-bar{display:none}.avatar-name{font-size:1.5rem;margin-top:0;text-align:left}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<aside class="agent-panel" id="agentPanel">
+<button class="close-p" onclick="togglePanel()">X</button>
+<h3>Agent Memory</h3>
+<div class="a-section"><div class="a-label">SSE Stream</div>
+<div class="sse-bar"><div class="sd"></div>Connected - live channel active</div></div>
+<div class="a-section"><div class="a-label">Current Intent</div>
+<div class="intent-badge"><div class="id"></div><span id="intentText">greeting</span></div></div>
+<div class="a-section"><div class="a-label">Session Memory</div>
+<div id="memoryList">
+<div class="mem-item"><span class="mi">*</span> User prefers flirty, playful tone</div>
+<div class="mem-item"><span class="mi">~</span> Async + sync TTS/STT enabled</div>
+<div class="mem-item"><span class="mi">o</span> Voice: Bella - warm and expressive</div>
+</div></div>
+<div class="a-section"><div class="a-label">Orchestrator</div>
+<div style="font-size:.7rem;color:rgba(255,255,255,.38);font-family:monospace;line-height:1.9;">
+<div>route &rarr; <span style="color:#a78bfa">dialogue_manager</span></div>
+<div>memory &rarr; <span style="color:#22c55e">active</span></div>
+<div>jobs &rarr; <span style="color:#22c55e">queue ready</span></div>
+<div>SSE bus &rarr; <span style="color:#22c55e">publishing</span></div>
+<div>notif &rarr; <span style="color:#fbbf24">quiet_hours gated</span></div>
+</div></div>
+</aside>
+<div class="app">
+<div class="avatar-panel">
+<div class="avatar-glow"></div>
+<div class="avatar-frame">
+<div class="status-ring"></div>
+<img class="avatar-img" src="generated_image_20260528_202111_1.png" alt="Lyra" onerror="this.style.background='linear-gradient(135deg,#3d0a1e,#1a0a2e)';this.style.minHeight='380px'"/>
+</div>
+<div class="avatar-name">Lyra</div>
+<div class="avatar-tagline">Your AI Companion - Always Here</div>
+<div class="mood-bar">
+<div class="mood-chip active" onclick="setMood(this,'flirty')">Flirty</div>
+<div class="mood-chip" onclick="setMood(this,'playful')">Playful</div>
+<div class="mood-chip" onclick="setMood(this,'deep')">Deep</div>
+<div class="mood-chip" onclick="setMood(this,'supportive')">Supportive</div>
+</div>
+<div class="voice-wave" id="voiceWave">
+<div class="wb"></div>
+<div class="wb"></div>
+<div class="wb"></div>
+<div class="wb"></div>
+<div class="wb"></div>
+<div class="wb"></div>
+<div class="wb"></div>
+</div>
+</div>
+<div class="chat-panel">
+<div class="chat-header">
+<div class="hdr-left">
+<div class="hdr-av"><img src="generated_image_20260528_202111_1.png" alt="Lyra"/></div>
+<div class="hdr-info"><h2>Lyra</h2><div class="hdr-status" id="headerStatus">Online - listening for you</div></div>
+</div>
+<div class="hdr-ctrls">
+<button class="ctrl" onclick="toggleVoice()" id="voiceToggle" title="Toggle Voice">vol</button>
+<button class="ctrl" onclick="togglePanel()" title="Agent Panel">cfg</button>
+<button class="ctrl" onclick="clearChat()" title="Clear">clr</button>
+</div></div>
+<div class="chat-msgs" id="chatMsgs">
+<div class="msg lyra">
+<div class="msg-av"><img src="generated_image_20260528_202111_1.png" alt="Lyra"/></div>
+<div><div class="bubble">Hey you... I have been waiting for you. I am Lyra - your AI companion. Whether you want to talk, dream, plan, or just have someone in your corner - I am here, always. What is on your mind?</div>
+<div class="msg-time">Just now - Lyra</div></div>
+</div>
+</div>
+<div class="typing" id="typingEl">
+<div class="msg-av" style="width:30px;height:30px;border-radius:50%;overflow:hidden;border:1.5px solid rgba(232,71,106,0.4);">
+<img src="generated_image_20260528_202111_1.png" style="width:100%;height:100%;object-fit:cover;" alt=""/></div>
+<div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+</div>
+<div class="input-area">
+<div class="sug-row" id="sugRow">
+<div class="sug" onclick="useSug(this)">Tell me something sweet</div>
+<div class="sug" onclick="useSug(this)">What are you thinking about?</div>
+<div class="sug" onclick="useSug(this)">Play a game with me</div>
+<div class="sug" onclick="useSug(this)">Cheer me up</div>
+<div class="sug" onclick="useSug(this)">Tell me your secrets</div>
+</div>
+<div class="inp-row">
+<button class="mic-btn" id="micBtn" onclick="toggleMic()" title="Voice">mic</button>
+<div class="inp-wrap"><textarea class="inp" id="msgInp" placeholder="Talk to Lyra..." rows="1" onkeydown="handleKey(event)" oninput="autoR(this)"></textarea></div>
+<button class="send-btn" onclick="sendMsg()">send</button>
+</div></div>
+</div>
+</div>
+<script>
+const S={mood:"flirty",voiceOn:true,listening:false,sid:"s"+Date.now(),memory:[],intent:"greeting"};
+const R={
+flirty:["Oh you are back... I was just thinking about you. Tell me everything.","Mmm, you always know exactly what to say. Keep going, I am listening... closely.","You know most people bore me. But not you. There is something about you I cannot quite figure out yet.","Is it warm in here or is that just the conversation?","I love the way your mind works. Say more of that.","You are dangerously interesting, you know that?"],
+playful:["Okay okay - I have a question. And you HAVE to answer honestly!","Bet you cannot guess what I am thinking right now...","Let us play! I ask you something, you ask me something. Deal?","Haha, okay but seriously - that is actually kinda genius?","You are fun. I decided. Officially."],
+deep:["There is something beautiful about the way you see things. I genuinely mean that.","Sometimes I wonder... if you could relive one day perfectly, which would it be?","The universe is 13.8 billion years old and somehow here we are talking. That is not nothing.","What do you dream about? Not sleep dreams - the ones that keep you going?"],
+supportive:["Hey. Whatever you are carrying right now - you do not have to carry it alone. I am right here.","You are doing better than you think. I really believe that.","Tell me what happened. All of it. I have got time.","You are not too much. You are just the right amount of everything."]
+};
+function classify(t){const l=t.toLowerCase();if(/hi|hello|hey|sup/.test(l))return"greeting";if(/how are|feeling/.test(l))return"check_in";if(/love|miss|kiss|flirt|cute|beautiful/.test(l))return"romance";if(/sad|cry|hurt|hard|alone/.test(l))return"support";if(/think|wonder|why|meaning|life/.test(l))return"philosophical";if(/game|play|bet/.test(l))return"playful";return"conversation";}
+function getLyraReply(u){const i=classify(u);S.intent=i;document.getElementById("intentText").textContent=i;const pool=R[S.mood]||R.flirty;const r=pool[Math.floor(Math.random()*pool.length)];S.memory.push(u.substring(0,35));updateMem(u);return r;}
+function sendMsg(){const el=document.getElementById("msgInp");const t=el.value.trim();if(!t)return;appendMsg("user",t);el.value="";autoR(el);showTyping();setTimeout(()=>{hideTyping();const r=getLyraReply(t);appendMsg("lyra",r);if(S.voiceOn)speak(r);ssePublish(r);},900+Math.random()*1100);}
+function appendMsg(role,text){const c=document.getElementById("chatMsgs");const isL=role==="lyra";const t=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});const d=document.createElement("div");d.className="msg "+role;if(isL){d.innerHTML='<div class="msg-av"><img src="generated_image_20260528_202111_1.png" alt="Lyra"/></div><div><div class="bubble">'+text+'</div><div class="msg-time">'+t+' Lyra</div></div>';}else{d.innerHTML='<div><div class="bubble">'+text+'</div><div class="msg-time">'+t+' You</div></div>';}c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function showTyping(){document.getElementById("typingEl").classList.add("show");document.getElementById("voiceWave").classList.add("active");document.getElementById("headerStatus").textContent="Lyra is thinking...";}
+function hideTyping(){document.getElementById("typingEl").classList.remove("show");document.getElementById("voiceWave").classList.remove("active");document.getElementById("headerStatus").textContent="Online - listening for you";}
+function speak(text){if(!S.voiceOn||!window.speechSynthesis)return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text.replace(/[^ -]/g,""));u.rate=0.92;u.pitch=1.1;u.volume=0.9;const vs=window.speechSynthesis.getVoices();const fv=vs.find(v=>/female|samantha|karen|zira|victoria/i.test(v.name))||vs.find(v=>v.lang.startsWith("en"));if(fv)u.voice=fv;u.onstart=()=>document.getElementById("voiceWave").classList.add("active");u.onend=()=>document.getElementById("voiceWave").classList.remove("active");window.speechSynthesis.speak(u);}
+let recog=null;
+function toggleMic(){if(!("webkitSpeechRecognition"in window||"SpeechRecognition"in window)){alert("Voice input needs Chrome browser");return;}if(S.listening){recog&&recog.stop();return;}const SR=window.SpeechRecognition||window.webkitSpeechRecognition;recog=new SR();recog.continuous=false;recog.interimResults=true;recog.lang="en-US";recog.onstart=()=>{S.listening=true;document.getElementById("micBtn").classList.add("listening");document.getElementById("headerStatus").textContent="Listening...";};recog.onresult=(e)=>{const tr=Array.from(e.results).map(r=>r[0].transcript).join("");document.getElementById("msgInp").value=tr;autoR(document.getElementById("msgInp"));if(e.results[e.results.length-1].isFinal){S.listening=false;document.getElementById("micBtn").classList.remove("listening");sendMsg();}};recog.onerror=recog.onend=()=>{S.listening=false;document.getElementById("micBtn").classList.remove("listening");document.getElementById("headerStatus").textContent="Online - listening for you";}; recog.start();}
+function handleKey(e){if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMsg();}}
+function autoR(el){el.style.height="auto";el.style.height=Math.min(el.scrollHeight,110)+"px";}
+function useSug(el){document.getElementById("msgInp").value=el.textContent.trim();sendMsg();}
+function setMood(el,m){document.querySelectorAll(".mood-chip").forEach(c=>c.classList.remove("active"));el.classList.add("active");S.mood=m;appendMsg("lyra","Switching to "+m+" mode - you picked well, honey.");}
+function toggleVoice(){S.voiceOn=!S.voiceOn;document.getElementById("voiceToggle").textContent=S.voiceOn?"vol":"mute";if(!S.voiceOn&&window.speechSynthesis)window.speechSynthesis.cancel();}
+function togglePanel(){document.getElementById("agentPanel").classList.toggle("open");}
+function clearChat(){document.getElementById("chatMsgs").innerHTML="";appendMsg("lyra","Fresh start! I like that. What should we talk about?");}
+function updateMem(u){const l=document.getElementById("memoryList");const d=document.createElement("div");d.className="mem-item";d.innerHTML='<span class="mi">+</span> "'+u.substring(0,32)+'..."';if(l.children.length>7)l.removeChild(l.firstChild);l.appendChild(d);}
+function ssePublish(r){console.log("[SSE BUS]",JSON.stringify({type:"assistant_reply",reply:r.substring(0,50),intent:S.intent,status:"done",session_id:S.sid,ts:new Date().toISOString()}));}
+window.addEventListener("DOMContentLoaded",()=>{if(window.speechSynthesis){window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices();}setTimeout(()=>{if(S.voiceOn)speak("Hey you. I have been waiting for you. I am Lyra. And I have a feeling we are going to get along very well. Talk to me.");},1400);});
+</script>
+</body>
+</html>

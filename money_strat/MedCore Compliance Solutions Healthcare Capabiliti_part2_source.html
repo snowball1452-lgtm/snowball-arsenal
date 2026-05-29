@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Montserrat', sans-serif; }
+.slide { width: 1920px; height: 1080px; position: relative; overflow: hidden; page-break-after: always; }
+
+/* SLIDE 7 - CASE STUDIES */
+.slide-7 {
+  background: #f8f7f4;
+  padding: 80px 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.slide-7 .section-label {
+  font-size: 14px; font-weight: 700; letter-spacing: 6px;
+  color: #c9a84c; text-transform: uppercase; margin-bottom: 16px;
+}
+.slide-7 h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 68px; font-weight: 700; color: #0a0f1e;
+  margin-bottom: 56px; line-height: 1;
+}
+.slide-7 .cases {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px;
+}
+.slide-7 .case-card {
+  background: white; border-radius: 20px; padding: 44px 36px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.07);
+  border-top: 4px solid #c9a84c;
+}
+.slide-7 .case-card .case-tag {
+  font-size: 13px; font-weight: 700; letter-spacing: 3px;
+  color: #c9a84c; text-transform: uppercase; margin-bottom: 16px;
+}
+.slide-7 .case-card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 34px; font-weight: 700; color: #0a0f1e; margin-bottom: 16px;
+}
+.slide-7 .case-card .problem {
+  font-size: 18px; color: #777; line-height: 1.6; margin-bottom: 20px;
+}
+.slide-7 .case-card .result {
+  display: flex; align-items: center; gap: 12px;
+  background: rgba(201,168,76,0.08); border-radius: 10px;
+  padding: 16px 20px;
+}
+.slide-7 .case-card .result-text {
+  font-size: 18px; font-weight: 700; color: #0d1b3e;
+}
+
+/* SLIDE 8 - PRICING */
+.slide-8 {
+  background: linear-gradient(160deg, #0a0f1e 0%, #0d1b3e 100%);
+  padding: 80px 100px;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.slide-8 .section-label {
+  font-size: 14px; font-weight: 700; letter-spacing: 6px;
+  color: #c9a84c; text-transform: uppercase; margin-bottom: 16px;
+}
+.slide-8 h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 68px; font-weight: 700; color: white;
+  margin-bottom: 56px; line-height: 1;
+}
+.slide-8 .pricing-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px;
+}
+.slide-8 .price-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 20px; padding: 44px 32px;
+}
+.slide-8 .price-card.featured {
+  background: rgba(201,168,76,0.12);
+  border-color: #c9a84c;
+}
+.slide-8 .price-card .p-tier {
+  font-size: 13px; font-weight: 700; letter-spacing: 4px;
+  color: #c9a84c; text-transform: uppercase; margin-bottom: 12px;
+}
+.slide-8 .price-card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 34px; font-weight: 700; color: white; margin-bottom: 20px;
+}
+.slide-8 .price-card .amount {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 64px; font-weight: 700; color: #c9a84c; line-height: 1;
+}
+.slide-8 .price-card .per { font-size: 18px; color: rgba(255,255,255,0.4); margin: 8px 0 24px; }
+.slide-8 .price-card .savings {
+  font-size: 16px; font-weight: 700; color: rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.05); border-radius: 8px;
+  padding: 10px 16px; text-align: center;
+}
+
+/* SLIDE 9 - ROADMAP */
+.slide-9 {
+  background: #f8f7f4;
+  padding: 80px 100px;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.slide-9 .section-label {
+  font-size: 14px; font-weight: 700; letter-spacing: 6px;
+  color: #c9a84c; text-transform: uppercase; margin-bottom: 16px;
+}
+.slide-9 h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 68px; font-weight: 700; color: #0a0f1e;
+  margin-bottom: 64px; line-height: 1;
+}
+.slide-9 .timeline {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 0; position: relative;
+}
+.slide-9 .timeline::before {
+  content: '';
+  position: absolute;
+  top: 36px; left: 60px; right: 60px; height: 3px;
+  background: linear-gradient(90deg, #c9a84c, #0d1b3e);
+  z-index: 0;
+}
+.slide-9 .t-step { position: relative; z-index: 1; padding: 0 24px; }
+.slide-9 .t-step .t-dot {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: #0d1b3e; border: 4px solid #c9a84c;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 28px; color: #c9a84c;
+}
+.slide-9 .t-step .t-week {
+  font-size: 14px; font-weight: 700; letter-spacing: 3px;
+  color: #c9a84c; text-transform: uppercase; margin-bottom: 10px;
+}
+.slide-9 .t-step h3 {
+  font-size: 28px; font-weight: 700; color: #0a0f1e; margin-bottom: 14px;
+}
+.slide-9 .t-step p { font-size: 18px; color: #777; line-height: 1.6; }
+
+/* SLIDE 10 - WHY MEDCORE */
+.slide-10 {
+  background: linear-gradient(160deg, #0a0f1e 0%, #0d1b3e 100%);
+  padding: 80px 100px;
+  display: flex; align-items: center; gap: 80px;
+}
+.slide-10 .left { flex: 1; }
+.slide-10 .section-label {
+  font-size: 14px; font-weight: 700; letter-spacing: 6px;
+  color: #c9a84c; text-transform: uppercase; margin-bottom: 16px;
+}
+.slide-10 h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 80px; font-weight: 700; color: white;
+  margin-bottom: 48px; line-height: 1.05;
+}
+.slide-10 .props { display: flex; flex-direction: column; gap: 24px; }
+.slide-10 .prop-row {
+  display: flex; align-items: flex-start; gap: 24px;
+  padding: 24px 28px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 14px;
+  border-left: 4px solid #c9a84c;
+}
+.slide-10 .prop-row .prop-icon {
+  color: #c9a84c; flex-shrink: 0; margin-top: 4px;
+}
+.slide-10 .prop-row h4 { font-size: 26px; font-weight: 700; color: white; margin-bottom: 6px; }
+.slide-10 .prop-row p { font-size: 18px; color: rgba(255,255,255,0.6); line-height: 1.5; }
+.slide-10 .right {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+}
+.slide-10 .stats-box {
+  background: rgba(201,168,76,0.08);
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 24px; padding: 60px 56px;
+  text-align: center;
+}
+.slide-10 .stats-box .big { font-family: 'Cormorant Garamond', serif; font-size: 120px; font-weight: 700; color: #c9a84c; line-height: 1; }
+.slide-10 .stats-box .lbl { font-size: 20px; font-weight: 700; color: white; letter-spacing: 2px; margin-top: 8px; }
+.slide-10 .stats-box .sub { font-size: 17px; color: rgba(255,255,255,0.5); margin-top: 8px; }
+.slide-10 .divider { width: 80px; height: 2px; background: rgba(201,168,76,0.3); margin: 28px auto; }
+
+/* SLIDE 11 - CTA CLOSING */
+.slide-11 {
+  background: linear-gradient(135deg, #0a0f1e 0%, #0d1b3e 60%, #0a1628 100%);
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center; text-align: center;
+}
+.slide-11::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse at 50% 40%, rgba(201,168,76,0.1) 0%, transparent 65%);
+}
+.slide-11 .gold-line { width: 120px; height: 2px; background: linear-gradient(90deg, transparent, #c9a84c, transparent); margin: 28px auto; }
+.slide-11 .section-label {
+  font-size: 14px; font-weight: 700; letter-spacing: 8px;
+  color: #c9a84c; text-transform: uppercase;
+}
+.slide-11 h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 96px; font-weight: 700; color: white;
+  line-height: 1.05; margin: 8px 0;
+}
+.slide-11 .sub {
+  font-size: 26px; font-weight: 300; color: rgba(255,255,255,0.55);
+  letter-spacing: 3px; text-transform: uppercase;
+}
+.slide-11 .contact-row {
+  display: flex; gap: 48px; margin-top: 48px; justify-content: center;
+}
+.slide-11 .contact-item {
+  display: flex; align-items: center; gap: 14px;
+  font-size: 22px; color: rgba(255,255,255,0.7); font-weight: 400;
+}
+.slide-11 .contact-item .c-icon { color: #c9a84c; }
+.slide-11 .cta-btn {
+  margin-top: 48px;
+  padding: 24px 72px;
+  background: linear-gradient(90deg, #b8922a, #c9a84c, #b8922a);
+  border-radius: 60px;
+  font-size: 22px; font-weight: 700; color: #0a0f1e;
+  letter-spacing: 3px; text-transform: uppercase;
+}
+</style>
+</head>
+<body>
+
+<!-- SLIDE 7: CASE STUDIES -->
+<section class="slide slide-7">
+  <div class="section-label">Case Studies</div>
+  <h2>Real Problems. Real Results.</h2>
+  <div class="cases">
+    <div class="case-card">
+      <div class="case-tag">Series A MedTech</div>
+      <h3>Remote Diagnostics Startup</h3>
+      <p class="problem">45 employees, $8M raised. No investor-grade capabilities deck. FDA submission delayed 9 weeks. Series B stalled.</p>
+      <div class="result">
+        <i data-lucide="trending-up" style="width:24px;height:24px;color:#c9a84c;flex-shrink:0"></i>
+        <div class="result-text">$2.4M Series B closed in 6 weeks after MedCore delivery</div>
+      </div>
+    </div>
+    <div class="case-card">
+      <div class="case-tag">Regional Health System</div>
+      <h3>12-Hospital Network</h3>
+      <p class="problem">4,200 employees, failed Joint Commission audit. 47 missing SOP documents. Staff compliance training gaps across 12 sites.</p>
+      <div class="result">
+        <i data-lucide="shield-check" style="width:24px;height:24px;color:#c9a84c;flex-shrink:0"></i>
+        <div class="result-text">Joint Commission re-audit passed. 52 documents in 72 hours.</div>
+      </div>
+    </div>
+    <div class="case-card">
+      <div class="case-tag">Digital Health Platform</div>
+      <h3>50-State Telehealth Startup</h3>
+      <p class="problem">28 employees, no state-by-state compliance guide. HIPAA documentation missing. Series A closing in 3 weeks.</p>
+      <div class="result">
+        <i data-lucide="zap" style="width:24px;height:24px;color:#c9a84c;flex-shrink:0"></i>
+        <div class="result-text">$5.5M Series A closed on time. Full compliance in 48 hours.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 8: PRICING -->
+<section class="slide slide-8">
+  <div class="section-label">Investment</div>
+  <h2>Transparent Pricing. Enterprise Value.</h2>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="p-tier">Tier 01</div>
+      <h3>Compliance Only</h3>
+      <div class="amount">$3,500</div>
+      <div class="per">per project</div>
+      <div class="savings">Save $41,500+ vs. Law Firms</div>
+    </div>
+    <div class="price-card featured">
+      <div class="p-tier">Tier 02 — Most Popular</div>
+      <h3>Investor + Compliance</h3>
+      <div class="amount">$5,000</div>
+      <div class="per">per project</div>
+      <div class="savings">Save $52,000+ vs. Traditional</div>
+    </div>
+    <div class="price-card">
+      <div class="p-tier">Tier 03</div>
+      <h3>Full Enterprise Stack</h3>
+      <div class="amount">$7,500</div>
+      <div class="per">per project</div>
+      <div class="savings">Save $97,000+ vs. Traditional</div>
+    </div>
+    <div class="price-card">
+      <div class="p-tier">Ongoing</div>
+      <h3>Monthly Retainer</h3>
+      <div class="amount">$2,500</div>
+      <div class="per">per month</div>
+      <div class="savings">Updates + Monitoring Included</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 9: ROADMAP -->
+<section class="slide slide-9">
+  <div class="section-label">Implementation</div>
+  <h2>From Zero to Compliant in 30 Days.</h2>
+  <div class="timeline">
+    <div class="t-step">
+      <div class="t-dot"><i data-lucide="search" style="width:28px;height:28px"></i></div>
+      <div class="t-week">Week 01</div>
+      <h3>Assessment</h3>
+      <p>Compliance gap analysis, documentation audit, priority ranking, project kickoff</p>
+    </div>
+    <div class="t-step">
+      <div class="t-dot"><i data-lucide="file-check" style="width:28px;height:28px"></i></div>
+      <div class="t-week">Week 02</div>
+      <h3>Core Delivery</h3>
+      <p>HIPAA documentation suite, primary compliance policy library, investor materials</p>
+    </div>
+    <div class="t-step">
+      <div class="t-dot"><i data-lucide="users" style="width:28px;height:28px"></i></div>
+      <div class="t-week">Week 03</div>
+      <h3>Onboarding Infra</h3>
+      <p>Onboarding workflow docs, training materials, SOP library completion</p>
+    </div>
+    <div class="t-step">
+      <div class="t-dot"><i data-lucide="trending-up" style="width:28px;height:28px"></i></div>
+      <div class="t-week">Week 04</div>
+      <h3>Optimization</h3>
+      <p>Stakeholder review, revision cycles, monitoring setup, retainer activation</p>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 10: WHY MEDCORE -->
+<section class="slide slide-10">
+  <div class="left">
+    <div class="section-label">Why MedCore</div>
+    <h2>The Unfair<br>Advantage.</h2>
+    <div class="props">
+      <div class="prop-row">
+        <i data-lucide="zap" class="prop-icon" style="width:28px;height:28px"></i>
+        <div>
+          <h4>48-Hour Delivery</h4>
+          <p>What takes law firms 12 weeks, we deliver in 2 days — without sacrificing quality</p>
+        </div>
+      </div>
+      <div class="prop-row">
+        <i data-lucide="cpu" class="prop-icon" style="width:28px;height:28px"></i>
+        <div>
+          <h4>AI-Powered Precision</h4>
+          <p>Real-time regulatory monitoring ensures every document reflects the latest requirements</p>
+        </div>
+      </div>
+      <div class="prop-row">
+        <i data-lucide="refresh-cw" class="prop-icon" style="width:28px;height:28px"></i>
+        <div>
+          <h4>Unlimited Scalability</h4>
+          <p>One client or one hundred — our output capacity scales without adding headcount</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="right">
+    <div class="stats-box">
+      <div class="big">97%</div>
+      <div class="lbl">CLIENT SATISFACTION</div>
+      <div class="sub">across all delivered packages</div>
+      <div class="divider"></div>
+      <div class="big" style="font-size:80px">$0</div>
+      <div class="lbl">FAILED AUDITS</div>
+      <div class="sub">post-MedCore documentation delivery</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 11: CLOSING CTA -->
+<section class="slide slide-11">
+  <div class="section-label">Get Started</div>
+  <div class="gold-line"></div>
+  <h2>Ready to Get<br>Compliant?</h2>
+  <p class="sub">Enterprise Documentation. 48-Hour Delivery.</p>
+  <div class="contact-row">
+    <div class="contact-item">
+      <i data-lucide="mail" class="c-icon" style="width:24px;height:24px"></i>
+      hello@medcorecompliance.com
+    </div>
+    <div class="contact-item">
+      <i data-lucide="phone" class="c-icon" style="width:24px;height:24px"></i>
+      (888) 463-2673
+    </div>
+    <div class="contact-item">
+      <i data-lucide="globe" class="c-icon" style="width:24px;height:24px"></i>
+      www.medcorecompliance.com
+    </div>
+  </div>
+  <div class="cta-btn">Schedule Your Free Consultation</div>
+  <div class="gold-line" style="margin-top:48px"></div>
+</section>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

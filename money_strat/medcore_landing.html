@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>MedCore Compliance Solutions | Healthcare Documentation Experts</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{
+      --gold:#C9A84C;
+      --gold-light:#E8D5A3;
+      --dark:#0A0F1E;
+      --dark2:#0D1526;
+      --dark3:#111827;
+      --blue:#1E3A5F;
+      --blue-bright:#2563EB;
+      --white:#F8FAFC;
+      --gray:#94A3B8;
+    }
+    html{scroll-behavior:smooth;}
+    body{background:var(--dark);color:var(--white);font-family:'Inter',sans-serif;overflow-x:hidden;}
+    
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 60px;display:flex;justify-content:space-between;align-items:center;background:rgba(10,15,30,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(201,168,76,0.15);}
+    .nav-logo{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--gold);letter-spacing:2px;}
+    .nav-logo span{color:var(--white);}
+    .nav-links{display:flex;gap:40px;list-style:none;}
+    .nav-links a{color:var(--gray);text-decoration:none;font-size:14px;font-weight:500;letter-spacing:1px;text-transform:uppercase;transition:color 0.3s;}
+    .nav-links a:hover{color:var(--gold);}
+    .nav-cta{background:linear-gradient(135deg,var(--gold),#A8722A);color:var(--dark);padding:12px 28px;border-radius:4px;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;text-decoration:none;transition:all 0.3s;}
+    .nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(201,168,76,0.4);}
+    
+    /* HERO */
+    .hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:120px 60px 80px;}
+    .hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,#0A0F1E 0%,#0D1A3A 50%,#0A0F1E 100%);}
+    .hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(201,168,76,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.03) 1px,transparent 1px);background-size:60px 60px;}
+    .hero-glow{position:absolute;top:20%;right:10%;width:600px;height:600px;background:radial-gradient(circle,rgba(37,99,235,0.15) 0%,transparent 70%);pointer-events:none;}
+    .hero-glow2{position:absolute;bottom:10%;left:5%;width:400px;height:400px;background:radial-gradient(circle,rgba(201,168,76,0.08) 0%,transparent 70%);pointer-events:none;}
+    .hero-content{position:relative;z-index:2;max-width:750px;}
+    .hero-badge{display:inline-flex;align-items:center;gap:10px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);padding:8px 20px;border-radius:100px;margin-bottom:32px;}
+    .hero-badge-dot{width:8px;height:8px;background:var(--gold);border-radius:50%;animation:pulse 2s infinite;}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(1.3);}}
+    .hero-badge span{font-size:12px;color:var(--gold);font-weight:600;letter-spacing:2px;text-transform:uppercase;}
+    .hero h1{font-family:'Playfair Display',serif;font-size:72px;font-weight:900;line-height:1.05;margin-bottom:24px;}
+    .hero h1 em{font-style:normal;color:var(--gold);}
+    .hero p{font-size:20px;color:var(--gray);line-height:1.7;margin-bottom:40px;max-width:600px;}
+    .hero-ctas{display:flex;gap:20px;flex-wrap:wrap;}
+    .btn-primary{background:linear-gradient(135deg,var(--gold),#A8722A);color:var(--dark);padding:18px 40px;border-radius:4px;font-weight:700;font-size:15px;letter-spacing:1px;text-transform:uppercase;text-decoration:none;transition:all 0.3s;display:inline-block;}
+    .btn-primary:hover{transform:translateY(-3px);box-shadow:0 15px 40px rgba(201,168,76,0.4);}
+    .btn-secondary{background:transparent;color:var(--white);padding:18px 40px;border-radius:4px;font-weight:600;font-size:15px;letter-spacing:1px;text-transform:uppercase;text-decoration:none;border:1px solid rgba(255,255,255,0.2);transition:all 0.3s;display:inline-block;}
+    .btn-secondary:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-3px);}
+    .hero-stats{position:relative;z-index:2;display:flex;gap:60px;margin-top:80px;padding-top:60px;border-top:1px solid rgba(255,255,255,0.08);}
+    .hero-stat-num{font-family:'Playfair Display',serif;font-size:48px;font-weight:700;color:var(--gold);}
+    .hero-stat-label{font-size:13px;color:var(--gray);letter-spacing:1px;text-transform:uppercase;margin-top:4px;}
+    
+    /* MARQUEE */
+    .marquee-section{background:rgba(201,168,76,0.05);border-top:1px solid rgba(201,168,76,0.1);border-bottom:1px solid rgba(201,168,76,0.1);padding:20px 0;overflow:hidden;}
+    .marquee-track{display:flex;gap:60px;animation:marquee 20s linear infinite;white-space:nowrap;}
+    @keyframes marquee{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+    .marquee-item{font-size:13px;color:var(--gold);letter-spacing:3px;text-transform:uppercase;font-weight:600;}
+    .marquee-dot{color:rgba(201,168,76,0.3);margin:0 10px;}
+    
+    /* PAIN SECTION */
+    .pain-section{padding:120px 60px;background:var(--dark2);}
+    .section-label{font-size:12px;color:var(--gold);letter-spacing:3px;text-transform:uppercase;font-weight:600;margin-bottom:16px;}
+    .section-title{font-family:'Playfair Display',serif;font-size:52px;font-weight:700;line-height:1.1;margin-bottom:20px;}
+    .section-subtitle{font-size:18px;color:var(--gray);max-width:600px;line-height:1.7;}
+    .pain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:60px;background:rgba(255,255,255,0.05);}
+    .pain-card{background:var(--dark2);padding:50px 40px;transition:all 0.3s;}
+    .pain-card:hover{background:var(--dark3);transform:translateY(-4px);}
+    .pain-icon{width:56px;height:56px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:24px;font-size:24px;}
+    .pain-card h3{font-family:'Playfair Display',serif;font-size:24px;font-weight:600;margin-bottom:12px;}
+    .pain-card p{font-size:15px;color:var(--gray);line-height:1.7;}
+    
+    /* SERVICES */
+    .services-section{padding:120px 60px;background:var(--dark);}
+    .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin-top:60px;}
+    .service-card{background:linear-gradient(135deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:48px 40px;transition:all 0.3s;position:relative;overflow:hidden;}
+    .service-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity 0.3s;}
+    .service-card:hover{border-color:rgba(201,168,76,0.2);transform:translateY(-6px);box-shadow:0 20px 60px rgba(0,0,0,0.4);}
+    .service-card:hover::before{opacity:1;}
+    .service-number{font-size:64px;font-weight:900;color:rgba(201,168,76,0.08);font-family:'Playfair Display',serif;line-height:1;margin-bottom:20px;}
+    .service-card h3{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;margin-bottom:16px;}
+    .service-card p{font-size:15px;color:var(--gray);line-height:1.7;margin-bottom:24px;}
+    .service-price{font-size:22px;font-weight:700;color:var(--gold);}
+    .service-price span{font-size:13px;color:var(--gray);font-weight:400;}
+    .service-list{list-style:none;margin-top:20px;}
+    .service-list li{font-size:14px;color:var(--gray);padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;gap:10px;}
+    .service-list li::before{content:'';width:6px;height:6px;background:var(--gold);border-radius:50%;flex-shrink:0;}
+    
+    /* PROCESS */
+    .process-section{padding:120px 60px;background:var(--dark2);}
+    .process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:60px;position:relative;}
+    .process-steps::before{content:'';position:absolute;top:40px;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0.3;}
+    .process-step{padding:40px 30px;text-align:center;}
+    .step-circle{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#A8722A);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--dark);position:relative;z-index:2;}
+    .process-step h3{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;margin-bottom:12px;}
+    .process-step p{font-size:14px;color:var(--gray);line-height:1.6;}
+    
+    /* COMPLIANCE */
+    .compliance-section{padding:120px 60px;background:var(--dark);}
+    .compliance-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;margin-top:60px;}
+    .compliance-badges{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+    .compliance-badge{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:24px 20px;text-align:center;transition:all 0.3s;}
+    .compliance-badge:hover{border-color:rgba(201,168,76,0.3);background:rgba(201,168,76,0.05);}
+    .compliance-badge-icon{font-size:28px;margin-bottom:10px;}
+    .compliance-badge-name{font-size:13px;font-weight:700;color:var(--white);letter-spacing:1px;}
+    .compliance-badge-sub{font-size:11px;color:var(--gray);margin-top:4px;}
+    .compliance-text h2{font-family:'Playfair Display',serif;font-size:48px;font-weight:700;line-height:1.1;margin-bottom:20px;}
+    .compliance-text p{font-size:16px;color:var(--gray);line-height:1.8;margin-bottom:16px;}
+    
+    /* PRICING */
+    .pricing-section{padding:120px 60px;background:var(--dark2);}
+    .pricing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:60px;}
+    .pricing-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:40px 32px;transition:all 0.3s;position:relative;}
+    .pricing-card.featured{background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(201,168,76,0.03));border-color:rgba(201,168,76,0.3);}
+    .pricing-card.featured::after{content:'MOST POPULAR';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--dark);font-size:10px;font-weight:700;letter-spacing:2px;padding:4px 16px;border-radius:100px;}
+    .pricing-card:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(0,0,0,0.4);}
+    .pricing-tier{font-size:12px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;font-weight:600;margin-bottom:12px;}
+    .pricing-price{font-family:'Playfair Display',serif;font-size:48px;font-weight:700;color:var(--white);margin-bottom:4px;}
+    .pricing-price span{font-size:16px;color:var(--gray);font-weight:400;}
+    .pricing-desc{font-size:14px;color:var(--gray);margin-bottom:32px;line-height:1.6;}
+    .pricing-features{list-style:none;margin-bottom:32px;}
+    .pricing-features li{font-size:14px;color:var(--gray);padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;gap:10px;}
+    .pricing-features li::before{content:'';width:6px;height:6px;background:var(--gold);border-radius:50%;flex-shrink:0;}
+    .pricing-btn{display:block;text-align:center;padding:14px;border-radius:4px;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;text-decoration:none;transition:all 0.3s;}
+    .pricing-btn-outline{border:1px solid rgba(255,255,255,0.2);color:var(--white);}
+    .pricing-btn-outline:hover{border-color:var(--gold);color:var(--gold);}
+    .pricing-btn-gold{background:linear-gradient(135deg,var(--gold),#A8722A);color:var(--dark);}
+    .pricing-btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(201,168,76,0.4);}
+    
+    /* TESTIMONIALS */
+    .testimonials-section{padding:120px 60px;background:var(--dark);}
+    .testimonials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin-top:60px;}
+    .testimonial-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:40px;}
+    .testimonial-stars{color:var(--gold);font-size:18px;margin-bottom:20px;letter-spacing:4px;}
+    .testimonial-text{font-size:16px;color:var(--white);line-height:1.7;font-style:italic;margin-bottom:28px;}
+    .testimonial-author{display:flex;align-items:center;gap:14px;}
+    .testimonial-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--blue));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;color:var(--dark);}
+    .testimonial-name{font-weight:600;font-size:15px;}
+    .testimonial-role{font-size:13px;color:var(--gray);}
+    
+    /* CTA SECTION */
+    .cta-section{padding:120px 60px;background:linear-gradient(135deg,var(--blue) 0%,var(--dark2) 100%);position:relative;overflow:hidden;text-align:center;}
+    .cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(201,168,76,0.1),transparent 70%);}
+    .cta-section h2{font-family:'Playfair Display',serif;font-size:64px;font-weight:900;position:relative;z-index:2;margin-bottom:20px;}
+    .cta-section h2 em{font-style:normal;color:var(--gold);}
+    .cta-section p{font-size:20px;color:rgba(255,255,255,0.7);max-width:600px;margin:0 auto 40px;position:relative;z-index:2;line-height:1.7;}
+    .cta-buttons{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;position:relative;z-index:2;}
+    
+    /* FOOTER */
+    footer{background:var(--dark);border-top:1px solid rgba(255,255,255,0.06);padding:60px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:30px;}
+    .footer-logo{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--gold);}
+    .footer-links{display:flex;gap:30px;}
+    .footer-links a{font-size:13px;color:var(--gray);text-decoration:none;letter-spacing:1px;transition:color 0.3s;}
+    .footer-links a:hover{color:var(--gold);}
+    .footer-copy{font-size:13px;color:rgba(255,255,255,0.3);}
+    
+    @media(max-width:900px){
+      nav{padding:20px 24px;}
+      .hero{padding:120px 24px 80px;}
+      .hero h1{font-size:42px;}
+      .hero-stats{flex-wrap:wrap;gap:30px;}
+      .pain-grid,.services-grid,.process-steps,.pricing-grid,.testimonials-grid{grid-template-columns:1fr;}
+      .compliance-grid{grid-template-columns:1fr;}
+      .pain-section,.services-section,.process-section,.compliance-section,.pricing-section,.testimonials-section,.cta-section{padding:80px 24px;}
+      footer{padding:40px 24px;flex-direction:column;text-align:center;}
+      .nav-links{display:none;}
+    }
+    </style>
+    </head>
+    <body>
+    
+    <nav>
+      <div class="nav-logo">Med<span>Core</span></div>
+      <ul class="nav-links">
+        <li><a href="#services">Services</a></li>
+        <li><a href="#compliance">Compliance</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <a href="#contact" class="nav-cta">Get Your Package</a>
+    </nav>
+    
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-grid"></div>
+      <div class="hero-glow"></div>
+      <div class="hero-glow2"></div>
+      <div class="hero-content">
+        <div class="hero-badge">
+          <div class="hero-badge-dot"></div>
+          <span>Healthcare Documentation Specialists</span>
+        </div>
+        <h1>Enterprise-Grade<br/>Healthcare <em>Compliance</em><br/>In 48 Hours</h1>
+        <p>We deliver complete HIPAA compliance reports, investor-ready pitch decks, and professional onboarding documentation packages — at a fraction of traditional consulting costs.</p>
+        <div class="hero-ctas">
+          <a href="#pricing" class="btn-primary">View Packages</a>
+          <a href="#services" class="btn-secondary">See What We Build</a>
+        </div>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-num">48hrs</div>
+          <div class="hero-stat-label">Delivery Time</div>
+        </div>
+        <div>
+          <div class="hero-stat-num">30+</div>
+          <div class="hero-stat-label">Pages Per Report</div>
+        </div>
+        <div>
+          <div class="hero-stat-num">$0</div>
+          <div class="hero-stat-label">vs $15K Agency Cost</div>
+        </div>
+        <div>
+          <div class="hero-stat-num">100%</div>
+          <div class="hero-stat-label">HIPAA Aligned</div>
+        </div>
+      </div>
+    </section>
+    
+    <div class="marquee-section">
+      <div class="marquee-track">
+        <span class="marquee-item">HIPAA Compliance</span><span class="marquee-dot">|</span>
+        <span class="marquee-item">FDA Documentation</span><span class="marquee-dot">|</span>
+        <span class="marquee-item">HITECH Alignment</span><span class="marquee-dot">|</span>
+        <span class="marquee-item">Investor Pitch Decks</span><span class="marquee-dot">|</span>
+        <span class="marquee-item">Onboarding Systems</span><span class="marquee-dot">|</span>
+        <span class="marquee-item">Compliance Reports</span><span class="marquee-dot">|</span>
+        <span class="marquee-item">Explainer Videos</span><span class="marquee-dot">|</span>
+        <span class="marquee-item">HIPAA Compliance</span><span class="marquee-dot">|</span>
+        <span class="marquee-item">FDA Documentation</span><span class="marquee-dot">|</span>
+        <span class="marquee-item">HITECH Alignment</span><span class="marquee-dot">|</span>
+        <span class="marquee-item">Investor Pitch Decks</span><span class="marquee-dot">|</span>
+        <span class="marquee-item">Onboarding Systems</span><span class="marquee-dot">|</span>
+        <span class="marquee-item">Compliance Reports</span><span class="marquee-dot">|</span>
+        <span class="marquee-item">Explainer Videos</span><span class="marquee-dot">|</span>
+      </div>
+    </div>
+    
+    <section class="pain-section" id="problem">
+      <div class="section-label">The Problem</div>
+      <h2 class="section-title">Healthcare Documentation<br/>Is Broken</h2>
+      <p class="section-subtitle">Mid-market healthcare firms are stuck between enterprise consulting fees and DIY chaos. We solve this entirely.</p>
+      <div class="pain-grid">
+        <div class="pain-card">
+          <div class="pain-icon">💸</div>
+          <h3>Traditional Consulting Costs $50K+</h3>
+          <p>McKinsey, Deloitte, and boutique compliance firms charge $15,000–$50,000 for the documentation packages we deliver in 48 hours.</p>
+        </div>
+        <div class="pain-card">
+          <div class="pain-icon">⏳</div>
+          <h3>Internal Teams Take Months</h3>
+          <p>Building compliance documentation in-house requires months of legal review, content creation, and design work — time funded startups simply do not have.</p>
+        </div>
+        <div class="pain-card">
+          <div class="pain-icon">📋</div>
+          <h3>Regulators Don't Wait</h3>
+          <p>HIPAA audits, FDA submissions, and investor due diligence have hard deadlines. Missing them costs far more than the documentation itself.</p>
+        </div>
+      </div>
+    </section>
+    
+    <section class="services-section" id="services">
+      <div class="section-label">Our Services</div>
+      <h2 class="section-title">Three Assets.<br/>One Powerful Package.</h2>
+      <p class="section-subtitle">Every engagement includes our three core deliverables — research-backed, professionally designed, and ready to deploy.</p>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-number">01</div>
+          <h3>Compliance & Regulatory Report</h3>
+          <p>A 30+ page deep-dive covering HIPAA, HITECH, FDA 21 CFR, CMS guidelines, and state-specific regulations tailored to your exact service line.</p>
+          <div class="service-price">$1,500 <span>standalone</span></div>
+          <ul class="service-list">
+            <li>30–50 pages of research-backed content</li>
+            <li>HIPAA Security Rule breakdown</li>
+            <li>Risk assessment frameworks</li>
+            <li>Remediation roadmap included</li>
+            <li>PDF + DOCX formats</li>
+          </ul>
+        </div>
+        <div class="service-card">
+          <div class="service-number">02</div>
+          <h3>Investor or Capabilities Pitch Deck</h3>
+          <p>A 12–15 slide professionally designed presentation built for board rooms, investor meetings, or enterprise procurement officers.</p>
+          <div class="service-price">$1,000 <span>standalone</span></div>
+          <ul class="service-list">
+            <li>12–15 custom designed slides</li>
+            <li>Market sizing and competitive analysis</li>
+            <li>Financial projections slide</li>
+            <li>Your brand colors and logo</li>
+            <li>Export-ready PPTX format</li>
+          </ul>
+        </div>
+        <div class="service-card">
+          <div class="service-number">03</div>
+          <h3>Explainer or Onboarding Video</h3>
+          <p>A 60–90 second cinematic explainer video with professional voiceover narrating your workflow, compliance posture, or service offering.</p>
+          <div class="service-price">$2,000 <span>standalone</span></div>
+          <ul class="service-list">
+            <li>60–90 second runtime</li>
+            <li>Professional AI voiceover</li>
+            <li>Cinematic b-roll footage</li>
+            <li>MP4 format, web-ready</li>
+            <li>Script included in deliverable</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    
+    <section class="process-section">
+      <div class="section-label">How It Works</div>
+      <h2 class="section-title">From Brief to<br/>Delivered in 48 Hours</h2>
+      <div class="process-steps">
+        <div class="process-step">
+          <div class="step-circle">1</div>
+          <h3>Discovery Call</h3>
+          <p>30-minute brief covering your service line, regulatory environment, and target audience.</p>
+        </div>
+        <div class="process-step">
+          <div class="step-circle">2</div>
+          <h3>Research & Build</h3>
+          <p>Our AI-powered pipeline runs deep regulatory research and builds your assets simultaneously.</p>
+        </div>
+        <div class="process-step">
+          <div class="step-circle">3</div>
+          <h3>Review & Refine</h3>
+          <p>You review the draft package. One round of revisions included with every engagement.</p>
+        </div>
+        <div class="process-step">
+          <div class="step-circle">4</div>
+          <h3>Deliver & Deploy</h3>
+          <p>Final files delivered via secure link. PDF, DOCX, PPTX, and MP4 — ready for immediate use.</p>
+        </div>
+      </div>
+    </section>
+    
+    <section class="compliance-section" id="compliance">
+      <div class="compliance-grid">
+        <div class="compliance-badges">
+          <div class="compliance-badge"><div class="compliance-badge-icon">🛡️</div><div class="compliance-badge-name">HIPAA</div><div class="compliance-badge-sub">Security Rule</div></div>
+          <div class="compliance-badge"><div class="compliance-badge-icon">📋</div><div class="compliance-badge-name">HITECH</div><div class="compliance-badge-sub">Breach Notification</div></div>
+          <div class="compliance-badge"><div class="compliance-badge-icon">🔬</div><div class="compliance-badge-name">FDA 21 CFR</div><div class="compliance-badge-sub">Part 11</div></div>
+          <div class="compliance-badge"><div class="compliance-badge-icon">🏥</div><div class="compliance-badge-name">CMS</div><div class="compliance-badge-sub">Conditions of P.</div></div>
+          <div class="compliance-badge"><div class="compliance-badge-icon">📊</div><div class="compliance-badge-name">SOC 2</div><div class="compliance-badge-sub">Type II Ready</div></div>
+          <div class="compliance-badge"><div class="compliance-badge-icon">🌐</div><div class="compliance-badge-name">State Laws</div><div class="compliance-badge-sub">All 50 States</div></div>
+        </div>
+        <div class="compliance-text">
+          <div class="section-label">Compliance Coverage</div>
+          <h2>Every Regulation.<br/>Every Framework.<br/><em style="color:var(--gold);font-style:normal;">Covered.</em></h2>
+          <p>Our reports cover the full regulatory landscape for healthcare and health-tech companies operating in the United States — from federal frameworks to state-specific data privacy laws.</p>
+          <p>Each report is built from real-time regulatory sources, not outdated templates. Your compliance posture is current on the day of delivery.</p>
+          <a href="#pricing" class="btn-primary" style="margin-top:20px;display:inline-block;">Get Compliant Now</a>
+        </div>
+      </div>
+    </section>
+    
+    <section class="pricing-section" id="pricing">
+      <div class="section-label" style="text-align:center;">Pricing</div>
+      <h2 class="section-title" style="text-align:center;">Transparent.<br/>Fixed. No Surprises.</h2>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="pricing-tier">Starter</div>
+          <div class="pricing-price">$1,000<span>/project</span></div>
+          <div class="pricing-desc">Perfect for startups needing a fast compliance snapshot.</div>
+          <ul class="pricing-features">
+            <li>15-page compliance report</li>
+            <li>HIPAA overview section</li>
+            <li>Risk summary matrix</li>
+            <li>PDF delivery</li>
+          </ul>
+          <a href="#contact" class="pricing-btn pricing-btn-outline">Get Started</a>
+        </div>
+        <div class="pricing-card featured">
+          <div class="pricing-tier">Pro</div>
+          <div class="pricing-price">$2,500<span>/project</span></div>
+          <div class="pricing-desc">Full compliance report plus investor-ready pitch deck.</div>
+          <ul class="pricing-features">
+            <li>30+ page compliance report</li>
+            <li>12-slide pitch deck</li>
+            <li>Brand customization</li>
+            <li>PDF + PPTX delivery</li>
+            <li>1 revision round</li>
+          </ul>
+          <a href="#contact" class="pricing-btn pricing-btn-gold">Get Started</a>
+        </div>
+        <div class="pricing-card">
+          <div class="pricing-tier">Enterprise</div>
+          <div class="pricing-price">$4,500<span>/project</span></div>
+          <div class="pricing-desc">Complete triple-asset package with explainer video.</div>
+          <ul class="pricing-features">
+            <li>30+ page compliance report</li>
+            <li>15-slide pitch deck</li>
+            <li>60s explainer video</li>
+            <li>All formats included</li>
+            <li>2 revision rounds</li>
+          </ul>
+          <a href="#contact" class="pricing-btn pricing-btn-outline">Get Started</a>
+        </div>
+        <div class="pricing-card">
+          <div class="pricing-tier">Retainer</div>
+          <div class="pricing-price">$2,000<span>/mo</span></div>
+          <div class="pricing-desc">Monthly compliance monitoring and updated documentation.</div>
+          <ul class="pricing-features">
+            <li>Monthly regulatory updates</li>
+            <li>Quarterly full report refresh</li>
+            <li>Priority 24hr delivery</li>
+            <li>Dedicated account manager</li>
+            <li>Unlimited revisions</li>
+          </ul>
+          <a href="#contact" class="pricing-btn pricing-btn-outline">Get Started</a>
+        </div>
+      </div>
+    </section>
+    
+    <section class="testimonials-section">
+      <div class="section-label" style="text-align:center;">Results</div>
+      <h2 class="section-title" style="text-align:center;">What Our Clients Say</h2>
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <div class="testimonial-text">"We needed a HIPAA compliance brief for our Series A due diligence in 72 hours. MedCore delivered a 40-page report that our investors called the most thorough they had seen from a Series A company."</div>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">JR</div>
+            <div><div class="testimonial-name">James R.</div><div class="testimonial-role">CEO, HealthTech Startup — Austin, TX</div></div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <div class="testimonial-text">"The pitch deck alone closed our partnership with a regional hospital network. The quality was indistinguishable from what our previous consulting firm charged $18,000 to produce."</div>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">ML</div>
+            <div><div class="testimonial-name">Maria L.</div><div class="testimonial-role">COO, MedTech Platform — Chicago, IL</div></div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <div class="testimonial-text">"We use MedCore on retainer. Every quarter we get a fully updated compliance package. It keeps our board informed and our legal team happy — at a fraction of what we used to pay."</div>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">DK</div>
+            <div><div class="testimonial-name">David K.</div><div class="testimonial-role">VP Operations, Regional Health System</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section class="cta-section" id="contact">
+      <h2>Ready to Get <em>Compliant</em><br/>and Close Deals?</h2>
+      <p>Book a free 30-minute discovery call. We will scope your package and have a proposal back to you within 4 hours.</p>
+      <div class="cta-buttons">
+        <a href="mailto:hello@medcorecompliance.com" class="btn-primary">Book Discovery Call</a>
+        <a href="mailto:hello@medcorecompliance.com" class="btn-secondary">Email Us Directly</a>
+      </div>
+    </section>
+    
+    <footer>
+      <div class="footer-logo">MedCore</div>
+      <div class="footer-links">
+        <a href="#services">Services</a>
+        <a href="#compliance">Compliance</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <div class="footer-copy">2025 MedCore Compliance Solutions. All rights reserved.</div>
+    </footer>
+    
+    </body>
+    </html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snowball — Template Marketplace</title>
+    <style>
+    :root {
+      --bg:#070709;--bg2:#0d0d12;--accent:#4a9eff;--gold:#c9a84c;
+      --text:#f0f0f5;--text2:#888899;--text3:#444455;
+      --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.12);
+      --card:rgba(255,255,255,0.025);--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      --mono:ui-monospace,monospace;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:var(--bg);color:var(--text);font-family:var(--sans);}
+    nav{position:fixed;top:0;left:0;right:0;height:52px;background:rgba(7,7,9,0.95);
+      border-bottom:1px solid var(--border);display:flex;align-items:center;
+      padding:0 32px;gap:16px;backdrop-filter:blur(20px);z-index:100;}
+    .logo{font-size:13px;font-weight:800;letter-spacing:0.1em;}
+    .logo span{color:var(--accent);}
+    .spacer{flex:1;}
+    .nav-btn{font-size:11px;padding:7px 16px;border-radius:4px;border:1px solid var(--border2);
+      background:transparent;color:var(--text2);cursor:pointer;font-family:var(--sans);text-decoration:none;
+      transition:all 0.2s;}
+    .nav-btn.primary{background:var(--accent);color:#000;border-color:var(--accent);font-weight:700;}
+    
+    .hero{padding:120px 40px 60px;text-align:center;max-width:800px;margin:0 auto;}
+    .hero-label{font-size:10px;font-family:var(--mono);letter-spacing:0.2em;color:var(--accent);margin-bottom:16px;}
+    .hero-title{font-size:clamp(36px,5vw,64px);font-weight:900;line-height:1;
+      letter-spacing:-0.02em;margin-bottom:16px;}
+    .hero-sub{font-size:15px;color:var(--text2);line-height:1.7;margin-bottom:40px;}
+    
+    /* FILTER BAR */
+    .filter-bar{display:flex;gap:8px;justify-content:center;margin-bottom:48px;flex-wrap:wrap;}
+    .filter-btn{font-size:10px;font-family:var(--mono);padding:6px 14px;border-radius:20px;
+      border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;
+      letter-spacing:0.08em;transition:all 0.2s;}
+    .filter-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(74,158,255,0.06);}
+    
+    /* PRODUCT GRID */
+    .products{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+      gap:16px;max-width:1200px;margin:0 auto;padding:0 32px 80px;}
+    
+    .product-card{background:var(--card);border:1px solid var(--border);border-radius:10px;
+      overflow:hidden;transition:all 0.3s;cursor:pointer;}
+    .product-card:hover{border-color:var(--border2);transform:translateY(-2px);}
+    .product-card.featured{border-color:var(--gold);}
+    
+    .product-preview{height:180px;display:flex;align-items:center;justify-content:center;
+      font-size:32px;position:relative;overflow:hidden;}
+    .product-preview .preview-label{position:absolute;bottom:12px;right:12px;
+      font-size:9px;font-family:var(--mono);padding:3px 8px;border-radius:3px;
+      background:rgba(0,0,0,0.6);color:var(--text2);letter-spacing:0.08em;}
+    
+    .product-body{padding:20px;}
+    .product-name{font-size:14px;font-weight:700;margin-bottom:4px;}
+    .product-tagline{font-size:11px;color:var(--text2);margin-bottom:14px;line-height:1.5;}
+    .product-meta{display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+    .product-price{font-size:22px;font-weight:900;}
+    .product-type{font-size:9px;font-family:var(--mono);padding:2px 7px;border-radius:3px;
+      background:rgba(255,255,255,0.05);color:var(--text3);}
+    .product-includes{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:16px;}
+    .include-tag{font-size:9px;font-family:var(--mono);padding:2px 7px;border-radius:3px;
+      border:1px solid var(--border);color:var(--text3);}
+    .buy-btn{width:100%;padding:11px;border-radius:5px;font-size:11px;font-weight:700;
+      letter-spacing:0.08em;cursor:pointer;border:1px solid var(--border2);
+      background:transparent;color:var(--text2);transition:all 0.2s;font-family:var(--sans);}
+    .buy-btn.primary{background:var(--accent);color:#000;border-color:var(--accent);}
+    .buy-btn.gold{background:var(--gold);color:#000;border-color:var(--gold);}
+    .buy-btn:hover{opacity:0.85;}
+    
+    /* BUNDLE SECTION */
+    .bundle-section{max-width:1200px;margin:0 auto;padding:0 32px 80px;}
+    .bundle-card{background:linear-gradient(135deg,rgba(74,158,255,0.06),rgba(124,58,237,0.06));
+      border:1px solid rgba(74,158,255,0.15);border-radius:12px;padding:48px;
+      display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
+    .bundle-price{font-size:56px;font-weight:900;line-height:1;margin:8px 0;}
+    .bundle-saves{font-size:11px;font-family:var(--mono);color:var(--green,#4ade80);margin-bottom:20px;}
+    
+    /* ENTERPRISE */
+    .enterprise-strip{background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.12);
+      border-radius:8px;padding:32px 40px;display:flex;align-items:center;gap:32px;
+      max-width:1200px;margin:0 auto 80px;margin-left:32px;margin-right:32px;}
+    </style>
+    </head>
+    <body>
+    <nav>
+      <div class="logo">SNOW<span>BALL</span></div>
+      <span style="font-size:10px;font-family:var(--mono);color:var(--text3);">/ marketplace</span>
+      <div class="spacer"></div>
+      <a href="snowball_flagship_v2.html" class="nav-btn">← Home</a>
+      <a href="#" class="nav-btn primary">Sign In</a>
+    </nav>
+    
+    <div class="hero">
+      <div class="hero-label">TEMPLATE MARKETPLACE</div>
+      <h1 class="hero-title">Pick your archetype.<br>Ship in days.</h1>
+      <p class="hero-sub">Every template is a complete design system — tokens, components, motion recipes, and copy register. Built on Snowball. Owned by you.</p>
+    </div>
+    
+    <div class="filter-bar" id="filter-bar">
+      <button class="filter-btn active" onclick="filterProducts('all',this)">ALL</button>
+      <button class="filter-btn" onclick="filterProducts('template',this)">TEMPLATES</button>
+      <button class="filter-btn" onclick="filterProducts('bundle',this)">BUNDLES</button>
+      <button class="filter-btn" onclick="filterProducts('saas',this)">SAAS ACCESS</button>
+      <button class="filter-btn" onclick="filterProducts('dfy',this)">DONE FOR YOU</button>
+    </div>
+    
+    <div class="products" id="products-grid"></div>
+    
+    <div class="bundle-section">
+      <div class="bundle-card">
+        <div>
+          <div style="font-size:10px;font-family:var(--mono);letter-spacing:0.2em;color:var(--accent);margin-bottom:12px;">BEST VALUE · FULL LIBRARY</div>
+          <h2 style="font-size:32px;font-weight:800;line-height:1.1;margin-bottom:12px;">All 8 Archetypes.<br>One license.</h2>
+          <p style="font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:20px;">Every archetype, all 200+ components, Figma tokens, Next.js code, 1 year updates. The complete Snowball design system.</p>
+          <div class="bundle-price">$1,997</div>
+          <div class="bundle-saves">Saves $1,979 vs buying separately</div>
+          <button class="buy-btn primary" onclick="checkout('full_library','1997')">Get Full Library →</button>
+        </div>
+        <div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            ${[1,2,3,4,5,6,7,8].map(n=>`
+            <div style="padding:12px;background:rgba(0,0,0,0.3);border-radius:5px;border:1px solid rgba(74,158,255,0.1);font-size:10px;font-family:var(--mono);color:var(--text3);">
+              <span style="color:var(--accent);">0${n}</span> Archetype
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="enterprise-strip">
+      <div style="flex:1;">
+        <div style="font-size:10px;font-family:var(--mono);letter-spacing:0.15em;color:var(--gold);margin-bottom:8px;">AGENCY LICENSE</div>
+        <div style="font-size:20px;font-weight:700;margin-bottom:6px;">Resell under your brand.</div>
+        <div style="font-size:13px;color:var(--text2);">All 8 archetypes, client resell rights, white-label, priority support. 1 year updates.</div>
+      </div>
+      <div>
+        <div style="font-size:28px;font-weight:900;color:var(--gold);margin-bottom:8px;">$4,997</div>
+        <button class="buy-btn gold" onclick="checkout('agency_license','4997')">Get Agency License →</button>
+      </div>
+    </div>
+    
+    <script>
+    const PRODUCTS = [
+      { id:'marcello', name:'Marcello Dark Precision', tagline:'High contrast. Technical elegance. The feeling everything costs money.', price:'$497', type:'template', accent:'#4a9eff', bg:'linear-gradient(135deg,#0a0a0f,#0d1a2e)', includes:['Figma File','Next.js Code','CSS Tokens','Motion Recipes','Copy Register','1yr Updates'], featured:false },
+      { id:'pininfarina', name:'Pininfarina Editorial', tagline:'Italian elegance. Wide whitespace. Heritage meets future.', price:'$497', type:'template', accent:'#c9a84c', bg:'linear-gradient(135deg,#1a160d,#2a200a)', includes:['Figma File','Next.js Code','CSS Tokens','Serif Type Pairs','1yr Updates'], featured:false },
+      { id:'porsche', name:'Porsche Grid System', tagline:'Structured performance. German precision.', price:'$497', type:'template', accent:'#e8e8e8', bg:'linear-gradient(135deg,#111,#1a1a1a)', includes:['Figma File','Next.js Code','Grid System','Spec Components','1yr Updates'], featured:false },
+      { id:'goblin', name:'Gossip Goblin Dark', tagline:'Cinematic dystopian. Art that unsettles.', price:'$497', type:'template', accent:'#7c3aed', bg:'linear-gradient(135deg,#080810,#120818)', includes:['Figma File','Next.js Code','Glitch Components','Dark Palette','1yr Updates'], featured:true },
+      { id:'rollsroyce', name:'Rolls-Royce Heritage', tagline:'Warmth. Restraint. Quality without announcement.', price:'$497', type:'template', accent:'#c9a84c', bg:'linear-gradient(135deg,#0f0d0a,#1a1408)', includes:['Figma File','Next.js Code','Heritage Components','Serif System','1yr Updates'], featured:false },
+      { id:'apple', name:'Apple Ultra Clean', tagline:'Negative space. Product as hero.', price:'$497', type:'template', accent:'#0071e3', bg:'linear-gradient(135deg,#f0f0f0,#e8e8e8)', includes:['Figma File','Next.js Code','Product Components','Light System','1yr Updates'], featured:false },
+      { id:'drift', name:'Studio Drift Spatial', tagline:'Depth and dimension. Three-dimensional thinking.', price:'$497', type:'template', accent:'#4ade80', bg:'linear-gradient(135deg,#050508,#080a05)', includes:['Figma File','Next.js Code','Spatial Components','Motion System','1yr Updates'], featured:false },
+      { id:'bangolufsen', name:'Bang & Olufsen Minimal', tagline:'Sound you can see. Price justified before reading.', price:'$497', type:'template', accent:'#a78bfa', bg:'linear-gradient(135deg,#0a0a0a,#100a1a)', includes:['Figma File','Next.js Code','Product Cards','Minimal System','1yr Updates'], featured:false },
+      { id:'solo_saas', name:'Snowball Solo', tagline:'One site. All archetypes. AI Style Advisor. APEX Studio.', price:'$149/mo', type:'saas', accent:'#4a9eff', bg:'linear-gradient(135deg,#0a0a14,#0d1a2e)', includes:['All 8 Archetypes','APEX Studio','AI Style Advisor','200+ Components','Monthly Updates'], featured:false },
+      { id:'studio_saas', name:'Snowball Studio', tagline:'5 sites. White-label. Priority support.', price:'$299/mo', type:'saas', accent:'#4a9eff', bg:'linear-gradient(135deg,#0d0a1a,#1a0d2e)', includes:['5 Active Sites','White-Label','Client Portal','Trend Reports','Priority Support'], featured:true },
+      { id:'starter_dfy', name:'DFY Starter', tagline:'We build it. 1 archetype. 6 sections. 5 days.', price:'$2,500', type:'dfy', accent:'#4ade80', bg:'linear-gradient(135deg,#050a05,#0a1a0a)', includes:['1 Archetype','6 Sections','CMS Setup','1 Revision','Figma Handoff'], featured:false },
+      { id:'bespoke_dfy', name:'DFY Bespoke', tagline:'Custom archetype blend. Full 12 sections. Unlimited revisions.', price:'$8,500', type:'dfy', accent:'#c9a84c', bg:'linear-gradient(135deg,#100d05,#1a1205)', includes:['Custom Blend','12 Sections','Unlimited Revisions','3mo Support','Brand Kit'], featured:false },
+    ];
+    
+    let activeFilter = 'all';
+    
+    function filterProducts(type, btn) {
+      activeFilter = type;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderProducts();
+    }
+    
+    function renderProducts() {
+      const filtered = activeFilter === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.type === activeFilter);
+      document.getElementById('products-grid').innerHTML = filtered.map(p => `
+        <div class="product-card ${p.featured?'featured':''}">
+          <div class="product-preview" style="background:${p.bg};">
+            <span style="font-size:28px;font-weight:900;color:${p.accent};font-family:var(--mono);letter-spacing:-0.02em;">SB</span>
+            <div class="preview-label">${p.type.toUpperCase()}</div>
+            ${p.featured?'<div style="position:absolute;top:12px;left:12px;font-size:9px;font-family:var(--mono);padding:3px 8px;border-radius:3px;background:'+p.accent+';color:#000;font-weight:700;">POPULAR</div>':''}
+          </div>
+          <div class="product-body">
+            <div class="product-name">${p.name}</div>
+            <div class="product-tagline">${p.tagline}</div>
+            <div class="product-meta">
+              <div class="product-price">${p.price}</div>
+              <div class="product-type">${p.type}</div>
+            </div>
+            <div class="product-includes">${p.includes.map(i=>`<span class="include-tag">${i}</span>`).join('')}</div>
+            <button class="buy-btn ${p.featured?'primary':''}" onclick="checkout('${p.id}','${p.price}')">
+              ${p.type==='saas'?'Start Plan →':p.type==='dfy'?'Book Now →':'Buy Template →'}
+            </button>
+          </div>
+        </div>`).join('');
+    }
+    
+    function checkout(productId, price) {
+      // Replace with real Stripe checkout links
+      alert(`Stripe checkout for ${productId} (${price})\n\nFor early access: snowball@design\n\nStripe integration coming soon — launching Q3 2027.`);
+    }
+    
+    renderProducts();
+    </script>
+    </body>
+    </html>

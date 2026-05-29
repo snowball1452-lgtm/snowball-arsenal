@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Snowball — Design Intelligence</title>
+        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@200;300;400;500&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+        <style>
+            :root {
+                --black: #050507;
+                --dark: #0a0a0f;
+                --surface: #0f0f16;
+                --surface2: #14141e;
+                --border: rgba(255,255,255,0.06);
+                --border-bright: rgba(255,255,255,0.12);
+                --white: #f8f8f2;
+                --white-dim: rgba(248,248,242,0.55);
+                --white-faint: rgba(248,248,242,0.2);
+                --gold: #c9a84c;
+                --gold-dim: rgba(201,168,76,0.4);
+                --gold-faint: rgba(201,168,76,0.08);
+                --silver: #a8aab4;
+                --accent: #6c63ff;
+                --accent-dim: rgba(108,99,255,0.15);
+            }
+    
+            *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    
+            html { scroll-behavior: smooth; font-size: 16px; }
+    
+            body {
+                background: var(--black);
+                color: var(--white);
+                font-family: 'Inter', sans-serif;
+                font-weight: 300;
+                overflow-x: hidden;
+                cursor: none;
+            }
+    
+            /* ── CUSTOM CURSOR ── */
+            .cursor {
+                position: fixed;
+                width: 8px;
+                height: 8px;
+                background: var(--gold);
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 9999;
+                transition: transform 0.1s ease;
+                mix-blend-mode: difference;
+            }
+            .cursor-ring {
+                position: fixed;
+                width: 36px;
+                height: 36px;
+                border: 1px solid rgba(201,168,76,0.5);
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 9998;
+                transition: all 0.15s ease;
+            }
+            .cursor.expand { transform: scale(3); }
+            .cursor-ring.expand { transform: scale(1.5); border-color: var(--gold); }
+    
+            /* ── NOISE OVERLAY ── */
+            body::before {
+                content: '';
+                position: fixed;
+                inset: 0;
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+                pointer-events: none;
+                z-index: 1000;
+                opacity: 0.4;
+            }
+    
+            /* ── NAV ── */
+            nav {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 900;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 28px 60px;
+                background: linear-gradient(to bottom, rgba(5,5,7,0.95) 0%, transparent 100%);
+                backdrop-filter: blur(0px);
+                transition: all 0.4s ease;
+            }
+            nav.scrolled {
+                padding: 18px 60px;
+                background: rgba(5,5,7,0.92);
+                backdrop-filter: blur(20px);
+                border-bottom: 1px solid var(--border);
+            }
+            .nav-logo {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 1.5rem;
+                font-weight: 300;
+                letter-spacing: 0.3em;
+                color: var(--white);
+                text-transform: uppercase;
+                text-decoration: none;
+            }
+            .nav-logo span { color: var(--gold); }
+            .nav-links {
+                display: flex;
+                align-items: center;
+                gap: 48px;
+                list-style: none;
+            }
+            .nav-links a {
+                font-family: 'Space Grotesk', sans-serif;
+                font-size: 0.7rem;
+                font-weight: 400;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                color: var(--white-dim);
+                text-decoration: none;
+                transition: color 0.3s ease;
+            }
+            .nav-links a:hover { color: var(--white); }
+            .nav-cta {
+                font-family: 'Space Grotesk', sans-serif;
+                font-size: 0.7rem;
+                font-weight: 500;
+                letter-spacing: 0.15em;
+                text-transform: uppercase;
+                color: var(--black) !important;
+                background: var(--gold);
+                padding: 10px 24px;
+                text-decoration: none;
+                transition: all 0.3s ease;
+            }
+            .nav-cta:hover { background: var(--white); }
+    
+            /* ── HERO ── */
+            #hero {
+                position: relative;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                background: var(--black);
+            }
+    
+            .hero-bg {
+                position: absolute;
+                inset: 0;
+                background: 
+                    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,168,76,0.04) 0%, transparent 60%),
+                    radial-gradient(ellipse 40% 40% at 20% 80%, rgba(108,99,255,0.05) 0%, transparent 50%),
+                    radial-gradient(ellipse 60% 50% at 80% 60%, rgba(201,168,76,0.03) 0%, transparent 50%);
+            }
+    
+            .hero-grid {
+                position: absolute;
+                inset: 0;
+                background-image: 
+                    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+                background-size: 80px 80px;
+                mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 0%, transparent 100%);
+            }
+    
+            .hero-content {
+                position: relative;
+                z-index: 2;
+                text-align: center;
+                max-width: 1100px;
+                padding: 0 40px;
+            }
+    
+            .hero-eyebrow {
+                font-family: 'Space Grotesk', sans-serif;
+                font-size: 0.65rem;
+                font-weight: 400;
+                letter-spacing: 0.4em;
+                text-transform: uppercase;
+                color: var(--gold);
+                margin-bottom: 32px;
+                opacity: 0;
+                animation: fadeUp 1s ease 0.3s forwards;
+            }
+    
+            .hero-title {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: clamp(4rem, 10vw, 9rem);
+                font-weight: 300;
+                line-height: 0.95;
+                letter-spacing: -0.02em;
+                color: var(--white);
+                margin-bottom: 40px;
+                opacity: 0;
+                animation: fadeUp 1s ease 0.5s forwards;
+            }
+            .hero-title em {
+                font-style: italic;
+                color: var(--gold);
+            }
+            .hero-title .line2 {
+                display: block;
+                font-size: clamp(1.5rem, 3vw, 2.8rem);
+                font-weight: 300;
+                letter-spacing: 0.25em;
+                text-transform: uppercase;
+                font-style: normal;
+                color: var(--white-dim);
+                margin-top: 16px;
+                font-family: 'Space Grotesk', sans-serif;
+            }
+    
+            .hero-sub {
+                font-family: 'Inter', sans-serif;
+                font-size: 1rem;
+                font-weight: 300;
+                line-height: 1.8;
+                color: var(--white-dim);
+                max-width: 560px;
+                margin: 0 auto 56px;
+                opacity: 0;
+                animation: fadeUp 1s ease 0.7s forwards;
+            }
+    
+            .hero-actions {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 24px;
+                opacity: 0;
+                animation: fadeUp 1s ease 0.9s forwards;
+            }
+            .btn-primary {
+                font-family: 'Space Grotesk', sans-serif;
+                font-size: 0.72rem;
+                font-weight: 500;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                color: var(--black);
+                background: var(--gold);
+                padding: 16px 40px;
+                text-decoration: none;
+                border: none;
+                cursor: none;
+                transition: all 0.3s ease;
+                display: inline-block;
+            }
+            .btn-primary:hover { background: var(--white); transform: translateY(-2px); }
+            .btn-ghost {
+                font-family: 'Space Grotesk', sans-serif;
+                font-size: 0.72rem;
+                font-weight: 400;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                color: var(--white-dim);
+                background: transparent;
+                padding: 16px 40px;
+                text-decoration: none;
+                border: 1px solid var(--border-bright);
+                cursor: none;
+                transition: all 0.3s ease;
+                display: inline-block;
+            }
+            .btn-ghost:hover { color: var(--white); border-color: var(--white-dim); }
+    
+            .hero-scroll {
+                position: absolute;
+                bottom: 40px;
+                left: 50%;
+                transform: translateX(-50%);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+                opacity: 0;
+                animation: fadeUp 1s ease 1.2s forwards;
+            }
+            .hero-scroll span {
+                font-family: 'Space Grotesk', sans-serif;
+                font-size: 0.6rem;
+                letter-spacing: 0.3em;
+                text-transform: uppercase;
+                color: var(--white-faint);
+            }
+            .scroll-line {
+                width: 1px;
+                height: 60px;
+                background: linear-gradient(to bottom, var(--gold), transparent);
+                animation: scrollLine 2s ease infinite;
+            }
+            @keyframes scrollLine {
+                0% { transform: scaleY(0); transform-origin: top; opacity: 1; }
+                50% { transform: scaleY(1); transform-origin: top; opacity: 1; }
+                100% { transform: scaleY(1); transform-origin: bottom; opacity: 0; }
+            }
+    
+            /* ── MARQUEE ── */
+            .marquee-section {
+                padding: 24px 0;
+                background: var(--surface);
+                border-top: 1px solid var(--border);
+                border-bottom: 1px solid var(--border);
+                overflow: hidden;
+            }
+            .marquee-track {
+                display: flex;
+                gap: 0;
+                animation: marquee 30s linear infinite;
+                white-space: nowrap;
+            }
+            .marquee-item {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 0.85rem;
+                font-weight: 300;
+                letter-spacing: 0.3em;
+                text-transform: uppercase;
+                color: var(--white-faint);
+                padding: 0 48px;
+                flex-shrink: 0;
+            }
+            .marquee-item span { color: var(--gold); margin-right: 48px; }
+            @keyframes marquee {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(-50%); }
+            }
+    
+            /* ── MANIFESTO ── */
+            #manifesto {
+                padding: 160px 60px;
+                max-width: 1400px;
+                margin: 0 auto;
+                display: grid;
+                grid-template-columns: 1fr 2fr;
+                gap: 80px;
+                align-items: start;
+            }
+            .manifesto-label {
+                font-family: 'Space Grotesk', sans-serif;
+                font-size: 0.65rem;
+                letter-spacing: 0.35em;
+                text-transform: uppercase;
+                color: var(--gold);
+                padding-top: 8px;
+            }
+            .manifesto-text {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: clamp(2rem, 4vw, 3.2rem);
+                font-weight: 300;
+                line-height: 1.4;
+                color: var(--white);
+            }
+            .manifesto-text em {
+                font-style: italic;
+                color: var(--gold);
+            }
+    
+            /* ── CAPABILITIES ── */
+            #capabilities {
+                padding: 0 60px 160px;
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+            .section-header {
+                display: flex;
+                align-items: flex-end;
+                justify-content: space-between;
+                margin-bottom: 80px;
+                border-bottom: 1px solid var(--border);
+                padding-bottom: 32px;
+            }
+            .section-label {
+                font-family: 'Space Grotesk', sans-serif;
+                font-size: 0.65rem;
+                letter-spacing: 0.35em;
+                text-transform: uppercase;
+                color: var(--gold);
+                margin-bottom: 12px;
+            }
+            .section-title {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: clamp(2.5rem, 4vw, 4rem);
+                font-weight: 300;
+                line-height: 1.1;
+                color: var(--white);
+            }
+            .section-count {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 6rem;
+                font-weight: 300;
+                color: var(--border-bright);
+                line-height: 1;
+            }
+    
+            .capabilities-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1px;
+                background: var(--border);
+            }
+            .cap-item {
+                background: var(--black);
+                padding: 48px 40px;
+                transition: background 0.4s ease;
+                position: relative;
+                overflow: hidden;
+            }
+            .cap-item::before {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 2px;
+                background: var(--gold);
+                transform: scaleX(0);
+                transition: transform 0.4s ease;
+                transform-origin: left;
+            }
+            .cap-item:hover { background: var(--surface); }
+            .cap-item:hover::before { transform: scaleX(1); }
+            .cap-num {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 0.85rem;
+                color: var(--gold);
+                margin-bottom: 24px;
+                letter-spacing: 0.1em;
+            }
+            .cap-title {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 1.6rem;
+                font-weight: 400;
+                color: var(--white);
+                margin-bottom: 16px;
+                line-height: 1.2;
+            }
+            .cap-desc {
+                font-family: 'Inter', sans-serif;
+                font-size: 0.82rem;
+                font-weight: 300;
+                line-height: 1.8;
+                color: var(--white-dim);
+            }
+    
+            /* ── PROCESS ── */
+            #process {
+                padding: 160px 60px;
+                background: var(--surface);
+                border-top: 1px solid var(--border);
+                border-bottom: 1px solid var(--border);
+            }
+            .process-inner {
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+            .process-steps {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 60px;
+                margin-top: 80px;
+            }
+            .process-step { position: relative; }
+            .process-step::after {
+                content: '';
+                position: absolute;
+                top: 16px;
+                right: -30px;
+                width: 60px;
+                height: 1px;
+                background: linear-gradient(to right, var(--border-bright), transparent);
+            }
+            .process-step:last-child::after { display: none; }
+            .step-num {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 4rem;
+                font-weight: 300;
+                color: var(--border-bright);
+                line-height: 1;
+                margin-bottom: 24px;
+            }
+            .step-title {
+                font-family: 'Space Grotesk', sans-serif;
+                font-size: 0.8rem;
+                font-weight: 500;
+                letter-spacing: 0.15em;
+                text-transform: uppercase;
+                color: var(--white);
+                margin-bottom: 16px;
+            }
+            .step-desc {
+                font-family: 'Inter', sans-serif;
+                font-size: 0.82rem;
+                font-weight: 300;
+                line-height: 1.8;
+                color: var(--white-dim);
+            }
+    
+            /* ── METRICS ── */
+            #metrics {
+                padding: 160px 60px;
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+            .metrics-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 1px;
+                background: var(--border);
+                margin-top: 80px;
+            }
+            .metric-item {
+                background: var(--black);
+                padding: 56px 40px;
+                text-align: center;
+            }
+            .metric-value {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: clamp(3rem, 5vw, 5rem);
+                font-weight: 300;
+                color: var(--white);
+                line-height: 1;
+                margin-bottom: 12px;
+            }
+            .metric-value span { color: var(--gold); }
+            .metric-label {
+                font-family: 'Space Grotesk', sans-serif;
+                font-size: 0.65rem;
+                letter-spacing: 0.3em;
+                text-transform: uppercase;
+                color: var(--white-dim);
+            }
+    
+            /* ── WORK / ARCHETYPE SHOWCASE ── */
+            #work {
+                padding: 0 60px 160px;
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+            .archetypes-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2px;
+                margin-top: 80px;
+                background: var(--border);
+            }
+            .archetype-card {
+                position: relative;
+                height: 480px;
+                overflow: hidden;
+                background: var(--surface2);
+                cursor: none;
+            }
+            .archetype-card .card-bg {
+                position: absolute;
+                inset: 0;
+                transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            }
+            .archetype-card:hover .card-bg { transform: scale(1.05); }
+            .card-bg-1 {
+                background: 
+                    radial-gradient(ellipse 80% 60% at 30% 40%, rgba(201,168,76,0.15) 0%, transparent 60%),
+                    linear-gradient(135deg, #0d0d14 0%, #1a1520 100%);
+            }
+            .card-bg-2 {
+                background: 
+                    radial-gradient(ellipse 60% 80% at 70% 30%, rgba(108,99,255,0.12) 0%, transparent 60%),
+                    linear-gradient(135deg, #0d0d14 0%, #14141e 100%);
+            }
+            .card-bg-3 {
+                background: 
+                    radial-gradient(ellipse 70% 50% at 20% 70%, rgba(168,170,180,0.08) 0%, transparent 60%),
+                    linear-gradient(135deg, #0a0a0f 0%, #111119 100%);
+            }
+            .card-bg-4 {
+                background: 
+                    radial-gradient(ellipse 90% 60% at 80% 20%, rgba(201,168,76,0.08) 0%, transparent 60%),
+                    linear-gradient(135deg, #0f0f16 0%, #0a0a12 100%);
+            }
+            .card-content {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                padding: 48px;
+                background: linear-gradient(to top, rgba(5,5,7,0.95) 0%, transparent 100%);
+            }
+            .card-tag {
+                font-family: 'Space Grotesk', sans-serif;
+                font-size: 0.6rem;
+                letter-spacing: 0.35em;
+                text-transform: uppercase;
+                color: var(--gold);
+                margin-bottom: 12px;
+            }
+            .card-name {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 2rem;
+                font-weight: 300;
+                color: var(--white);
+                margin-bottom: 8px;
+            }
+            .card-desc {
+                font-family: 'Inter', sans-serif;
+                font-size: 0.78rem;
+                font-weight: 300;
+                color: var(--white-dim);
+                max-width: 400px;
+            }
+    
+            .card-corner {
+                position: absolute;
+                top: 32px;
+                right: 32px;
+                width: 40px;
+                height: 40px;
+                border-top: 1px solid var(--border-bright);
+                border-right: 1px solid var(--border-bright);
+                transition: all 0.4s ease;
+            }
+            .archetype-card:hover .card-corner {
+                width: 60px;
+                height: 60px;
+                border-color: var(--gold);
+            }
+    
+            /* ── TESTIMONIAL ── */
+            #testimonial {
+                padding: 160px 60px;
+                background: var(--surface);
+                border-top: 1px solid var(--border);
+                border-bottom: 1px solid var(--border);
+                text-align: center;
+            }
+            .testimonial-inner { max-width: 900px; margin: 0 auto; }
+            .quote-mark {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 8rem;
+                color: var(--gold-dim);
+                line-height: 0.5;
+                margin-bottom: 48px;
+            }
+            .quote-text {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: clamp(1.8rem, 3vw, 2.8rem);
+                font-weight: 300;
+                font-style: italic;
+                line-height: 1.5;
+                color: var(--white);
+                margin-bottom: 48px;
+            }
+            .quote-author {
+                font-family: 'Space Grotesk', sans-serif;
+                font-size: 0.7rem;
+                letter-spacing: 0.3em;
+                text-transform: uppercase;
+                color: var(--gold);
+            }
+    
+            /* ── CTA ── */
+            #cta {
+                padding: 200px 60px;
+                text-align: center;
+                position: relative;
+                overflow: hidden;
+            }
+            #cta::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(201,168,76,0.05) 0%, transparent 70%);
+            }
+            .cta-inner { position: relative; z-index: 2; }
+            .cta-title {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: clamp(3rem, 7vw, 7rem);
+                font-weight: 300;
+                line-height: 1.05;
+                color: var(--white);
+                margin-bottom: 32px;
+            }
+            .cta-title em { font-style: italic; color: var(--gold); }
+            .cta-sub {
+                font-family: 'Inter', sans-serif;
+                font-size: 1rem;
+                font-weight: 300;
+                color: var(--white-dim);
+                max-width: 500px;
+                margin: 0 auto 56px;
+                line-height: 1.8;
+            }
+            .cta-actions {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 24px;
+            }
+    
+            /* ── FOOTER ── */
+            footer {
+                padding: 60px;
+                border-top: 1px solid var(--border);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .footer-logo {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 1.2rem;
+                font-weight: 300;
+                letter-spacing: 0.3em;
+                text-transform: uppercase;
+                color: var(--white-dim);
+            }
+            .footer-logo span { color: var(--gold); }
+            .footer-copy {
+                font-family: 'Space Grotesk', sans-serif;
+                font-size: 0.65rem;
+                letter-spacing: 0.2em;
+                color: var(--white-faint);
+                text-transform: uppercase;
+            }
+            .footer-links {
+                display: flex;
+                gap: 32px;
+                list-style: none;
+            }
+            .footer-links a {
+                font-family: 'Space Grotesk', sans-serif;
+                font-size: 0.65rem;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                color: var(--white-faint);
+                text-decoration: none;
+                transition: color 0.3s ease;
+            }
+            .footer-links a:hover { color: var(--gold); }
+    
+            /* ── ANIMATIONS ── */
+            @keyframes fadeUp {
+                from { opacity: 0; transform: translateY(30px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .reveal {
+                opacity: 0;
+                transform: translateY(40px);
+                transition: opacity 0.9s ease, transform 0.9s ease;
+            }
+            .reveal.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .reveal-delay-1 { transition-delay: 0.1s; }
+            .reveal-delay-2 { transition-delay: 0.2s; }
+            .reveal-delay-3 { transition-delay: 0.3s; }
+            .reveal-delay-4 { transition-delay: 0.4s; }
+    
+            /* ── RESPONSIVE ── */
+            @media (max-width: 1024px) {
+                nav { padding: 24px 32px; }
+                nav.scrolled { padding: 16px 32px; }
+                .nav-links { display: none; }
+                #manifesto { grid-template-columns: 1fr; gap: 32px; padding: 100px 32px; }
+                #capabilities { padding: 0 32px 100px; }
+                .capabilities-grid { grid-template-columns: 1fr; }
+                .process-steps { grid-template-columns: repeat(2, 1fr); }
+                .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+                .archetypes-grid { grid-template-columns: 1fr; }
+                #work, #metrics, #process, #cta, footer { padding-left: 32px; padding-right: 32px; }
+                footer { flex-direction: column; gap: 24px; text-align: center; }
+            }
+        </style>
+    </head>
+    <body>
+    
+        <!-- CURSOR -->
+        <div class="cursor" id="cursor"></div>
+        <div class="cursor-ring" id="cursorRing"></div>
+    
+        <!-- NAV -->
+        <nav id="nav">
+            <a href="#" class="nav-logo">Snow<span>ball</span></a>
+            <ul class="nav-links">
+                <li><a href="#capabilities">Capabilities</a></li>
+                <li><a href="#work">Archetypes</a></li>
+                <li><a href="#process">Process</a></li>
+                <li><a href="#cta" class="nav-cta">Commission a Site</a></li>
+            </ul>
+        </nav>
+    
+        <!-- HERO -->
+        <section id="hero">
+            <div class="hero-bg"></div>
+            <div class="hero-grid"></div>
+            <div class="hero-content">
+                <p class="hero-eyebrow">Design Intelligence Platform — Est. 2025</p>
+                <h1 class="hero-title">
+                    <em>Luxury</em> by<br>Architecture
+                    <span class="line2">Design Intelligence at Scale</span>
+                </h1>
+                <p class="hero-sub">We engineer digital presences for the world's most precise design studios. Not templates. Not themes. Intelligence.</p>
+                <div class="hero-actions">
+                    <a href="#cta" class="btn-primary">Commission Your Site</a>
+                    <a href="#work" class="btn-ghost">View Archetypes</a>
+                </div>
+            </div>
+            <div class="hero-scroll">
+                <span>Scroll</span>
+                <div class="scroll-line"></div>
+            </div>
+        </section>
+    
+        <!-- MARQUEE -->
+        <div class="marquee-section">
+            <div class="marquee-track">
+                <div class="marquee-item"><span>—</span> Automotive Design</div>
+                <div class="marquee-item"><span>—</span> Industrial Luxury</div>
+                <div class="marquee-item"><span>—</span> Aviation Precision</div>
+                <div class="marquee-item"><span>—</span> Brand Identity</div>
+                <div class="marquee-item"><span>—</span> Yacht Design</div>
+                <div class="marquee-item"><span>—</span> Architectural Firms</div>
+                <div class="marquee-item"><span>—</span> Jewelry Houses</div>
+                <div class="marquee-item"><span>—</span> Aerospace Studios</div>
+                <div class="marquee-item"><span>—</span> Automotive Design</div>
+                <div class="marquee-item"><span>—</span> Industrial Luxury</div>
+                <div class="marquee-item"><span>—</span> Aviation Precision</div>
+                <div class="marquee-item"><span>—</span> Brand Identity</div>
+                <div class="marquee-item"><span>—</span> Yacht Design</div>
+                <div class="marquee-item"><span>—</span> Architectural Firms</div>
+                <div class="marquee-item"><span>—</span> Jewelry Houses</div>
+                <div class="marquee-item"><span>—</span> Aerospace Studios</div>
+            </div>
+        </div>
+    
+        <!-- MANIFESTO -->
+        <section id="manifesto">
+            <div class="manifesto-label reveal">Manifesto</div>
+            <div class="manifesto-text reveal reveal-delay-1">
+                Every great design studio deserves a digital presence that <em>matches the precision</em> of what they build. We exist to close that gap — permanently.
+            </div>
+        </section>
+    
+        <!-- CAPABILITIES -->
+        <section id="capabilities">
+            <div class="section-header reveal">
+                <div>
+                    <p class="section-label">What We Build</p>
+                    <h2 class="section-title">Design<br>Intelligence</h2>
+                </div>
+                <div class="section-count">06</div>
+            </div>
+            <div class="capabilities-grid">
+                <div class="cap-item reveal">
+                    <div class="cap-num">01</div>
+                    <h3 class="cap-title">Archetype Sites</h3>
+                    <p class="cap-desc">Eight distinct design archetypes drawn from the world's finest luxury studios. Your brand mapped to a visual language that speaks the right language to the right client.</p>
+                </div>
+                <div class="cap-item reveal reveal-delay-1">
+                    <div class="cap-num">02</div>
+                    <h3 class="cap-title">AI Style Engine</h3>
+                    <p class="cap-desc">An intelligence layer that learns from luxury design trends across awards, launches, and editorial — keeping your site ahead, not catching up.</p>
+                </div>
+                <div class="cap-item reveal reveal-delay-2">
+                    <div class="cap-num">03</div>
+                    <h3 class="cap-title">Brand Identity Systems</h3>
+                    <p class="cap-desc">From typography to motion to color — complete brand systems built to the same standard as the studios that have shaped industrial design history.</p>
+                </div>
+                <div class="cap-item reveal">
+                    <div class="cap-num">04</div>
+                    <h3 class="cap-title">Motion Language</h3>
+                    <p class="cap-desc">Cinematic scroll behaviors, precision micro-interactions, and transitions engineered to communicate craftsmanship before a single word is read.</p>
+                </div>
+                <div class="cap-item reveal reveal-delay-1">
+                    <div class="cap-num">05</div>
+                    <h3 class="cap-title">Conversion Architecture</h3>
+                    <p class="cap-desc">Beautiful sites that don't convert are art installations. Every layout decision is informed by inquiry data from the premium design studio vertical.</p>
+                </div>
+                <div class="cap-item reveal reveal-delay-2">
+                    <div class="cap-num">06</div>
+                    <h3 class="cap-title">Living Systems</h3>
+                    <p class="cap-desc">Sites that evolve. As luxury design trends shift, your platform shifts with them — continuously refined, never stale, always ahead.</p>
+                </div>
+            </div>
+        </section>
+    
+        <!-- PROCESS -->
+        <section id="process">
+            <div class="process-inner">
+                <div class="section-header reveal">
+                    <div>
+                        <p class="section-label">How It Works</p>
+                        <h2 class="section-title">The Process</h2>
+                    </div>
+                    <div class="section-count">04</div>
+                </div>
+                <div class="process-steps">
+                    <div class="process-step reveal">
+                        <div class="step-num">01</div>
+                        <h3 class="step-title">Archetype Mapping</h3>
+                        <p class="step-desc">We identify which of the eight design archetypes aligns with your studio's core aesthetic and client base. This is the foundation everything else is built on.</p>
+                    </div>
+                    <div class="process-step reveal reveal-delay-1">
+                        <div class="step-num">02</div>
+                        <h3 class="step-title">Brand Intelligence</h3>
+                        <p class="step-desc">Your existing identity — logo, colors, language — is fed into the design engine. The system maps it to luxury grammar without erasing what makes you distinct.</p>
+                    </div>
+                    <div class="process-step reveal reveal-delay-2">
+                        <div class="step-num">03</div>
+                        <h3 class="step-title">Precision Build</h3>
+                        <p class="step-desc">Every component, every transition, every typographic decision is made by hand against the luxury standard. No shortcuts. No compromise.</p>
+                    </div>
+                    <div class="process-step reveal reveal-delay-3">
+                        <div class="step-num">04</div>
+                        <h3 class="step-title">Deploy & Evolve</h3>
+                        <p class="step-desc">Launch on enterprise infrastructure and enter the living system — continuous refinement as design trends evolve and your studio grows.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    
+        <!-- METRICS -->
+        <section id="metrics">
+            <div class="section-header reveal">
+                <div>
+                    <p class="section-label">By The Numbers</p>
+                    <h2 class="section-title">The Standard</h2>
+                </div>
+            </div>
+            <div class="metrics-grid">
+                <div class="metric-item reveal">
+                    <div class="metric-value">8<span>+</span></div>
+                    <div class="metric-label">Design Archetypes</div>
+                </div>
+                <div class="metric-item reveal reveal-delay-1">
+                    <div class="metric-value"><span>$</span>0</div>
+                    <div class="metric-label">Copyright Exposure</div>
+                </div>
+                <div class="metric-item reveal reveal-delay-2">
+                    <div class="metric-value">100<span>%</span></div>
+                    <div class="metric-label">Original Design Language</div>
+                </div>
+                <div class="metric-item reveal reveal-delay-3">
+                    <div class="metric-value"><span>∞</span></div>
+                    <div class="metric-label">Scalable Architecture</div>
+                </div>
+            </div>
+        </section>
+    
+        <!-- WORK -->
+        <section id="work">
+            <div class="section-header reveal">
+                <div>
+                    <p class="section-label">Design Archetypes</p>
+                    <h2 class="section-title">The Eight<br>Languages</h2>
+                </div>
+                <div class="section-count">08</div>
+            </div>
+            <div class="archetypes-grid">
+                <div class="archetype-card reveal">
+                    <div class="card-bg card-bg-1"></div>
+                    <div class="card-corner"></div>
+                    <div class="card-content">
+                        <p class="card-tag">Archetype 01 — Automotive</p>
+                        <h3 class="card-name">Dark Precision</h3>
+                        <p class="card-desc">For studios where engineering and sculpture are indistinguishable. Obsessive detail at every scale.</p>
+                    </div>
+                </div>
+                <div class="archetype-card reveal reveal-delay-1">
+                    <div class="card-bg card-bg-2"></div>
+                    <div class="card-corner"></div>
+                    <div class="card-content">
+                        <p class="card-tag">Archetype 02 — Industrial</p>
+                        <h3 class="card-name">Structural Elegance</h3>
+                        <p class="card-desc">Bold geometry meets refined restraint. For studios that build things that last a century.</p>
+                    </div>
+                </div>
+                <div class="archetype-card reveal">
+                    <div class="card-bg card-bg-3"></div>
+                    <div class="card-corner"></div>
+                    <div class="card-content">
+                        <p class="card-tag">Archetype 03 — Aviation</p>
+                        <h3 class="card-name">Altitude Luxury</h3>
+                        <p class="card-desc">The visual language of first class, applied to your digital presence. Effortless and commanding.</p>
+                    </div>
+                </div>
+                <div class="archetype-card reveal reveal-delay-1">
+                    <div class="card-bg card-bg-4"></div>
+                    <div class="card-corner"></div>
+                    <div class="card-content">
+                        <p class="card-tag">Archetype 04 — Brand Identity</p>
+                        <h3 class="card-name">Identity Intelligence</h3>
+                        <p class="card-desc">For brand and identity studios. System-level thinking expressed as cinematic experience.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    
+        <!-- TESTIMONIAL -->
+        <section id="testimonial">
+            <div class="testimonial-inner">
+                <div class="quote-mark reveal">"</div>
+                <p class="quote-text reveal reveal-delay-1">"The sites that close premium clients don't look like websites. They feel like entering a design studio for the first time."</p>
+                <p class="quote-author reveal reveal-delay-2">Snowball Design Intelligence — Design Philosophy</p>
+            </div>
+        </section>
+    
+        <!-- CTA -->
+        <section id="cta">
+            <div class="cta-inner">
+                <h2 class="cta-title reveal">Your Studio<br>Deserves <em>This.</em></h2>
+                <p class="cta-sub reveal reveal-delay-1">Commission a flagship digital presence built to the standard of the world's finest design studios.</p>
+                <div class="cta-actions reveal reveal-delay-2">
+                    <a href="mailto:hello@snowball.design" class="btn-primary">Begin Commission</a>
+                    <a href="#capabilities" class="btn-ghost">Explore Capabilities</a>
+                </div>
+            </div>
+        </section>
+    
+        <!-- FOOTER -->
+        <footer>
+            <div class="footer-logo">Snow<span>ball</span></div>
+            <p class="footer-copy">&copy; 2025 Snowball Design Intelligence. All Rights Reserved.</p>
+            <ul class="footer-links">
+                <li><a href="#">Privacy</a></li>
+                <li><a href="#">Terms</a></li>
+                <li><a href="mailto:hello@snowball.design">Contact</a></li>
+            </ul>
+        </footer>
+    
+        <script>
+            // CURSOR
+            const cursor = document.getElementById('cursor');
+            const ring = document.getElementById('cursorRing');
+            let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+            document.addEventListener('mousemove', e => {
+                mouseX = e.clientX; mouseY = e.clientY;
+                cursor.style.left = mouseX - 4 + 'px';
+                cursor.style.top = mouseY - 4 + 'px';
+            });
+            function animateRing() {
+                ringX += (mouseX - ringX - 18) * 0.12;
+                ringY += (mouseY - ringY - 18) * 0.12;
+                ring.style.left = ringX + 'px';
+                ring.style.top = ringY + 'px';
+                requestAnimationFrame(animateRing);
+            }
+            animateRing();
+            document.querySelectorAll('a, button').forEach(el => {
+                el.addEventListener('mouseenter', () => { cursor.classList.add('expand'); ring.classList.add('expand'); });
+                el.addEventListener('mouseleave', () => { cursor.classList.remove('expand'); ring.classList.remove('expand'); });
+            });
+    
+            // NAV SCROLL
+            const nav = document.getElementById('nav');
+            window.addEventListener('scroll', () => {
+                nav.classList.toggle('scrolled', window.scrollY > 60);
+            });
+    
+            // SCROLL REVEAL
+            const reveals = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) { e.target.classList.add('visible'); }
+                });
+            }, { threshold: 0.1 });
+            reveals.forEach(el => observer.observe(el));
+    
+            // SMOOTH ANCHOR SCROLL
+            document.querySelectorAll('a[href^="#"]').forEach(a => {
+                a.addEventListener('click', e => {
+                    const target = document.querySelector(a.getAttribute('href'));
+                    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+                });
+            });
+        </script>
+    </body>
+    </html>

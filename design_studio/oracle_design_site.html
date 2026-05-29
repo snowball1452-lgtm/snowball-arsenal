@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORACLE — Future Design Concepts</title>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Neue+Montreal:wght@300;400;500&family=Clash+Display:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700&family=Fraunces:ital,wght@0,100;0,300;1,100;1,300&display=swap');
+    
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --void: #020408;
+      --deep: #060C14;
+      --surface: #0A1220;
+      --green: #00C853;
+      --lime: #AAFF00;
+      --white: #E8F0E8;
+      --grey: #4A5A4A;
+      --light: #8A9A8A;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--void); color: var(--white); font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; cursor: none; }
+    
+    .cursor { width: 4px; height: 4px; background: var(--lime); position: fixed; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); }
+    .cursor-ring {
+      width: 30px; height: 30px;
+      border: 1px solid var(--lime);
+      position: fixed; pointer-events: none; z-index: 9998;
+      transform: translate(-50%,-50%);
+      transition: all 0.15s ease;
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+      opacity: 0.7;
+    }
+    
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      padding: 1.5rem 4rem;
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(2,4,8,0.9); backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,200,83,0.1);
+    }
+    .nav-logo { font-family: 'Fraunces', serif; font-size: 1.3rem; font-weight: 300; font-style: italic; color: var(--white); letter-spacing: 0.05em; }
+    .nav-logo span { color: var(--lime); font-style: normal; }
+    .nav-links { display: flex; gap: 3rem; list-style: none; }
+    .nav-links a { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--light); text-decoration: none; transition: color 0.3s; }
+    .nav-links a:hover { color: var(--lime); }
+    .nav-tag { font-size: 0.55rem; letter-spacing: 0.3em; color: var(--green); text-transform: uppercase; display: flex; align-items: center; gap: 0.5rem; }
+    .nav-tag::before { content: ''; width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: blink 2s infinite; }
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
+    
+    .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 10rem 4rem 6rem; position: relative; overflow: hidden; }
+    .hero-orb {
+      position: absolute; top: 50%; right: -10%; transform: translateY(-50%);
+      width: 60vw; height: 60vw; max-width: 700px; max-height: 700px;
+      background: radial-gradient(circle at 40% 40%, rgba(0,200,83,0.15), rgba(170,255,0,0.05) 40%, transparent 70%);
+      border-radius: 50%; animation: orb-pulse 6s ease-in-out infinite;
+    }
+    @keyframes orb-pulse { 0%,100% { transform: translateY(-50%) scale(1); opacity: 0.6; } 50% { transform: translateY(-52%) scale(1.05); opacity: 1; } }
+    .hero-orb-ring {
+      position: absolute; top: 50%; right: -10%; transform: translateY(-50%);
+      width: 62vw; height: 62vw; max-width: 720px; max-height: 720px;
+      border: 1px solid rgba(170,255,0,0.08);
+      border-radius: 50%; animation: ring-rotate 20s linear infinite;
+    }
+    @keyframes ring-rotate { from { transform: translateY(-50%) rotate(0deg); } to { transform: translateY(-50%) rotate(360deg); } }
+    
+    .hero-label { font-size: 0.6rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--lime); margin-bottom: 2rem; opacity: 0.8; }
+    .hero-title {
+      font-family: 'Fraunces', serif; font-size: clamp(4rem, 10vw, 8.5rem);
+      font-weight: 100; line-height: 1; margin-bottom: 3rem;
+      position: relative; z-index: 2;
+    }
+    .hero-title .bold { font-weight: 300; color: var(--lime); }
+    .hero-title .italic { font-style: italic; font-weight: 100; }
+    .hero-sub { font-size: 0.85rem; line-height: 1.9; color: var(--light); max-width: 420px; margin-bottom: 4rem; font-weight: 300; position: relative; z-index: 2; }
+    .hero-actions { display: flex; gap: 2rem; align-items: center; position: relative; z-index: 2; }
+    .btn-lime {
+      display: inline-flex; align-items: center; gap: 1rem;
+      padding: 1rem 2.5rem; background: var(--lime); color: var(--void);
+      text-decoration: none; font-weight: 700; font-size: 0.7rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      transition: all 0.3s;
+    }
+    .btn-lime:hover { background: var(--green); }
+    .btn-ghost { font-size: 0.7rem; color: var(--light); text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase; border-bottom: 1px solid var(--grey); padding-bottom: 0.2rem; transition: all 0.3s; }
+    .btn-ghost:hover { color: var(--lime); border-color: var(--lime); }
+    
+    .scroll-data { margin-top: 6rem; padding-top: 3rem; border-top: 1px solid rgba(170,255,0,0.1); display: flex; gap: 6rem; position: relative; z-index: 2; }
+    .data-item {}
+    .data-num { font-family: 'Fraunces', serif; font-size: 2.5rem; font-weight: 100; color: var(--lime); line-height: 1; }
+    .data-label { font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--light); margin-top: 0.3rem; }
+    
+    .ticker { padding: 0.8rem 0; background: rgba(170,255,0,0.05); overflow: hidden; border-top: 1px solid rgba(170,255,0,0.1); border-bottom: 1px solid rgba(170,255,0,0.1); }
+    .ticker-track { display: flex; gap: 3rem; animation: tick 22s linear infinite; white-space: nowrap; }
+    @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .ticker-item { font-size: 0.6rem; letter-spacing: 0.35em; text-transform: uppercase; color: rgba(170,255,0,0.5); flex-shrink: 0; }
+    
+    .manifesto { padding: 12rem 4rem; max-width: 900px; margin: 0 auto; text-align: center; }
+    .manifesto-tag { font-size: 0.6rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--lime); margin-bottom: 3rem; }
+    .manifesto-text { font-family: 'Fraunces', serif; font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 100; line-height: 1.4; }
+    .manifesto-text em { font-style: italic; color: var(--lime); }
+    .manifesto-text strong { font-weight: 300; }
+    
+    .services { padding: 8rem 4rem; background: var(--deep); }
+    .services-label { font-size: 0.6rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--lime); margin-bottom: 4rem; }
+    .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(170,255,0,0.05); }
+    .svc { padding: 3rem; background: var(--void); border-bottom: 2px solid transparent; transition: border-color 0.3s; }
+    .svc:hover { border-color: var(--lime); }
+    .svc-icon { font-family: 'Fraunces', serif; font-size: 2.5rem; font-weight: 100; font-style: italic; color: rgba(170,255,0,0.2); margin-bottom: 2rem; }
+    .svc-name { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; letter-spacing: -0.01em; }
+    .svc-desc { font-size: 0.7rem; line-height: 1.8; color: var(--light); font-weight: 300; }
+    
+    .work { padding: 8rem 4rem; }
+    .work-header { margin-bottom: 4rem; }
+    .work-title { font-family: 'Fraunces', serif; font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 100; line-height: 1.1; }
+    .work-title em { font-style: italic; color: var(--lime); }
+    .work-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 4rem; }
+    .work-card { background: var(--surface); overflow: hidden; padding: 4rem 3rem; position: relative; min-height: 300px; display: flex; flex-direction: column; justify-content: flex-end; transition: background 0.4s; }
+    .work-card:hover { background: rgba(170,255,0,0.04); }
+    .work-card-bg { position: absolute; inset: 0; opacity: 0.03; font-family: 'Fraunces', serif; font-size: 12rem; font-weight: 100; font-style: italic; color: var(--lime); display: flex; align-items: center; justify-content: center; line-height: 1; overflow: hidden; }
+    .work-tag { font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--lime); margin-bottom: 1rem; opacity: 0.7; }
+    .work-name { font-family: 'Fraunces', serif; font-size: 1.5rem; font-weight: 100; line-height: 1.2; }
+    .work-cat { font-size: 0.6rem; color: var(--light); margin-top: 0.5rem; letter-spacing: 0.1em; text-transform: uppercase; }
+    
+    .cta { padding: 14rem 4rem; text-align: center; position: relative; overflow: hidden; }
+    .cta::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(0,200,83,0.08), transparent 60%); border-radius: 50%; }
+    .cta-label { font-size: 0.6rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--lime); margin-bottom: 2rem; }
+    .cta-title { font-family: 'Fraunces', serif; font-size: clamp(3rem, 7vw, 6rem); font-weight: 100; line-height: 1.1; margin-bottom: 3rem; }
+    .cta-title em { font-style: italic; color: var(--lime); }
+    
+    footer { background: var(--deep); padding: 3rem 4rem; border-top: 1px solid rgba(170,255,0,0.08); display: flex; justify-content: space-between; align-items: center; }
+    .footer-logo { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 100; font-style: italic; color: var(--white); }
+    .footer-logo span { color: var(--lime); font-style: normal; }
+    .footer-copy { font-size: 0.55rem; color: var(--grey); letter-spacing: 0.1em; }
+    
+    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    
+    @media (max-width: 768px) {
+      nav { padding: 1.5rem 1.5rem; }
+      .nav-links, .nav-tag { display: none; }
+      .hero { padding: 8rem 1.5rem 4rem; }
+      .hero-orb, .hero-orb-ring { display: none; }
+      .scroll-data { gap: 3rem; flex-wrap: wrap; }
+      .services { padding: 6rem 1.5rem; }
+      .services-grid { grid-template-columns: 1fr; }
+      .work { padding: 6rem 1.5rem; }
+      .work-grid { grid-template-columns: 1fr; }
+      .cta { padding: 8rem 1.5rem; }
+      footer { flex-direction: column; gap: 1.5rem; text-align: center; padding: 2rem 1.5rem; }
+    }
+    </style>
+    </head>
+    <body>
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-ring" id="ring"></div>
+    <nav>
+      <div class="nav-logo"><span>O</span>racle</div>
+      <ul class="nav-links">
+        <li><a href="#manifesto">Manifesto</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <div class="nav-tag">Accepting commissions</div>
+    </nav>
+    <section class="hero">
+      <div class="hero-orb"></div>
+      <div class="hero-orb-ring"></div>
+      <div class="hero-label">Future Design Intelligence</div>
+      <h1 class="hero-title">
+        <span class="italic">Design the</span><br>
+        <span class="bold">Future</span><br>
+        <span class="italic">before it arrives</span>
+      </h1>
+      <p class="hero-sub">Oracle conceives the visual language of what's next. Speculative, rigorous, and completely original design intelligence for the brands building tomorrow.</p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn-lime">Start a project →</a>
+        <a href="#work" class="btn-ghost">See our work</a>
+      </div>
+      <div class="scroll-data">
+        <div class="data-item"><div class="data-num">8+</div><div class="data-label">Archetypes</div></div>
+        <div class="data-item"><div class="data-num">100%</div><div class="data-label">Original</div></div>
+        <div class="data-item"><div class="data-num">0%</div><div class="data-label">IP Exposure</div></div>
+      </div>
+    </section>
+    <div class="ticker">
+      <div class="ticker-track">
+        <span class="ticker-item">Future Concepts</span><span class="ticker-item"> — </span>
+        <span class="ticker-item">Speculative Design</span><span class="ticker-item"> — </span>
+        <span class="ticker-item">Brand Futures</span><span class="ticker-item"> — </span>
+        <span class="ticker-item">Design Intelligence</span><span class="ticker-item"> — </span>
+        <span class="ticker-item">Visual Systems</span><span class="ticker-item"> — </span>
+        <span class="ticker-item">Future Concepts</span><span class="ticker-item"> — </span>
+        <span class="ticker-item">Speculative Design</span><span class="ticker-item"> — </span>
+        <span class="ticker-item">Brand Futures</span><span class="ticker-item"> — </span>
+        <span class="ticker-item">Design Intelligence</span><span class="ticker-item"> — </span>
+        <span class="ticker-item">Visual Systems</span><span class="ticker-item"> — </span>
+      </div>
+    </div>
+    <section class="manifesto" id="manifesto">
+      <div class="manifesto-tag reveal">The Oracle Manifesto</div>
+      <p class="manifesto-text reveal">
+        The brands that will define the next decade are being <em>designed right now.</em> Most will get it wrong — imitating the past, mistaking noise for signal. <strong>We exist for the ones who get it right.</strong>
+      </p>
+    </section>
+    <section class="services" id="services">
+      <div class="services-label reveal">What We Do</div>
+      <div class="services-grid">
+        <div class="svc reveal"><div class="svc-icon">I</div><h3 class="svc-name">Futures Research</h3><p class="svc-desc">Strategic foresight and design trend intelligence. We identify the aesthetic signals before they become mainstream.</p></div>
+        <div class="svc reveal"><div class="svc-icon">II</div><h3 class="svc-name">Concept Development</h3><p class="svc-desc">Speculative design projects and future brand scenarios. For the brands planning 10 years ahead.</p></div>
+        <div class="svc reveal"><div class="svc-icon">III</div><h3 class="svc-name">Brand Architecture</h3><p class="svc-desc">Complete identity systems built for the long term. Systems that will look as intelligent in 2034 as they do today.</p></div>
+        <div class="svc reveal"><div class="svc-icon">IV</div><h3 class="svc-name">Digital Intelligence</h3><p class="svc-desc">Websites and digital platforms at the frontier of design. Where technology and aesthetics meet at their highest level.</p></div>
+        <div class="svc reveal"><div class="svc-icon">V</div><h3 class="svc-name">Motion Futures</h3><p class="svc-desc">Animation and motion language for brands that understand time is the ultimate design dimension.</p></div>
+        <div class="svc reveal"><div class="svc-icon">VI</div><h3 class="svc-name">Design Direction</h3><p class="svc-desc">Ongoing creative direction as a retained partner. The embedded intelligence that keeps you ahead.</p></div>
+      </div>
+    </section>
+    <section class="work" id="work">
+      <div class="work-header reveal">
+        <h2 class="work-title">Work that<br>sees <em>ahead</em></h2>
+      </div>
+      <div class="work-grid">
+        <div class="work-card reveal"><div class="work-card-bg">F</div><div class="work-tag">2024 — Automotive</div><div class="work-name">Helix Motors — 2030 Brand System</div><div class="work-cat">Brand Architecture · Futures</div></div>
+        <div class="work-card reveal"><div class="work-card-bg">U</div><div class="work-tag">2024 — Technology</div><div class="work-name">Phantom AI — Launch Identity</div><div class="work-cat">Digital · Brand Architecture</div></div>
+        <div class="work-card reveal"><div class="work-card-bg">T</div><div class="work-tag">2023 — Marine</div><div class="work-name">Vanta Yachts — Future Fleet</div><div class="work-cat">Concept · Identity · Spatial</div></div>
+        <div class="work-card reveal"><div class="work-card-bg">R</div><div class="work-tag">2023 — Architecture</div><div class="work-name">Meridian Structures — Vision</div><div class="work-cat">Brand · Spatial · Digital</div></div>
+      </div>
+    </section>
+    <section class="cta" id="contact">
+      <div class="cta-label reveal">Begin Here</div>
+      <h2 class="cta-title reveal">Design the<br><em>next thing</em></h2>
+      <a href="mailto:studio@oracle.design" class="btn-lime reveal">Commission a project →</a>
+    </section>
+    <footer>
+      <div class="footer-logo"><span>O</span>racle</div>
+      <p class="footer-copy">&copy; 2024 Oracle Future Design Intelligence</p>
+      <p class="footer-copy">studio@oracle.design</p>
+    </footer>
+    <script>
+    const cursor=document.getElementById('cursor'),ring=document.getElementById('ring');
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+    function a(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(a);}a();
+    const reveals=document.querySelectorAll('.reveal');
+    const obs=new IntersectionObserver(entries=>{entries.forEach((e,i)=>{if(e.isIntersecting)setTimeout(()=>e.target.classList.add('visible'),i*70);});},{threshold:0.1});
+    reveals.forEach(el=>obs.observe(el));
+    </script>
+    </body>
+    </html>

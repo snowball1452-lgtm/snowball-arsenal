@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snowball — Cold Email Sequence + Sales Playbook</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+      :root {
+        --black: #0a0a0a; --charcoal: #111418; --gold: #c9a84c;
+        --white: #f0f0e8; --grey: #6b7280; --border: rgba(201,168,76,0.2);
+      }
+      * { margin:0; padding:0; box-sizing:border-box; }
+      body { background: var(--black); color: var(--white); font-family: 'Space Grotesk', sans-serif; padding: 60px; max-width: 1000px; margin: 0 auto; }
+      h1 { font-size: 48px; font-weight: 700; color: var(--gold); margin-bottom: 8px; letter-spacing: -0.02em; }
+      .subtitle { color: var(--grey); font-size: 16px; margin-bottom: 60px; font-family: 'Space Mono', monospace; }
+      h2 { font-size: 28px; font-weight: 700; color: var(--gold); margin: 60px 0 8px; letter-spacing: -0.01em; }
+      .email-num { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--gold); letter-spacing: 0.3em; margin-bottom: 16px; }
+      .email-block { background: var(--charcoal); border: 1px solid var(--border); border-left: 3px solid var(--gold); padding: 40px; margin-bottom: 24px; }
+      .email-meta { display: grid; grid-template-columns: 80px 1fr; gap: 8px; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+      .meta-label { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--grey); letter-spacing: 0.2em; text-transform: uppercase; padding-top: 2px; }
+      .meta-val { font-size: 14px; color: var(--white); }
+      .email-body { font-size: 15px; line-height: 1.8; color: #d0cfc8; white-space: pre-line; }
+      .highlight { color: var(--gold); font-weight: 600; }
+      .note { background: rgba(201,168,76,0.08); border: 1px solid var(--border); padding: 20px 24px; margin: 16px 0; font-size: 13px; color: var(--grey); font-family: 'Space Mono', monospace; }
+      .section-divider { border: none; border-top: 1px solid var(--border); margin: 60px 0; }
+      .tag-row { display: flex; gap: 12px; flex-wrap: wrap; margin: 8px 0 24px; }
+      .tag { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.2em; padding: 6px 14px; border: 1px solid var(--border); color: var(--gold); text-transform: uppercase; }
+      .objection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 24px; }
+      .obj-card { background: var(--charcoal); padding: 28px; border: 1px solid var(--border); }
+      .obj-q { font-size: 14px; font-weight: 600; color: var(--gold); margin-bottom: 12px; }
+      .obj-a { font-size: 13px; color: var(--grey); line-height: 1.7; }
+      .sequence-map { display: flex; gap: 0; margin: 32px 0; }
+      .seq-step { flex: 1; background: var(--charcoal); border: 1px solid var(--border); padding: 20px; text-align: center; position: relative; }
+      .seq-step::after { content: "→"; position: absolute; right: -12px; top: 50%; transform: translateY(-50%); color: var(--gold); font-size: 16px; z-index: 1; }
+      .seq-step:last-child::after { display: none; }
+      .seq-day { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--gold); margin-bottom: 6px; }
+      .seq-title { font-size: 12px; font-weight: 600; }
+      .seq-rate { font-size: 10px; color: var(--grey); margin-top: 4px; }
+      table { width: 100%; border-collapse: collapse; margin-top: 24px; }
+      th { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; padding: 12px 16px; border-bottom: 1px solid var(--border); text-align: left; }
+      td { font-size: 13px; color: var(--grey); padding: 14px 16px; border-bottom: 1px solid rgba(201,168,76,0.08); }
+      td:first-child { color: var(--white); }
+    </style>
+    </head>
+    <body>
+    
+    <h1>Snowball Cold Email Sequence</h1>
+    <div class="subtitle">COMPLETE 5-EMAIL DRIP + OBJECTION HANDLING + CLOSE PLAYBOOK</div>
+    
+    <!-- SEQUENCE MAP -->
+    <div class="sequence-map">
+      <div class="seq-step"><div class="seq-day">Day 1</div><div class="seq-title">The Hook</div><div class="seq-rate">Open: 42%</div></div>
+      <div class="seq-step"><div class="seq-day">Day 3</div><div class="seq-title">The Value</div><div class="seq-rate">Open: 28%</div></div>
+      <div class="seq-step"><div class="seq-day">Day 7</div><div class="seq-title">The Case</div><div class="seq-rate">Open: 22%</div></div>
+      <div class="seq-step"><div class="seq-day">Day 12</div><div class="seq-title">The Break</div><div class="seq-rate">Open: 35%</div></div>
+      <div class="seq-step"><div class="seq-day">Day 18</div><div class="seq-title">The Close</div><div class="seq-rate">Reply: 8%</div></div>
+    </div>
+    
+    <div class="note">COPY INSTRUCTIONS: All [BRACKETS] are fill-in fields. Replace before sending. Never send from a free email (Gmail/Yahoo). Use your custom domain. Send Tuesday–Thursday, 7–9am local time of recipient.</div>
+    
+    <!-- EMAIL 1 -->
+    <h2>Email 01 — The Hook</h2>
+    <div class="tag-row"><span class="tag">Day 1</span><span class="tag">Cold</span><span class="tag">Personalized</span></div>
+    <div class="email-block">
+      <div class="email-meta">
+        <span class="meta-label">Subject</span><span class="meta-val">Your site doesn't match your work, [First Name]</span>
+        <span class="meta-label">From</span><span class="meta-val">Chad Snowball — chad@snowball.design</span>
+        <span class="meta-label">Timing</span><span class="meta-val">Day 1 — Tuesday or Wednesday, 7:30am recipient local time</span>
+        <span class="meta-label">Length</span><span class="meta-val">Short. Under 120 words. Do not go longer.</span>
+      </div>
+      <div class="email-body"><span class="highlight">[First Name],</span>
+    
+    I looked at [Company Name]'s site this week.
+    
+    Your work — [specific project or product they're known for] — operates at a completely different level to what your digital presence communicates.
+    
+    I build sites for design studios and luxury manufacturers that actually match the caliber of the work. Dark, precise, editorial. The kind of site that makes a prospect feel the quality before they read a single word.
+    
+    I have one slot open this month.
+    
+    Worth a 15-minute call?
+    
+    <span class="highlight">Chad Snowball
+    Snowball Design Intelligence
+    snowball.design</span></div>
+    </div>
+    <div class="note">WHY IT WORKS: Specific observation (not generic flattery) + clear pain point + one concrete action. The subject line creates mild curiosity-tension. No attachments on email 1 — ever.</div>
+    
+    <!-- EMAIL 2 -->
+    <h2>Email 02 — The Value</h2>
+    <div class="tag-row"><span class="tag">Day 3</span><span class="tag">Follow-up</span><span class="tag">Show work</span></div>
+    <div class="email-block">
+      <div class="email-meta">
+        <span class="meta-label">Subject</span><span class="meta-val">RE: Your site doesn't match your work, [First Name]</span>
+        <span class="meta-label">Timing</span><span class="meta-val">Day 3 — reply thread to Email 01</span>
+        <span class="meta-label">Length</span><span class="meta-val">Medium. 150–200 words. Include live link.</span>
+      </div>
+      <div class="email-body"><span class="highlight">[First Name],</span>
+    
+    Following up in case this got buried.
+    
+    To show you what I mean — here is one of our recent builds:
+    
+    <span class="highlight">&#8594; [link to your best demo site, e.g. snowball-aurora.netlify.app]</span>
+    
+    This was built for a luxury automotive design consultancy. Before we built their site, they were losing discovery-stage prospects because the digital experience didn't match the showroom experience. After — their average inquiry value increased by 40%.
+    
+    The sites I build have:
+    — Dark luxury aesthetic tuned to your industry
+    — Cinematic scroll and hover experience
+    — Copy that sells the caliber before they scroll
+    — Mobile optimized, SEO ready, live in 7 days
+    
+    I only take 2–3 commissions per month to maintain quality.
+    
+    15 minutes this week?
+    
+    <span class="highlight">Chad</span></div>
+    </div>
+    <div class="note">WHY IT WORKS: Live demo link does the selling. The 40% inquiry value stat is a fictional placeholder — replace with a real result as soon as you have one. Social proof is the most powerful conversion lever at this stage.</div>
+    
+    <!-- EMAIL 3 -->
+    <h2>Email 03 — The Case Study</h2>
+    <div class="tag-row"><span class="tag">Day 7</span><span class="tag">Social proof</span><span class="tag">Specific</span></div>
+    <div class="email-block">
+      <div class="email-meta">
+        <span class="meta-label">Subject</span><span class="meta-val">How [Similar Company] doubled their inquiry rate</span>
+        <span class="meta-label">Timing</span><span class="meta-val">Day 7 — new thread (not a reply)</span>
+        <span class="meta-label">Length</span><span class="meta-val">Medium. 180 words. Story format.</span>
+      </div>
+      <div class="email-body"><span class="highlight">[First Name],</span>
+    
+    Quick story.
+    
+    [Similar Company in their vertical] came to me 3 months ago. Their work was exceptional — [specific detail about their product/service]. Their website looked like it was built in 2016.
+    
+    They were losing prospects at the discovery stage. Clients would see the work, visit the site, and go cold.
+    
+    We rebuilt their entire digital presence in 7 days:
+    — New site with a dark precision aesthetic
+    — Redesigned case study presentation
+    — Copy that led with authority, not features
+    
+    Result: inquiry rate up. Average project value up. Team morale up — they finally felt their site matched their reputation.
+    
+    I think the same opportunity exists for [Company Name].
+    
+    I have one slot left this month. Commission starts at $3,500 for a complete site — built, optimized, and live.
+    
+    Are you the right person to talk to about this, or should I reach out to someone else on your team?
+    
+    <span class="highlight">Chad Snowball</span></div>
+    </div>
+    <div class="note">WHY IT WORKS: Story format is 3x more memorable than feature lists. The last question ("are you the right person") is a pattern interrupt — it either gets a response or surfaces the actual decision-maker.</div>
+    
+    <!-- EMAIL 4 -->
+    <h2>Email 04 — The Break-Up</h2>
+    <div class="tag-row"><span class="tag">Day 12</span><span class="tag">High open rate</span><span class="tag">Urgency</span></div>
+    <div class="email-block">
+      <div class="email-meta">
+        <span class="meta-label">Subject</span><span class="meta-val">Closing your file, [First Name]</span>
+        <span class="meta-label">Timing</span><span class="meta-val">Day 12 — new thread</span>
+        <span class="meta-label">Length</span><span class="meta-val">Very short. Under 80 words. The shorter the better.</span>
+      </div>
+      <div class="email-body"><span class="highlight">[First Name],</span>
+    
+    I've reached out a few times about [Company Name]'s site — I don't want to keep sending emails you don't want.
+    
+    I'm going to close your file after this note.
+    
+    If a site that matches the actual quality of your work is something you'd want to explore — even later this year — just reply and I'll hold a spot.
+    
+    If not, no hard feelings.
+    
+    <span class="highlight">Chad</span></div>
+    </div>
+    <div class="note">WHY IT WORKS: "Closing your file" is one of the highest open-rate subject lines in B2B cold email. It creates genuine urgency through loss aversion — not fake countdown timers. This email alone typically generates 30–40% of all replies in the sequence.</div>
+    
+    <!-- EMAIL 5 -->
+    <h2>Email 05 — The Last Shot</h2>
+    <div class="tag-row"><span class="tag">Day 18</span><span class="tag">Final</span><span class="tag">Asset</span></div>
+    <div class="email-block">
+      <div class="email-meta">
+        <span class="meta-label">Subject</span><span class="meta-val">One resource before I go, [First Name]</span>
+        <span class="meta-label">Timing</span><span class="meta-val">Day 18 — final email in sequence</span>
+        <span class="meta-label">Length</span><span class="meta-val">Short. 100 words. Leave a gift.</span>
+      </div>
+      <div class="email-body"><span class="highlight">[First Name],</span>
+    
+    Last email — I promise.
+    
+    I put together a short guide on what separates luxury design studio sites from generic agency sites. It's free, no opt-in.
+    
+    <span class="highlight">&#8594; [link to your snowball intelligence app or a lead magnet PDF]</span>
+    
+    Thought it might be useful even if we never work together.
+    
+    If timing ever becomes right — my door is open.
+    
+    <span class="highlight">Chad Snowball
+    snowball.design</span></div>
+    </div>
+    <div class="note">WHY IT WORKS: Giving value at the end of a sequence builds goodwill even with non-converters. Many of these come back 3–6 months later. The link also lets you track who clicks — those are warm leads worth calling.</div>
+    
+    <hr class="section-divider">
+    
+    <!-- WHERE TO FIND CLIENTS -->
+    <h2>Where To Find Clients</h2>
+    <table>
+      <tr><th>Source</th><th>Platform</th><th>Search Query / Method</th><th>Expected Quality</th></tr>
+      <tr><td>Automotive Design Studios</td><td>LinkedIn</td><td>"design director" + "automotive" + "studio"</td><td>Very High</td></tr>
+      <tr><td>Luxury Product Manufacturers</td><td>LinkedIn</td><td>"founder" + "luxury" + "product design"</td><td>Very High</td></tr>
+      <tr><td>Industrial Design Firms</td><td>Clutch.co</td><td>Filter: Industrial Design, 1–10 employees</td><td>High</td></tr>
+      <tr><td>Yacht / Marine Design</td><td>Superyacht Times</td><td>Scan editorial coverage for studio names</td><td>High</td></tr>
+      <tr><td>Architecture + Interiors</td><td>Dezeen, Architectural Digest</td><td>Studios mentioned in articles, look up their site</td><td>Medium-High</td></tr>
+      <tr><td>Watch / Jewelry Brands</td><td>Instagram</td><td>#independentwatchmaker #luxuryjewelry brand founders</td><td>Medium</td></tr>
+      <tr><td>Aerospace + Defense</td><td>LinkedIn</td><td>"VP Design" + "aerospace" or "defense"</td><td>High</td></tr>
+    </table>
+    
+    <hr class="section-divider">
+    
+    <!-- OBJECTION HANDLING -->
+    <h2>Objection Handling</h2>
+    <div class="objection-grid">
+      <div class="obj-card">
+        <div class="obj-q">"We already have a website."</div>
+        <div class="obj-a">"I know — I looked at it before reaching out. My question is whether it currently converts at the level your work deserves. Most luxury studios have a site that describes their work rather than sells it. That's the gap I close."</div>
+      </div>
+      <div class="obj-card">
+        <div class="obj-q">"We have a developer / agency."</div>
+        <div class="obj-a">"Most developers build functional sites. I build sites that are specifically calibrated to the luxury design market — the aesthetic, the pacing, the copy, the conversion flow. It's a niche expertise that generalist developers don't have."</div>
+      </div>
+      <div class="obj-card">
+        <div class="obj-q">"What's the price?"</div>
+        <div class="obj-a">"Commissions start at $3,500 for a complete site and run to $8,500 for full brand identity plus site plus content. The right answer depends on what you need — that's what the 15-minute call is for. There's no commitment in the call."</div>
+      </div>
+      <div class="obj-card">
+        <div class="obj-q">"We don't have budget right now."</div>
+        <div class="obj-a">"Understood. When does your budget cycle reset? I keep a waitlist for Q-ahead slots — I can put your name down so when budget clears you're not waiting months. No commitment required."</div>
+      </div>
+      <div class="obj-card">
+        <div class="obj-q">"Can you show me more examples?"</div>
+        <div class="obj-a">"Yes — I'll send you our full portfolio deck. Each example includes before/after and the business outcome. What vertical are you most interested in? I'll lead with the most relevant."</div>
+      </div>
+      <div class="obj-card">
+        <div class="obj-q">"How long does it take?"</div>
+        <div class="obj-a">"7 business days from brief sign-off to live site. That includes design, build, copywriting, and deployment. We move fast because our process is tightly defined — no endless revision cycles."</div>
+      </div>
+    </div>
+    
+    <hr class="section-divider">
+    
+    <!-- CLOSE SEQUENCE -->
+    <h2>The 3-Step Close (On a Call)</h2>
+    <div class="email-block">
+      <div class="email-body"><span class="highlight">STEP 1 — DIAGNOSE (5 minutes)</span>
+    "Tell me about your current site. What do you like about it, what frustrates you, and what do you wish it did better?"
+    
+    Listen for: lost leads, mismatch between site and quality of work, embarrassment when sending the URL.
+    
+    <span class="highlight">STEP 2 — PRESENT (5 minutes)</span>
+    "Let me show you what we built for [similar client in their vertical]."
+    Screen share your best demo site.
+    "This client had the same challenge — their work was exceptional, their site wasn't. We fixed that in 7 days."
+    
+    <span class="highlight">STEP 3 — CLOSE (3 minutes)</span>
+    "Based on what you've told me, the [Precision / Elegance / Technical] archetype would be the right fit for you. A complete commission is [price]. I have one slot open [this month / next month]. Want to move forward?"
+    
+    If yes: send contract immediately — same day.
+    If maybe: "What would need to be true for you to say yes?"
+    If no: "Understood. Can I ask what the main reason is?" — then handle the objection above.</div>
+    </div>
+    
+    <hr class="section-divider">
+    <p style="font-family: Space Mono, monospace; font-size: 11px; color: var(--grey); text-align: center; padding: 40px 0;">SNOWBALL DESIGN INTELLIGENCE — Sales Playbook v1.0 — Confidential</p>
+    
+    </body>
+    </html>

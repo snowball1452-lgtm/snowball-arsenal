@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APEX STUDIO V3 — Snowball Command Center</title>
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/"
+      }
+    }
+    </script>
+    <style>
+    :root {
+      --bg: #0a0a0f;
+      --bg2: #0f0f17;
+      --bg3: #14141f;
+      --accent: #4a9eff;
+      --accent2: #7c3aed;
+      --accent3: #10b981;
+      --amber: #f59e0b;
+      --red: #f87171;
+      --green: #4ade80;
+      --card: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.08);
+      --border-accent: rgba(74,158,255,0.6);
+      --text: #e2e8f0;
+      --text2: #94a3b8;
+      --text3: #64748b;
+      --mono: ui-monospace, monospace;
+      --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --orb-color: #4a9eff;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html, body { width:100%; height:100%; background:var(--bg); color:var(--text); font-family:var(--sans); overflow:hidden; }
+    
+    /* ═══ LAYOUT ═══ */
+    #app { display:grid; grid-template-rows:auto 1fr; grid-template-columns:280px 1fr 320px; height:100vh; gap:0; }
+    #top-bar { grid-column:1/-1; height:48px; background:rgba(10,10,15,0.95); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 16px; gap:12px; z-index:100; backdrop-filter:blur(12px); }
+    #left-panel { grid-row:2; background:var(--bg2); border-right:1px solid var(--border); display:flex; flex-direction:column; overflow:hidden; }
+    #center-panel { grid-row:2; display:flex; flex-direction:column; overflow:hidden; position:relative; }
+    #right-panel { grid-row:2; background:var(--bg2); border-left:1px solid var(--border); display:flex; flex-direction:column; overflow:hidden; }
+    
+    /* ═══ TOP BAR ═══ */
+    .top-logo { font-size:13px; font-weight:700; letter-spacing:0.15em; color:var(--accent); text-transform:uppercase; }
+    .top-divider { width:1px; height:20px; background:var(--border); }
+    .top-mode-pill { display:flex; gap:2px; background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:20px; padding:2px; }
+    .mode-btn { padding:3px 10px; border-radius:16px; font-size:10px; font-weight:600; letter-spacing:0.08em; cursor:pointer; transition:all 0.2s; color:var(--text3); border:none; background:transparent; text-transform:uppercase; }
+    .mode-btn.active { background:var(--accent); color:#fff; }
+    .mode-btn.solo.active { background:var(--amber); color:#000; }
+    .mode-btn.dark.active { background:#2a2a3a; color:var(--text2); }
+    .top-status { margin-left:auto; display:flex; align-items:center; gap:8px; }
+    .status-dot { width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow:0 0 6px var(--green); }
+    .status-dot.mock { background:var(--amber); box-shadow:0 0 6px var(--amber); }
+    .mock-badge { font-size:9px; font-weight:700; letter-spacing:0.1em; color:var(--amber); border:1px solid rgba(245,158,11,0.3); border-radius:4px; padding:1px 5px; text-transform:uppercase; }
+    .top-time { font-size:11px; color:var(--text3); font-family:var(--mono); }
+    
+    /* ═══ LEFT PANEL — NAV + MCP ═══ */
+    .panel-header { padding:12px 16px 8px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .panel-title { font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text3); }
+    .panel-action { font-size:10px; color:var(--accent); cursor:pointer; }
+    
+    #left-tabs { display:flex; border-bottom:1px solid var(--border); }
+    .left-tab { flex:1; padding:8px 4px; font-size:10px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; color:var(--text3); cursor:pointer; text-align:center; border-bottom:2px solid transparent; transition:all 0.2s; }
+    .left-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+    
+    .left-content { flex:1; overflow-y:auto; padding:8px; }
+    .left-content::-webkit-scrollbar { width:3px; }
+    .left-content::-webkit-scrollbar-track { background:transparent; }
+    .left-content::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+    
+    /* MCP Items */
+    .mcp-server { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:10px; margin-bottom:6px; cursor:pointer; transition:all 0.2s; }
+    .mcp-server:hover { border-color:var(--border-accent); }
+    .mcp-server.active { border-color:var(--accent); background:rgba(74,158,255,0.06); }
+    .mcp-name { font-size:12px; font-weight:600; color:var(--text); margin-bottom:4px; display:flex; align-items:center; gap:6px; }
+    .mcp-meta { font-size:10px; color:var(--text3); font-family:var(--mono); }
+    .mcp-tools { display:flex; flex-wrap:wrap; gap:3px; margin-top:6px; }
+    .tool-chip { font-size:9px; padding:1px 5px; background:rgba(74,158,255,0.1); border:1px solid rgba(74,158,255,0.2); border-radius:3px; color:var(--accent); font-family:var(--mono); }
+    
+    /* CRM Items */
+    .crm-contact { display:flex; align-items:center; gap:8px; padding:8px; border-radius:6px; cursor:pointer; transition:all 0.15s; }
+    .crm-contact:hover { background:var(--card); }
+    .crm-avatar { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0; }
+    .crm-info { flex:1; min-width:0; }
+    .crm-name { font-size:12px; font-weight:500; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .crm-stage { font-size:10px; color:var(--text3); }
+    .crm-signal { font-size:9px; padding:1px 5px; border-radius:3px; font-weight:600; }
+    .crm-signal.hot { background:rgba(248,113,113,0.15); color:var(--red); }
+    .crm-signal.warm { background:rgba(245,158,11,0.15); color:var(--amber); }
+    .crm-signal.cool { background:rgba(74,158,255,0.1); color:var(--accent); }
+    
+    /* Skills */
+    .skill-item { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:10px; margin-bottom:6px; }
+    .skill-name { font-size:12px; font-weight:600; color:var(--text); display:flex; align-items:center; gap:6px; margin-bottom:4px; }
+    .skill-mode { font-size:9px; padding:1px 6px; border-radius:3px; font-weight:700; letter-spacing:0.06em; }
+    .skill-mode.live { background:rgba(16,185,129,0.15); color:var(--accent3); border:1px solid rgba(16,185,129,0.3); }
+    .skill-mode.compiled { background:rgba(74,158,255,0.1); color:var(--accent); border:1px solid rgba(74,158,255,0.2); }
+    .skill-mode.dormant { background:rgba(255,255,255,0.04); color:var(--text3); border:1px solid var(--border); }
+    .skill-meta { font-size:10px; color:var(--text3); font-family:var(--mono); }
+    
+    /* ═══ CENTER — ORB + STREAM ═══ */
+    #orb-zone { height:220px; display:flex; flex-direction:column; align-items:center; justify-content:center; flex-shrink:0; position:relative; border-bottom:1px solid var(--border); background:radial-gradient(ellipse at 50% 0%, rgba(74,158,255,0.06) 0%, transparent 70%); }
+    #orb-canvas { width:160px; height:160px; cursor:pointer; }
+    #orb-label { position:absolute; bottom:10px; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:6px; }
+    #orb-state-text { font-size:9px; color:var(--text3); font-family:var(--mono); letter-spacing:0.1em; text-transform:uppercase; }
+    #conv-card { position:absolute; top:180px; left:50%; transform:translateX(-50%); width:340px; background:var(--bg3); border:1px solid var(--border-accent); border-radius:12px; padding:12px; z-index:50; display:none; box-shadow:0 20px 60px rgba(0,0,0,0.5); }
+    #conv-input { width:100%; background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:6px; padding:8px 10px; color:var(--text); font-size:13px; font-family:var(--sans); resize:none; height:36px; outline:none; transition:all 0.2s; }
+    #conv-input:focus { border-color:var(--accent); height:72px; }
+    .conv-hint { font-size:10px; color:var(--text3); margin-top:6px; }
+    
+    #center-tabs { display:flex; border-bottom:1px solid var(--border); background:var(--bg2); flex-shrink:0; }
+    .center-tab { padding:10px 16px; font-size:11px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; color:var(--text3); cursor:pointer; border-bottom:2px solid transparent; transition:all 0.2s; }
+    .center-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+    
+    .center-view { flex:1; overflow-y:auto; padding:12px; display:none; }
+    .center-view.active { display:block; }
+    .center-view::-webkit-scrollbar { width:3px; }
+    .center-view::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+    
+    /* ═══ PROJECT STREAM ═══ */
+    .project-card { background:var(--card); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:10px; margin-bottom:10px; overflow:hidden; transition:all 0.4s cubic-bezier(0.4,0,0.2,1); animation:slideUp 0.3s ease-out; }
+    @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    .project-card.sinking { height:48px!important; }
+    .project-card.amber { border-left-color:var(--amber); }
+    .project-card.red { border-left-color:var(--red); }
+    .project-card.done { border-left-color:var(--green); opacity:0.7; }
+    .project-card.resurfaced { border-color:rgba(245,158,11,0.4); box-shadow:0 0 20px rgba(245,158,11,0.08); }
+    .card-header { padding:12px 14px; display:flex; align-items:center; gap:8px; cursor:pointer; }
+    .health-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+    .health-dot.green { background:var(--green); box-shadow:0 0 6px var(--green); }
+    .health-dot.amber { background:var(--amber); box-shadow:0 0 6px var(--amber); }
+    .health-dot.red { background:var(--red); box-shadow:0 0 6px var(--red); animation:pulse-red 1.5s infinite; }
+    @keyframes pulse-red { 0%,100%{box-shadow:0 0 6px var(--red);} 50%{box-shadow:0 0 12px var(--red);} }
+    .project-name { font-size:14px; font-weight:700; letter-spacing:0.02em; flex:1; }
+    .weight-score { font-size:10px; color:var(--text3); font-family:var(--mono); }
+    .status-badge { font-size:9px; padding:2px 6px; border-radius:4px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; }
+    .badge-active { background:rgba(74,158,255,0.15); color:var(--accent); border:1px solid rgba(74,158,255,0.3); }
+    .badge-done { background:rgba(74,222,128,0.1); color:var(--green); border:1px solid rgba(74,222,128,0.25); }
+    .badge-alert { background:rgba(245,158,11,0.15); color:var(--amber); border:1px solid rgba(245,158,11,0.3); }
+    .why-tag { font-size:9px; padding:1px 6px; border-radius:3px; background:rgba(245,158,11,0.1); color:var(--amber); border:1px solid rgba(245,158,11,0.25); font-family:var(--mono); }
+    .card-body { padding:0 14px 12px; }
+    .agent-chips { display:flex; gap:4px; flex-wrap:wrap; margin-bottom:8px; }
+    .agent-chip { font-size:9px; padding:2px 7px; border-radius:10px; font-weight:600; border:1px solid; }
+    .nested-updates { display:flex; flex-direction:column; gap:4px; }
+    .update-mini { display:flex; align-items:center; gap:6px; padding:6px 8px; background:rgba(255,255,255,0.02); border-radius:6px; border-left:2px solid var(--accent2); }
+    .update-text { font-size:11px; color:var(--text2); flex:1; }
+    .update-time { font-size:9px; color:var(--text3); font-family:var(--mono); }
+    .strip-card { height:48px; display:flex; align-items:center; padding:0 14px; gap:8px; background:var(--card); border:1px solid var(--border); border-radius:8px; margin-bottom:6px; cursor:pointer; }
+    .strip-name { font-size:12px; color:var(--text2); flex:1; }
+    .strip-time { font-size:10px; color:var(--text3); font-family:var(--mono); }
+    .alert-card { background:var(--card); border:1px solid rgba(245,158,11,0.4); border-left:3px solid var(--amber); border-radius:10px; padding:14px; margin-bottom:10px; }
+    .alert-actions { display:flex; gap:6px; margin-top:10px; }
+    .alert-btn { padding:4px 10px; border-radius:5px; font-size:10px; font-weight:600; cursor:pointer; border:1px solid; transition:all 0.2s; background:transparent; }
+    .btn-dismiss { border-color:var(--border); color:var(--text3); }
+    .btn-snooze { border-color:rgba(74,158,255,0.3); color:var(--accent); }
+    .btn-act { border-color:rgba(74,158,255,0.6); color:var(--accent); background:rgba(74,158,255,0.1); }
+    .btn-dismiss:hover { background:var(--card); }
+    .btn-act:hover { background:rgba(74,158,255,0.2); }
+    
+    /* ═══ KANBAN ═══ */
+    #kanban-view { display:none; }
+    #kanban-view.active { display:flex; gap:10px; padding:12px; overflow-x:auto; height:100%; }
+    .kanban-col { flex-shrink:0; width:240px; display:flex; flex-direction:column; gap:6px; }
+    .kanban-header { font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:8px 10px; border-radius:6px; display:flex; align-items:center; justify-content:space-between; }
+    .kanban-header.backlog { background:rgba(255,255,255,0.03); color:var(--text3); }
+    .kanban-header.progress { background:rgba(74,158,255,0.1); color:var(--accent); }
+    .kanban-header.review { background:rgba(245,158,11,0.1); color:var(--amber); }
+    .kanban-header.done { background:rgba(74,222,128,0.08); color:var(--green); }
+    .kanban-header.blocked { background:rgba(248,113,113,0.1); color:var(--red); }
+    .k-count { font-size:10px; font-weight:700; padding:1px 6px; border-radius:10px; background:rgba(255,255,255,0.08); color:var(--text2); }
+    .kanban-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:10px; cursor:grab; transition:all 0.2s; }
+    .kanban-card:hover { border-color:var(--border-accent); transform:translateY(-1px); }
+    .kanban-card.dragging { opacity:0.5; cursor:grabbing; }
+    .k-title { font-size:12px; font-weight:600; color:var(--text); margin-bottom:6px; }
+    .k-meta { display:flex; align-items:center; gap:4px; flex-wrap:wrap; }
+    .k-tag { font-size:9px; padding:1px 5px; border-radius:3px; font-family:var(--mono); }
+    .k-tag.agent { background:rgba(124,58,237,0.15); color:#a78bfa; border:1px solid rgba(124,58,237,0.25); }
+    .k-tag.proj { background:rgba(74,158,255,0.1); color:var(--accent); border:1px solid rgba(74,158,255,0.2); }
+    .k-assign { width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:8px; font-weight:700; margin-left:auto; }
+    .k-priority { width:6px; height:6px; border-radius:50%; }
+    .k-priority.urgent { background:var(--red); }
+    .k-priority.high { background:var(--amber); }
+    .k-priority.normal { background:var(--accent); }
+    
+    /* ═══ MESSAGE BUS ═══ */
+    .msg-bus { display:flex; flex-direction:column; height:100%; }
+    .msg-stream { flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:6px; }
+    .msg-stream::-webkit-scrollbar { width:3px; }
+    .msg-stream::-webkit-scrollbar-thumb { background:var(--border); }
+    .msg-item { display:flex; gap:8px; align-items:flex-start; animation:slideUp 0.2s ease-out; }
+    .msg-avatar { width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; flex-shrink:0; margin-top:2px; }
+    .msg-bubble { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:8px 10px; flex:1; }
+    .msg-from { font-size:10px; font-weight:700; color:var(--text2); margin-bottom:3px; display:flex; align-items:center; gap:4px; }
+    .msg-text { font-size:12px; color:var(--text); line-height:1.5; }
+    .msg-time { font-size:9px; color:var(--text3); font-family:var(--mono); }
+    .msg-type { font-size:8px; padding:1px 4px; border-radius:3px; text-transform:uppercase; letter-spacing:0.06em; }
+    .msg-type.agent { background:rgba(124,58,237,0.2); color:#a78bfa; }
+    .msg-type.health { background:rgba(74,222,128,0.1); color:var(--green); }
+    .msg-type.alert { background:rgba(248,113,113,0.15); color:var(--red); }
+    .msg-type.system { background:rgba(255,255,255,0.06); color:var(--text3); }
+    .msg-input-row { padding:10px 12px; border-top:1px solid var(--border); display:flex; gap:6px; }
+    .msg-input { flex:1; background:var(--card); border:1px solid var(--border); border-radius:6px; padding:6px 10px; color:var(--text); font-size:12px; outline:none; font-family:var(--sans); }
+    .msg-input:focus { border-color:var(--border-accent); }
+    .msg-send { padding:6px 12px; background:var(--accent); border:none; border-radius:6px; color:#fff; font-size:11px; font-weight:600; cursor:pointer; transition:all 0.2s; }
+    .msg-send:hover { opacity:0.85; }
+    
+    /* ═══ RIGHT PANEL ═══ */
+    #right-tabs { display:flex; border-bottom:1px solid var(--border); }
+    .right-tab { flex:1; padding:8px 4px; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--text3); cursor:pointer; text-align:center; border-bottom:2px solid transparent; transition:all 0.2s; }
+    .right-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+    .right-content { flex:1; overflow-y:auto; padding:10px; }
+    .right-content::-webkit-scrollbar { width:3px; }
+    .right-content::-webkit-scrollbar-thumb { background:var(--border); }
+    
+    /* Agent status items */
+    .agent-status { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:10px; margin-bottom:6px; }
+    .agent-name { font-size:12px; font-weight:600; color:var(--text); display:flex; align-items:center; gap:6px; margin-bottom:4px; }
+    .agent-running { width:6px; height:6px; border-radius:50%; background:var(--green); animation:blink 1s infinite; }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+    .agent-idle { background:var(--text3)!important; animation:none!important; }
+    .agent-task { font-size:11px; color:var(--text2); margin-bottom:4px; }
+    .agent-metrics { display:flex; gap:8px; }
+    .metric { font-size:10px; color:var(--text3); font-family:var(--mono); }
+    .metric span { color:var(--text2); }
+    
+    /* Health feed */
+    .health-item { display:flex; gap:8px; align-items:flex-start; padding:8px; border-radius:6px; margin-bottom:4px; background:var(--card); border:1px solid var(--border); }
+    .health-icon { font-size:14px; flex-shrink:0; }
+    .health-text { font-size:11px; color:var(--text2); line-height:1.4; }
+    .health-proj { font-size:10px; color:var(--text3); margin-top:2px; font-family:var(--mono); }
+    
+    /* Preference profile */
+    .pref-row { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border); }
+    .pref-label { font-size:11px; color:var(--text2); }
+    .pref-val { font-size:11px; color:var(--accent); font-family:var(--mono); }
+    .hour-bar { display:flex; gap:1px; margin-top:8px; }
+    .hour-cell { flex:1; height:20px; border-radius:2px; transition:all 0.3s; }
+    
+    /* Skill registry overlay */
+    #skill-overlay { position:fixed; right:-360px; top:0; width:360px; height:100vh; background:var(--bg2); border-left:1px solid var(--border); z-index:200; transition:right 0.3s cubic-bezier(0.4,0,0.2,1); padding:16px; overflow-y:auto; }
+    #skill-overlay.open { right:0; }
+    #skill-overlay::-webkit-scrollbar { width:3px; }
+    #skill-overlay::-webkit-scrollbar-thumb { background:var(--border); }
+    .overlay-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+    .overlay-title { font-size:14px; font-weight:700; color:var(--text); }
+    .overlay-close { font-size:18px; color:var(--text3); cursor:pointer; line-height:1; }
+    .skill-url-input { width:100%; background:var(--card); border:1px solid var(--border); border-radius:6px; padding:8px 10px; color:var(--text); font-size:12px; font-family:var(--mono); outline:none; margin-bottom:8px; }
+    .skill-url-input:focus { border-color:var(--border-accent); }
+    .skill-add-btn { width:100%; padding:8px; background:rgba(74,158,255,0.1); border:1px solid rgba(74,158,255,0.3); border-radius:6px; color:var(--accent); font-size:12px; font-weight:600; cursor:pointer; transition:all 0.2s; margin-bottom:12px; }
+    .skill-add-btn:hover { background:rgba(74,158,255,0.2); }
+    
+    /* MCP Inspector */
+    .mcp-inspector { background:rgba(0,0,0,0.3); border-radius:8px; padding:10px; margin-top:8px; font-family:var(--mono); font-size:10px; color:var(--accent3); line-height:1.6; border:1px solid rgba(16,185,129,0.2); }
+    .mcp-log-line { display:flex; gap:8px; }
+    .mcp-ts { color:var(--text3); }
+    .mcp-method { color:#a78bfa; }
+    .mcp-result { color:var(--accent3); }
+    
+    /* Transitions */
+    .section-transition { position:fixed; inset:0; background:var(--bg); z-index:500; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.3s; }
+    .section-transition.show { opacity:1; pointer-events:all; }
+    .transition-text { font-size:13px; color:var(--text2); font-family:var(--mono); letter-spacing:0.1em; }
+    
+    /* Scrollbars */
+    *::-webkit-scrollbar { width:3px; height:3px; }
+    *::-webkit-scrollbar-track { background:transparent; }
+    *::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+    
+    /* Responsive grid on small screens */
+    @media (max-width:1200px) {
+      #app { grid-template-columns:220px 1fr 260px; }
+    }
+    </style>
+    </head>
+    <body>
+    <div id="app">
+    
+      <!-- TOP BAR -->
+      <div id="top-bar">
+        <span class="top-logo">⬡ Apex Studio</span>
+        <div class="top-divider"></div>
+        <div class="top-mode-pill">
+          <button class="mode-btn active" onclick="setMode('full')">Full Crew</button>
+          <button class="mode-btn solo" onclick="setMode('solo')">Solo</button>
+          <button class="mode-btn dark" onclick="setMode('dark')">Dark</button>
+        </div>
+        <div class="top-divider"></div>
+        <span style="font-size:11px;color:var(--text3);">MCP</span>
+        <div class="status-dot"></div>
+        <div class="top-divider"></div>
+        <div class="top-status">
+          <div class="status-dot mock" id="conn-dot"></div>
+          <span class="mock-badge" id="mock-badge">MOCK</span>
+          <span class="top-time" id="clock"></span>
+        </div>
+      </div>
+    
+      <!-- LEFT PANEL -->
+      <div id="left-panel">
+        <div id="left-tabs">
+          <div class="left-tab active" onclick="setLeftTab('mcp',this)">MCP</div>
+          <div class="left-tab" onclick="setLeftTab('crm',this)">CRM</div>
+          <div class="left-tab" onclick="setLeftTab('skills',this)">Skills</div>
+        </div>
+    
+        <!-- MCP -->
+        <div class="left-content" id="tab-mcp">
+          <div class="panel-header" style="padding:8px 0;">
+            <span class="panel-title">Protocol Servers</span>
+            <span class="panel-action" onclick="addMCPServer()">+ Add</span>
+          </div>
+          <div id="mcp-list"></div>
+          <div class="panel-header" style="padding:8px 0;margin-top:8px;">
+            <span class="panel-title">Live Inspector</span>
+          </div>
+          <div class="mcp-inspector" id="mcp-inspector"></div>
+        </div>
+    
+        <!-- CRM -->
+        <div class="left-content" id="tab-crm" style="display:none;">
+          <div class="panel-header" style="padding:8px 0;">
+            <span class="panel-title">Pipeline</span>
+            <span class="panel-action">+ Contact</span>
+          </div>
+          <div id="crm-list"></div>
+        </div>
+    
+        <!-- SKILLS -->
+        <div class="left-content" id="tab-skills" style="display:none;">
+          <div class="panel-header" style="padding:8px 0;">
+            <span class="panel-title">Skill Registry</span>
+            <span class="panel-action" onclick="document.getElementById('skill-overlay').classList.add('open')">Manage</span>
+          </div>
+          <div id="skills-list"></div>
+        </div>
+      </div>
+    
+      <!-- CENTER PANEL -->
+      <div id="center-panel">
+        <!-- ORB ZONE -->
+        <div id="orb-zone">
+          <canvas id="orb-canvas"></canvas>
+          <div id="orb-label">
+            <span class="status-dot mock" id="orb-state-dot"></span>
+            <span id="orb-state-text">idle</span>
+            <span class="mock-badge" style="font-size:8px;">MOCK</span>
+          </div>
+          <!-- Conversation card -->
+          <div id="conv-card">
+            <div style="font-size:10px;color:var(--text3);margin-bottom:6px;font-family:var(--mono);">APEX ▸ conversation</div>
+            <div id="conv-history" style="max-height:120px;overflow-y:auto;margin-bottom:8px;font-size:12px;color:var(--text2);line-height:1.6;"></div>
+            <textarea id="conv-input" placeholder="Speak to APEX..." onkeydown="handleConvKey(event)"></textarea>
+            <div class="conv-hint">Enter to send · Shift+Enter for newline · Click orb to close</div>
+          </div>
+        </div>
+    
+        <!-- CENTER TABS -->
+        <div id="center-tabs">
+          <div class="center-tab active" onclick="setCenterTab('stream',this)">Stream</div>
+          <div class="center-tab" onclick="setCenterTab('kanban',this)">Kanban</div>
+          <div class="center-tab" onclick="setCenterTab('msgbus',this)">Msg Bus</div>
+        </div>
+    
+        <!-- STREAM VIEW -->
+        <div class="center-view active" id="stream-view">
+          <div id="project-stream"></div>
+        </div>
+    
+        <!-- KANBAN VIEW -->
+        <div id="kanban-view">
+          <div class="kanban-col" id="col-backlog"></div>
+          <div class="kanban-col" id="col-progress"></div>
+          <div class="kanban-col" id="col-review"></div>
+          <div class="kanban-col" id="col-blocked"></div>
+          <div class="kanban-col" id="col-done"></div>
+        </div>
+    
+        <!-- MESSAGE BUS VIEW -->
+        <div class="center-view" id="msgbus-view">
+          <div class="msg-bus" style="height:calc(100vh - 340px);">
+            <div class="msg-stream" id="msg-stream"></div>
+            <div class="msg-input-row">
+              <input class="msg-input" id="msg-input" placeholder="Broadcast to message bus..." onkeydown="if(event.key==='Enter')sendMsg()">
+              <button class="msg-send" onclick="sendMsg()">Send</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+      <!-- RIGHT PANEL -->
+      <div id="right-panel">
+        <div id="right-tabs">
+          <div class="right-tab active" onclick="setRightTab('agents',this)">Agents</div>
+          <div class="right-tab" onclick="setRightTab('health',this)">Health</div>
+          <div class="right-tab" onclick="setRightTab('prefs',this)">Prefs</div>
+        </div>
+        <div class="right-content" id="rtab-agents"></div>
+        <div class="right-content" id="rtab-health" style="display:none;"></div>
+        <div class="right-content" id="rtab-prefs" style="display:none;"></div>
+      </div>
+    </div>
+    
+    <!-- SKILL REGISTRY OVERLAY -->
+    <div id="skill-overlay">
+      <div class="overlay-header">
+        <span class="overlay-title">Skill Registry</span>
+        <span class="overlay-close" onclick="document.getElementById('skill-overlay').classList.remove('open')">✕</span>
+      </div>
+      <input class="skill-url-input" id="skill-url" placeholder="Paste repo URL or manifest block...">
+      <button class="skill-add-btn" onclick="addSkill()">+ Install Skill Library</button>
+      <div id="overlay-skills-list"></div>
+    </div>
+    
+    <!-- MODE TRANSITION OVERLAY -->
+    <div class="section-transition" id="mode-transition">
+      <span class="transition-text" id="transition-text"></span>
+    </div>
+    
+    <script type="module">
+    import * as THREE from 'three';
+    
+    // ═══════════════════════════════════════════════
+    // STATE
+    // ═══════════════════════════════════════════════
+    const STATE = {
+      mode: 'full',
+      orbState: 'idle',
+      speechQueue: [],
+      isSpeaking: false,
+      lastOrbSpoke: 0,
+      lastUserSpoke: 0,
+      convOpen: false,
+      speechSynth: window.speechSynthesis,
+      currentUtterance: null
+    };
+    
+    // ═══════════════════════════════════════════════
+    // MOCK DATA
+    // ═══════════════════════════════════════════════
+    const MOCK = {
+      projects: [
+        {
+          id:'hyperforge', name:'HyperForge', status:'active', health:'amber',
+          weight:0.87, mode:'full', agents:['NanoClaw','Weaver'],
+          why:null, agentColors:['#7c3aed','#4a9eff'],
+          updates:[
+            {agent:'NanoClaw', text:'Dependency graph rebuilt. 3 new edges found.', time:'2m ago', tools:['graph_traverse','kb_search']},
+            {agent:'Weaver', text:'Compiled skill: auth_flow. Lock applied.', time:'8m ago', tools:['skill_compile']}
+          ]
+        },
+        {
+          id:'snowball', name:'Snowball Folio', status:'active', health:'green',
+          weight:0.61, mode:'solo', agents:['Archivist'],
+          why:null, agentColors:['#10b981'],
+          updates:[
+            {agent:'Archivist', text:'Design tokens exported. 847 variables written.', time:'1hr ago', tools:['export','write_file']}
+          ]
+        },
+        {
+          id:'bramblee', name:'BrambleThundery', status:'active', health:'red',
+          weight:0.43, mode:'full', agents:['Sentinel','NanoClaw'],
+          why:'dependency drift', agentColors:['#f87171','#7c3aed'],
+          updates:[
+            {agent:'Sentinel', text:'kb_search endpoint returning 503. Flagged.', time:'15m ago', tools:['health_check']},
+          ]
+        },
+        {
+          id:'medcore', name:'MedCore Vertical', status:'active', health:'green',
+          weight:0.31, mode:'solo', agents:['DocAgent'],
+          why:null, agentColors:['#4a9eff'],
+          updates:[
+            {agent:'DocAgent', text:'HIPAA compliance checklist generated. PDF written.', time:'3hr ago', tools:['write_file','pdf_gen']}
+          ]
+        },
+        {
+          id:'nexus', name:'NexusLogix', status:'done', health:'green',
+          weight:0.18, mode:'dark', agents:[],
+          why:null, agentColors:[],
+          updates:[], sunk:true
+        }
+      ],
+      kanban: [
+        {id:'k1', title:'Refactor auth middleware', col:'progress', priority:'high', agent:'Weaver', proj:'HyperForge'},
+        {id:'k2', title:'Generate archetype #3 components', col:'backlog', priority:'normal', agent:'Archivist', proj:'Snowball Folio'},
+        {id:'k3', title:'Fix kb_search 503', col:'blocked', priority:'urgent', agent:'Sentinel', proj:'BrambleThundery'},
+        {id:'k4', title:'Export design tokens to Figma', col:'review', priority:'normal', agent:'Archivist', proj:'Snowball Folio'},
+        {id:'k5', title:'Write MedCore compliance report', col:'done', priority:'high', agent:'DocAgent', proj:'MedCore'},
+        {id:'k6', title:'Blake3 hash all output files', col:'backlog', priority:'normal', agent:'NanoClaw', proj:'HyperForge'},
+        {id:'k7', title:'Compile skill: trend_scraper', col:'progress', priority:'high', agent:'Weaver', proj:'Snowball Folio'},
+        {id:'k8', title:'Health check: BrambleThundery deps', col:'blocked', priority:'urgent', agent:'Sentinel', proj:'BrambleThundery'},
+      ],
+      mcpServers: [
+        {id:'mcp1', name:'filesystem-mcp', status:'connected', tools:['read_file','write_file','list_dir','move_file'], calls:847, latency:'12ms'},
+        {id:'mcp2', name:'kb-search-mcp', status:'degraded', tools:['search','index','embed'], calls:203, latency:'503!'},
+        {id:'mcp3', name:'git-mcp', status:'connected', tools:['commit','diff','branch','push'], calls:124, latency:'28ms'},
+        {id:'mcp4', name:'browser-mcp', status:'connected', tools:['navigate','scrape','screenshot'], calls:56, latency:'145ms'},
+      ],
+      crm: [
+        {name:'Marcus Webb', company:'Axiom Studios', stage:'Proposal Sent', signal:'hot', color:'#f87171', initials:'MW'},
+        {name:'Priya Nair', company:'Flux Agency', stage:'Discovery Call', signal:'warm', color:'#f59e0b', initials:'PN'},
+        {name:'Jordan Lee', company:'Apex Collective', stage:'Interested', signal:'cool', color:'#4a9eff', initials:'JL'},
+        {name:'Tanaka Ryu', company:'NeoForm', stage:'Negotiation', signal:'hot', color:'#f87171', initials:'TR'},
+        {name:'Sasha Vidal', company:'Drift Labs', stage:'Onboarding', signal:'warm', color:'#10b981', initials:'SV'},
+      ],
+      skills: [
+        {name:'trend_scraper', mode:'live', lastRun:'2h ago', success:'94%', cost:'0.8 credits', health:'green'},
+        {name:'auth_flow', mode:'compiled', lastRun:'1d ago', success:'100%', cost:'0.1 credits', health:'green'},
+        {name:'kb_search', mode:'live', lastRun:'15m ago', success:'61%', cost:'1.2 credits', health:'red'},
+        {name:'pdf_generator', mode:'compiled', lastRun:'3h ago', success:'99%', cost:'0.3 credits', health:'green'},
+        {name:'brand_dna_engine', mode:'dormant', lastRun:'never', success:'—', cost:'2.1 credits', health:'green'},
+      ],
+      agents: [
+        {name:'NanoClaw', status:'running', task:'Traversing HyperForge dependency graph', tokens:12847, calls:34, color:'#7c3aed'},
+        {name:'Weaver', status:'running', task:'Compiling auth_flow skill → COMPILED', tokens:8203, calls:21, color:'#4a9eff'},
+        {name:'Sentinel', status:'idle', task:'Waiting for kb_search recovery', tokens:3102, calls:8, color:'#f87171'},
+        {name:'Archivist', status:'running', task:'Exporting Snowball token system', tokens:6741, calls:19, color:'#10b981'},
+        {name:'DocAgent', status:'idle', task:'MedCore report complete. Standby.', tokens:4210, calls:12, color:'#f59e0b'},
+      ],
+      health: [
+        {icon:'🟡', text:'kb_search endpoint returning 503 for 15 minutes', proj:'BrambleThundery'},
+        {icon:'🟢', text:'HyperForge dependency graph rebuilt successfully', proj:'HyperForge'},
+        {icon:'🟢', text:'Snowball token export: 847 variables written clean', proj:'Snowball Folio'},
+        {icon:'🟡', text:'anthropic SDK version behind declared requirement', proj:'HyperForge'},
+        {icon:'🟢', text:'MedCore compliance PDF: HIPAA checksum valid', proj:'MedCore Vertical'},
+      ],
+      messages: [
+        {from:'NanoClaw', type:'agent', text:'Dependency edge added: hyperforge → auth_flow. Weight recalculated.', time:'2m ago', color:'#7c3aed', init:'NC'},
+        {from:'Sentinel', type:'alert', text:'ALERT — kb_search returning 503. BrambleThundery surfaced.', time:'15m ago', color:'#f87171', init:'SE'},
+        {from:'Archivist', type:'agent', text:'Snowball Folio build finished. Ink engine compiled clean.', time:'1hr ago', color:'#10b981', init:'AR'},
+        {from:'APEX', type:'system', text:'Health sub-agent cycle complete. 1 amber, 1 red.', time:'20m ago', color:'#4a9eff', init:'AX'},
+      ],
+      proactivePhrases: [
+        "HyperForge dependency shifted. NanoClaw is rebuilding the graph.",
+        "BrambleThundery kb_search has been down 15 minutes. Sentinel flagged it.",
+        "Snowball Folio build finished. Ink engine compiled clean.",
+        "Haven't touched MedCore in two days. Checkpoint still valid.",
+        "Three tasks blocked. All tied to kb_search recovery.",
+        "Weaver compiled auth_flow. Locked and ready for dark mode.",
+        "Trend scraper ran clean. 14 new signals in the feed.",
+        "NanoClaw found a drift in the substrate. BrambleThundery surfaced.",
+      ],
+      prefs: {
+        active_hours: '9am–10pm',
+        quiet_hours: '11pm–7am',
+        style: 'concise',
+        sentiment: 'neutral',
+        check_frequency: '2–4 hrs',
+        proactive_min_gap: '20 min',
+        post_convo_cooldown: '10 min'
+      }
+    };
+    
+    // ═══════════════════════════════════════════════
+    // THREE.JS ORB / FACE
+    // ═══════════════════════════════════════════════
+    const canvas = document.getElementById('orb-canvas');
+    const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(160,160);
+    renderer.setClearColor(0x000000,0);
+    
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+    camera.position.set(0,0,3.2);
+    
+    // Face group
+    const faceGroup = new THREE.Group();
+    scene.add(faceGroup);
+    
+    // Head — slightly oblate sphere
+    const headGeo = new THREE.SphereGeometry(1, 64, 64);
+    const headMat = new THREE.MeshPhongMaterial({
+      color: 0x0a0a1a,
+      emissive: 0x4a9eff,
+      emissiveIntensity: 0.08,
+      shininess: 40,
+      transparent: true,
+      opacity: 0.95
+    });
+    const head = new THREE.Mesh(headGeo, headMat);
+    head.scale.z = 0.82;
+    faceGroup.add(head);
+    
+    // Inner glow sphere
+    const glowGeo = new THREE.SphereGeometry(0.92, 32, 32);
+    const glowMat = new THREE.MeshBasicMaterial({
+      color: 0x4a9eff,
+      transparent: true,
+      opacity: 0.04,
+      side: THREE.BackSide
+    });
+    const glow = new THREE.Mesh(glowGeo, glowMat);
+    faceGroup.add(glow);
+    
+    // Eyes
+    function makeEye(xOff) {
+      const group = new THREE.Group();
+      // Sclera
+      const scleraGeo = new THREE.SphereGeometry(0.14, 20, 20);
+      const scleraMat = new THREE.MeshPhongMaterial({ color:0xd0e8ff, emissive:0x4a9eff, emissiveIntensity:0.2, shininess:80 });
+      const sclera = new THREE.Mesh(scleraGeo, scleraMat);
+      group.add(sclera);
+      // Iris
+      const irisGeo = new THREE.CircleGeometry(0.08, 24);
+      const irisMat = new THREE.MeshBasicMaterial({ color:0x4a9eff });
+      const iris = new THREE.Mesh(irisGeo, irisMat);
+      iris.position.z = 0.141;
+      group.add(iris);
+      // Pupil
+      const pupilGeo = new THREE.CircleGeometry(0.04, 16);
+      const pupilMat = new THREE.MeshBasicMaterial({ color:0x000814 });
+      const pupil = new THREE.Mesh(pupilGeo, pupilMat);
+      pupil.position.z = 0.142;
+      group.add(pupil);
+      // Specular
+      const specGeo = new THREE.CircleGeometry(0.015, 8);
+      const specMat = new THREE.MeshBasicMaterial({ color:0xffffff });
+      const spec = new THREE.Mesh(specGeo, specMat);
+      spec.position.set(0.025, 0.025, 0.143);
+      group.add(spec);
+      // Eyelid
+      const lidGeo = new THREE.SphereGeometry(0.145, 20, 20, 0, Math.PI*2, 0, Math.PI/2);
+      const lidMat = new THREE.MeshPhongMaterial({ color:0x0a0a1a, emissive:0x4a9eff, emissiveIntensity:0.05, shininess:20 });
+      const lid = new THREE.Mesh(lidGeo, lidMat);
+      lid.rotation.x = Math.PI/2;
+      lid.position.y = 0.01;
+      group.add(lid);
+    
+      group.position.set(xOff, 0.18, 0.77);
+      group.userData = { lid, sclera, iris, lidOpen:1 };
+      return group;
+    }
+    const eyeL = makeEye(-0.28);
+    const eyeR = makeEye(0.28);
+    faceGroup.add(eyeL);
+    faceGroup.add(eyeR);
+    
+    // Brows
+    function makeBrow(xOff) {
+      const geo = new THREE.CapsuleGeometry(0.025, 0.16, 6, 8);
+      const mat = new THREE.MeshPhongMaterial({ color:0x94a3b8, emissive:0x4a9eff, emissiveIntensity:0.1, shininess:20 });
+      const brow = new THREE.Mesh(geo, mat);
+      brow.position.set(xOff, 0.40, 0.73);
+      brow.rotation.z = xOff < 0 ? 0.12 : -0.12;
+      return brow;
+    }
+    const browL = makeBrow(-0.28);
+    const browR = makeBrow(0.28);
+    faceGroup.add(browL);
+    faceGroup.add(browR);
+    
+    // Nose
+    const noseGeo = new THREE.CapsuleGeometry(0.022, 0.08, 4, 6);
+    const noseMat = new THREE.MeshPhongMaterial({ color:0x0f0f20, emissive:0x4a9eff, emissiveIntensity:0.05, shininess:10 });
+    const nose = new THREE.Mesh(noseGeo, noseMat);
+    nose.position.set(0, -0.02, 0.78);
+    faceGroup.add(nose);
+    
+    // Mouth — built from a curved tube
+    function buildMouth(openAmount) {
+      if (head.userData.mouthMesh) faceGroup.remove(head.userData.mouthMesh);
+      const pts = [];
+      const segs = 20;
+      for(let i=0;i<=segs;i++) {
+        const t = i/segs;
+        const x = (t-0.5)*0.38;
+        const yBase = -0.22;
+        const yCurve = Math.sin(t*Math.PI)*0.06;
+        const yOpen = (t>0.2 && t<0.8) ? -openAmount*0.08 : 0;
+        pts.push(new THREE.Vector3(x, yBase - yCurve + yOpen, 0.77));
+      }
+      const curve = new THREE.CatmullRomCurve3(pts);
+      const tubeGeo = new THREE.TubeGeometry(curve, 20, 0.018, 6, false);
+      const tubeMat = new THREE.MeshPhongMaterial({ color:0x94a3b8, emissive:0x4a9eff, emissiveIntensity:0.15, shininess:40 });
+      const tube = new THREE.Mesh(tubeGeo, tubeMat);
+      faceGroup.add(tube);
+      head.userData.mouthMesh = tube;
+      return tube;
+    }
+    buildMouth(0);
+    
+    // Aura ring
+    const ringGeo = new THREE.TorusGeometry(1.18, 0.015, 8, 80);
+    const ringMat = new THREE.MeshBasicMaterial({ color:0x4a9eff, transparent:true, opacity:0.3 });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    scene.add(ring);
+    
+    // Speaking rings pool
+    const speakRings = [];
+    for(let i=0;i<3;i++) {
+      const rg = new THREE.TorusGeometry(1.0, 0.008, 6, 60);
+      const rm = new THREE.MeshBasicMaterial({ color:0x4a9eff, transparent:true, opacity:0 });
+      const r = new THREE.Mesh(rg, rm);
+      r.userData = {active:false, progress:0};
+      scene.add(r);
+      speakRings.push(r);
+    }
+    
+    // Particles (Full Crew)
+    const particleCount = 180;
+    const pPositions = new Float32Array(particleCount*3);
+    for(let i=0;i<particleCount;i++){
+      const phi = Math.acos(2*Math.random()-1);
+      const theta = Math.random()*Math.PI*2;
+      const r = 1.05 + Math.random()*0.15;
+      pPositions[i*3] = r*Math.sin(phi)*Math.cos(theta);
+      pPositions[i*3+1] = r*Math.sin(phi)*Math.sin(theta);
+      pPositions[i*3+2] = r*Math.cos(phi)*0.82;
+    }
+    const pGeo = new THREE.BufferGeometry();
+    pGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
+    const pMat = new THREE.PointsMaterial({ color:0x4a9eff, size:0.025, transparent:true, opacity:0.6 });
+    const particles = new THREE.Points(pGeo, pMat);
+    scene.add(particles);
+    
+    // Lights
+    const ambientLight = new THREE.AmbientLight(0x1a1a2e, 3);
+    scene.add(ambientLight);
+    const mainLight = new THREE.PointLight(0x4a9eff, 2.5, 8);
+    mainLight.position.set(0, 1, 3);
+    scene.add(mainLight);
+    const fillLight = new THREE.PointLight(0x7c3aed, 0.8, 6);
+    fillLight.position.set(-2, -1, 2);
+    scene.add(fillLight);
+    const rimLight = new THREE.PointLight(0x4a9eff, 0.5, 5);
+    rimLight.position.set(2, 0.5, -1);
+    scene.add(rimLight);
+    
+    // ORB STATE MACHINE
+    const ORB_COLORS = {
+      idle:   {head:0x4a9eff, emissive:0.08, glow:0.04, ring:0x4a9eff, ringOp:0.25, scale:1.0},
+      active: {head:0xf59e0b, emissive:0.16, glow:0.08, ring:0xf59e0b, ringOp:0.4, scale:1.0},
+      speaking:{head:0x4a9eff, emissive:0.22, glow:0.1, ring:0x4a9eff, ringOp:0.5, scale:1.0},
+      alert:  {head:0xf59e0b, emissive:0.18, glow:0.09, ring:0xf87171, ringOp:0.5, scale:1.0},
+      dark:   {head:0x1a2030, emissive:0.02, glow:0.01, ring:0x2a3040, ringOp:0.1, scale:1.0},
+    };
+    
+    function setOrbState(s) {
+      STATE.orbState = s;
+      document.getElementById('orb-state-text').textContent = s;
+      const dot = document.getElementById('orb-state-dot');
+      dot.style.background = {idle:'#4a9eff',active:'#f59e0b',speaking:'#4ade80',alert:'#f87171',dark:'#374151'}[s];
+      // Eye expressions
+      const expressions = {
+        idle:     {lidOpen:1.0, browAngle:0.12, mouthOpen:0},
+        active:   {lidOpen:1.18, browAngle:0.05, mouthOpen:0},
+        speaking: {lidOpen:1.12, browAngle:0.08, mouthOpen:0.6},
+        alert:    {lidOpen:0.82, browAngle:-0.22, mouthOpen:0},
+        dark:     {lidOpen:0.42, browAngle:0.08, mouthOpen:0},
+      };
+      const ex = expressions[s];
+      [eyeL, eyeR].forEach(eye => { eye.userData.targetLid = ex.lidOpen; });
+      browL.userData.targetAngle = ex.browAngle;
+      browR.userData.targetAngle = -ex.browAngle;
+      browL.userData.alertAsymmetry = (s==='alert') ? 0.08 : 0;
+      head.userData.targetMouth = ex.mouthOpen;
+      if(s==='speaking') fireSpeakRings();
+    }
+    
+    function fireSpeakRings() {
+      speakRings.forEach((r,i) => {
+        setTimeout(()=>{
+          r.userData.active = true;
+          r.userData.progress = 0;
+          r.scale.set(1,1,1);
+          r.material.opacity = 0.5;
+        }, i*280);
+      });
+    }
+    
+    // Clock
+    let t = 0;
+    let blinkTimer = 0;
+    let alertPulse = 0;
+    let speakMorphT = 0;
+    
+    function animate() {
+      requestAnimationFrame(animate);
+      t += 0.016;
+      blinkTimer += 0.016;
+      alertPulse += 0.04;
+    
+      const st = STATE.orbState;
+      const cfg = ORB_COLORS[st] || ORB_COLORS.idle;
+    
+      // Breathing scale
+      let breathFreq = st==='active'?2.0 : st==='dark'?0.125 : st==='alert'?1.8 : 1.0;
+      let breathAmp  = st==='dark'?0.005 : st==='alert'?0.025 : 0.015;
+      const breath = 1 + Math.sin(t*breathFreq)*breathAmp;
+      let alertShake = 0;
+      if(st==='alert') alertShake = Math.sin(alertPulse)*0.004;
+      faceGroup.scale.set(breath+alertShake, breath, breath);
+      faceGroup.rotation.y = Math.sin(t*0.3)*0.05;
+    
+      // Color lerp
+      headMat.emissive.lerp(new THREE.Color(cfg.head), 0.04);
+      headMat.emissiveIntensity += (cfg.emissive - headMat.emissiveIntensity)*0.04;
+      glowMat.color.lerp(new THREE.Color(cfg.head), 0.04);
+      glowMat.opacity += (cfg.glow - glowMat.opacity)*0.04;
+      ringMat.color.lerp(new THREE.Color(cfg.ring), 0.04);
+      ringMat.opacity += (cfg.ringOp - ringMat.opacity)*0.04;
+      mainLight.color.lerp(new THREE.Color(cfg.head), 0.04);
+      mainLight.intensity = st==='speaking'?3.0 : st==='dark'?0.5 : 2.5;
+    
+      // Alert red pulse on ring
+      if(st==='alert') ringMat.opacity = cfg.ringOp + Math.sin(alertPulse*2)*0.15;
+    
+      ring.rotation.z += 0.006;
+      ring.rotation.x = Math.sin(t*0.2)*0.1;
+    
+      // Particles
+      particles.visible = STATE.mode==='full';
+      if(particles.visible) {
+        particles.rotation.y += 0.003;
+        particles.rotation.x = Math.sin(t*0.1)*0.05;
+        pMat.opacity = 0.4 + Math.sin(t*1.5)*0.15;
+      }
+    
+      // Eye blink
+      if(blinkTimer > 3.5 + Math.random()*2) {
+        blinkTimer = 0;
+        animateBlink();
+      }
+    
+      // Eyelid open amount
+      [eyeL, eyeR].forEach(eye => {
+        const target = eye.userData.targetLid || 1.0;
+        const current = eye.userData.currentLid || 1.0;
+        eye.userData.currentLid = current + (target-current)*0.08;
+        eye.userData.lid.scale.y = eye.userData.currentLid;
+        eye.userData.lid.position.y = 0.145*(1-eye.userData.currentLid)*0.5;
+      });
+    
+      // Brow animation
+      [browL, browR].forEach((brow, i) => {
+        const target = (i===0 ? browL.userData.targetAngle : browR.userData.targetAngle) || (i===0?0.12:-0.12);
+        brow.rotation.z += (target - brow.rotation.z)*0.06;
+        if(STATE.orbState==='alert' && i===0) brow.position.y = 0.40 + Math.sin(alertPulse*0.7)*0.008;
+      });
+    
+      // Mouth morph
+      if(head.userData.targetMouth !== head.userData.currentMouth) {
+        head.userData.currentMouth = (head.userData.currentMouth||0) + ((head.userData.targetMouth||0) - (head.userData.currentMouth||0))*0.06;
+        if(Math.abs(head.userData.targetMouth - head.userData.currentMouth) < 0.01) head.userData.currentMouth = head.userData.targetMouth;
+        buildMouth(head.userData.currentMouth);
+        // Lip sync wobble when speaking
+        if(STATE.isSpeaking) {
+          speakMorphT += 0.12;
+          const wobble = 0.4 + Math.sin(speakMorphT)*0.3 + Math.random()*0.1;
+          buildMouth(wobble);
+        }
+      }
+    
+      // Speaking rings
+      speakRings.forEach(r => {
+        if(r.userData.active) {
+          r.userData.progress += 0.018;
+          const p = r.userData.progress;
+          r.scale.set(1+p*0.8, 1+p*0.8, 1+p*0.8);
+          r.material.opacity = Math.max(0, 0.5*(1-p));
+          if(p>=1) { r.userData.active=false; r.material.opacity=0; }
+        }
+      });
+    
+      renderer.render(scene, camera);
+    }
+    animate();
+    
+    function animateBlink() {
+      let frame = 0;
+      const b = setInterval(()=>{
+        frame++;
+        const close = frame<=3 ? frame/3 : (6-frame)/3;
+        [eyeL,eyeR].forEach(e=>{
+          const lid = e.userData.targetLid||1;
+          e.userData.currentLid = lid * Math.max(0.1, close);
+        });
+        if(frame>=6) clearInterval(b);
+      },40);
+    }
+    
+    // ═══════════════════════════════════════════════
+    // RENDER FUNCTIONS
+    // ═══════════════════════════════════════════════
+    function renderStream() {
+      const el = document.getElementById('project-stream');
+      const sorted = [...MOCK.projects].sort((a,b)=>{
+        if(b.weight !== a.weight) return b.weight - a.weight;
+        return 0; // tiebreaker: last touched (already ordered in data)
+      });
+      el.innerHTML = '';
+      // Alert card first
+      const alertHTML = `
+        <div class="alert-card">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <span style="font-size:12px;font-weight:700;color:var(--amber);">⚡ SURFACE ALERT</span>
+            <span class="why-tag">health: red</span>
+          </div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.5;">BrambleThundery kb_search endpoint returning 503. Sentinel flagged. 3 tasks blocked.</div>
+          <div class="alert-actions">
+            <button class="alert-btn btn-dismiss" onclick="this.closest('.alert-card').remove()">Dismiss</button>
+            <button class="alert-btn btn-snooze">Snooze 1hr</button>
+            <button class="alert-btn btn-snooze">Tomorrow</button>
+            <button class="alert-btn btn-act">Act</button>
+          </div>
+        </div>`;
+      el.insertAdjacentHTML('beforeend', alertHTML);
+      sorted.forEach(p => {
+        if(p.sunk) {
+          el.insertAdjacentHTML('beforeend', `
+            <div class="strip-card">
+              <div class="health-dot green"></div>
+              <span class="strip-name">${p.name}</span>
+              <span class="status-badge badge-done">done</span>
+              <span class="strip-time">5d ago</span>
+            </div>`);
+          return;
+        }
+        const whyTag = p.why ? `<span class="why-tag">${p.why}</span>` : '';
+        const healthClass = p.health;
+        const badgeClass = p.health==='red'?'badge-alert':p.status==='done'?'badge-done':'badge-active';
+        const badgeText = p.health==='red'?'alert':p.status;
+        const borderClass = p.health==='amber'?'amber':p.health==='red'?'red':'';
+        const resurfClass = p.why?'resurfaced':'';
+        const agentChips = p.agents.map((a,i)=>`<span class="agent-chip" style="color:${p.agentColors[i]};border-color:${p.agentColors[i]}40;">${a}</span>`).join('');
+        const updates = p.updates.map(u=>`
+          <div class="update-mini">
+            <span style="font-size:9px;color:#a78bfa;font-weight:700;font-family:var(--mono);">${u.agent}</span>
+            <span class="update-text">${u.text}</span>
+            <span class="update-time">${u.time}</span>
+          </div>`).join('');
+        el.insertAdjacentHTML('beforeend', `
+          <div class="project-card ${borderClass} ${resurfClass}">
+            <div class="card-header">
+              <div class="health-dot ${healthClass}"></div>
+              <span class="project-name">${p.name}</span>
+              ${whyTag}
+              <span class="weight-score">${p.weight}</span>
+              <span class="status-badge ${badgeClass}">${badgeText}</span>
+            </div>
+            <div class="card-body">
+              <div class="agent-chips">${agentChips}</div>
+              <div class="nested-updates">${updates}</div>
+              <div style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:8px;">
+                blake3: a4f2e8${p.id.slice(0,4)}c1d9 · compute: ${p.mode} · weight: ${p.weight}
+              </div>
+            </div>
+          </div>`);
+      });
+    }
+    
+    function renderKanban() {
+      const cols = {backlog:'col-backlog',progress:'col-progress',review:'col-review',blocked:'col-blocked',done:'col-done'};
+      const headers = {
+        backlog:{label:'Backlog',cls:'backlog'},
+        progress:{label:'In Progress',cls:'progress'},
+        review:{label:'Review',cls:'review'},
+        blocked:{label:'Blocked',cls:'blocked'},
+        done:{label:'Done',cls:'done'}
+      };
+      Object.keys(cols).forEach(col=>{
+        const el = document.getElementById(cols[col]);
+        const cards = MOCK.kanban.filter(k=>k.col===col);
+        const h = headers[col];
+        el.innerHTML = `<div class="kanban-header ${h.cls}">${h.label} <span class="k-count">${cards.length}</span></div>`;
+        cards.forEach(k=>{
+          const priorityColors={urgent:'var(--red)',high:'var(--amber)',normal:'var(--accent)'};
+          const assignColors={NanoClaw:'#7c3aed',Weaver:'#4a9eff',Sentinel:'#f87171',Archivist:'#10b981',DocAgent:'#f59e0b'};
+          el.insertAdjacentHTML('beforeend',`
+            <div class="kanban-card" draggable="true" data-id="${k.id}">
+              <div class="k-title">${k.title}</div>
+              <div class="k-meta">
+                <span class="k-priority" style="background:${priorityColors[k.priority]};"></span>
+                <span class="k-tag agent">${k.agent}</span>
+                <span class="k-tag proj">${k.proj}</span>
+                <div class="k-assign" style="background:${assignColors[k.agent]}30;color:${assignColors[k.agent]};border:1px solid ${assignColors[k.agent]}40;">${k.agent.slice(0,2)}</div>
+              </div>
+            </div>`);
+        });
+      });
+      // Drag and drop
+      document.querySelectorAll('.kanban-card').forEach(card=>{
+        card.addEventListener('dragstart',()=>card.classList.add('dragging'));
+        card.addEventListener('dragend',()=>card.classList.remove('dragging'));
+      });
+      document.querySelectorAll('.kanban-col').forEach(col=>{
+        col.addEventListener('dragover',e=>{e.preventDefault();});
+        col.addEventListener('drop',e=>{
+          e.preventDefault();
+          const dragging = document.querySelector('.dragging');
+          if(dragging) col.appendChild(dragging);
+        });
+      });
+    }
+    
+    function renderMCP() {
+      const el = document.getElementById('mcp-list');
+      el.innerHTML = '';
+      MOCK.mcpServers.forEach(s=>{
+        const statusColor = s.status==='connected'?'var(--green)':s.status==='degraded'?'var(--amber)':'var(--red)';
+        el.insertAdjacentHTML('beforeend',`
+          <div class="mcp-server ${s.status==='connected'?'active':''}">
+            <div class="mcp-name">
+              <span style="width:6px;height:6px;border-radius:50%;background:${statusColor};display:inline-block;"></span>
+              ${s.name}
+              <span style="font-size:9px;color:${statusColor};margin-left:auto;">${s.latency}</span>
+            </div>
+            <div class="mcp-meta">${s.calls} calls total</div>
+            <div class="mcp-tools">${s.tools.map(t=>`<span class="tool-chip">${t}</span>`).join('')}</div>
+          </div>`);
+      });
+      // MCP Inspector log
+      const insp = document.getElementById('mcp-inspector');
+      const logs = [
+        {ts:'03:41:12',method:'tools/call',args:'read_file(hyperforge/graph.json)',result:'✓ 847 bytes'},
+        {ts:'03:41:08',method:'tools/call',args:'search(kb_search,"auth")',result:'✗ 503'},
+        {ts:'03:40:55',method:'tools/list',args:'filesystem-mcp',result:'✓ 4 tools'},
+        {ts:'03:40:41',method:'tools/call',args:'commit(hyperforge, "dep update")',result:'✓ sha: a4f2e8'},
+      ];
+      insp.innerHTML = logs.map(l=>`
+        <div class="mcp-log-line">
+          <span class="mcp-ts">${l.ts}</span>
+          <span class="mcp-method">${l.method}</span>
+          <span style="color:var(--text2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${l.args}</span>
+          <span class="mcp-result">${l.result}</span>
+        </div>`).join('');
+    }
+    
+    function renderCRM() {
+      const el = document.getElementById('crm-list');
+      el.innerHTML = '';
+      MOCK.crm.forEach(c=>{
+        el.insertAdjacentHTML('beforeend',`
+          <div class="crm-contact">
+            <div class="crm-avatar" style="background:${c.color}20;color:${c.color};border:1px solid ${c.color}40;">${c.initials}</div>
+            <div class="crm-info">
+              <div class="crm-name">${c.name}</div>
+              <div class="crm-stage">${c.company} · ${c.stage}</div>
+            </div>
+            <span class="crm-signal ${c.signal}">${c.signal}</span>
+          </div>`);
+      });
+    }
+    
+    function renderSkills() {
+      const el = document.getElementById('skills-list');
+      const overlayEl = document.getElementById('overlay-skills-list');
+      el.innerHTML = '';
+      overlayEl.innerHTML = '';
+      MOCK.skills.forEach(s=>{
+        const html = `
+          <div class="skill-item">
+            <div class="skill-name">
+              <span class="health-dot ${s.health}" style="width:6px;height:6px;"></span>
+              ${s.name}
+              <span class="skill-mode ${s.mode}">${s.mode==='compiled'?'🔒 compiled':s.mode}</span>
+            </div>
+            <div class="skill-meta">last: ${s.lastRun} · success: ${s.success} · cost: ${s.cost}</div>
+            ${s.mode==='live'?`<button onclick="promoteSkill('${s.name}')" style="margin-top:6px;font-size:10px;padding:2px 8px;background:rgba(74,158,255,0.1);border:1px solid rgba(74,158,255,0.3);border-radius:4px;color:var(--accent);cursor:pointer;">Compile →</button>`:''}
+          </div>`;
+        el.insertAdjacentHTML('beforeend', html);
+        overlayEl.insertAdjacentHTML('beforeend', html);
+      });
+    }
+    
+    function renderAgents() {
+      const el = document.getElementById('rtab-agents');
+      el.innerHTML = '';
+      MOCK.agents.forEach(a=>{
+        el.insertAdjacentHTML('beforeend',`
+          <div class="agent-status">
+            <div class="agent-name">
+              <span class="agent-running ${a.status==='idle'?'agent-idle':''}"></span>
+              <span style="color:${a.color};font-weight:700;">${a.name}</span>
+              <span style="font-size:10px;color:var(--text3);margin-left:auto;">${a.status}</span>
+            </div>
+            <div class="agent-task">${a.task}</div>
+            <div class="agent-metrics">
+              <span class="metric">tokens: <span>${a.tokens.toLocaleString()}</span></span>
+              <span class="metric">calls: <span>${a.calls}</span></span>
+            </div>
+          </div>`);
+      });
+    }
+    
+    function renderHealth() {
+      const el = document.getElementById('rtab-health');
+      el.innerHTML = '<div style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;">Sub-Agent Feed</div>';
+      MOCK.health.forEach(h=>{
+        el.insertAdjacentHTML('beforeend',`
+          <div class="health-item">
+            <span class="health-icon">${h.icon}</span>
+            <div>
+              <div class="health-text">${h.text}</div>
+              <div class="health-proj">${h.proj}</div>
+            </div>
+          </div>`);
+      });
+    }
+    
+    function renderPrefs() {
+      const el = document.getElementById('rtab-prefs');
+      const p = MOCK.prefs;
+      el.innerHTML = `
+        <div style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;">Preference Profile</div>
+        ${Object.entries(p).map(([k,v])=>`
+          <div class="pref-row">
+            <span class="pref-label">${k.replace(/_/g,' ')}</span>
+            <span class="pref-val">${v}</span>
+          </div>`).join('')}
+        <div style="margin-top:14px;">
+          <div style="font-size:10px;color:var(--text3);margin-bottom:6px;letter-spacing:0.06em;">ACTIVE HOURS</div>
+          <div class="hour-bar">
+            ${Array.from({length:24},(_,i)=>{
+              const active = i>=9 && i<=22;
+              return `<div class="hour-cell" style="background:${active?'var(--accent)':'rgba(255,255,255,0.05)'};" title="${i}:00"></div>`;
+            }).join('')}
+          </div>
+        </div>`;
+    }
+    
+    function renderMsgBus() {
+      const el = document.getElementById('msg-stream');
+      MOCK.messages.forEach(m=>{
+        el.insertAdjacentHTML('beforeend',`
+          <div class="msg-item">
+            <div class="msg-avatar" style="background:${m.color}20;color:${m.color};border:1px solid ${m.color}40;">${m.init}</div>
+            <div class="msg-bubble">
+              <div class="msg-from">${m.from} <span class="msg-type ${m.type}">${m.type}</span> <span class="msg-time" style="margin-left:auto;">${m.time}</span></div>
+              <div class="msg-text">${m.text}</div>
+            </div>
+          </div>`);
+      });
+      el.scrollTop = el.scrollHeight;
+    }
+    
+    // ═══════════════════════════════════════════════
+    // INTERACTIONS
+    // ═══════════════════════════════════════════════
+    window.setMode = function(mode) {
+      const labels = {full:'Spinning up full crew...', solo:'Waking reserve agent...', dark:'Going dark. Compiled skills remain active.'};
+      const trans = document.getElementById('mode-transition');
+      const txt = document.getElementById('transition-text');
+      txt.textContent = labels[mode];
+      trans.classList.add('show');
+      setTimeout(()=>{
+        STATE.mode = mode;
+        document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+        document.querySelector(`.mode-btn.${mode==='full'?'mode-btn':mode==='solo'?'solo':'dark'}`);
+        const btns = document.querySelectorAll('.mode-btn');
+        btns[mode==='full'?0:mode==='solo'?1:2].classList.add('active');
+        setOrbState(mode==='dark'?'dark':'idle');
+        trans.classList.remove('show');
+        // Update skill modes display in dark mode
+        renderSkills();
+      }, 1200);
+    };
+    
+    window.setLeftTab = function(tab, el) {
+      document.querySelectorAll('.left-tab').forEach(t=>t.classList.remove('active'));
+      el.classList.add('active');
+      ['mcp','crm','skills'].forEach(t=>{
+        document.getElementById('tab-'+t).style.display = t===tab?'block':'none';
+      });
+    };
+    
+    window.setCenterTab = function(tab, el) {
+      document.querySelectorAll('.center-tab').forEach(t=>t.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('stream-view').style.display='none';
+      document.getElementById('stream-view').classList.remove('active');
+      document.getElementById('kanban-view').style.display='none';
+      document.getElementById('kanban-view').classList.remove('active');
+      document.getElementById('msgbus-view').style.display='none';
+      document.getElementById('msgbus-view').classList.remove('active');
+      if(tab==='stream') { document.getElementById('stream-view').style.display='block'; document.getElementById('stream-view').classList.add('active'); }
+      if(tab==='kanban') { document.getElementById('kanban-view').style.display='flex'; document.getElementById('kanban-view').classList.add('active'); }
+      if(tab==='msgbus') { document.getElementById('msgbus-view').style.display='block'; document.getElementById('msgbus-view').classList.add('active'); }
+    };
+    
+    window.setRightTab = function(tab, el) {
+      document.querySelectorAll('.right-tab').forEach(t=>t.classList.remove('active'));
+      el.classList.add('active');
+      ['agents','health','prefs'].forEach(t=>{
+        document.getElementById('rtab-'+t).style.display = t===tab?'block':'none';
+      });
+    };
+    
+    // Orb click
+    canvas.addEventListener('click', ()=>{
+      const card = document.getElementById('conv-card');
+      if(STATE.convOpen) {
+        card.style.display='none';
+        STATE.convOpen=false;
+        if(STATE.isSpeaking) { STATE.speechSynth.cancel(); STATE.isSpeaking=false; setOrbState('idle'); }
+      } else {
+        card.style.display='block';
+        STATE.convOpen=true;
+        STATE.lastUserSpoke = Date.now();
+      }
+    });
+    
+    // Long press for skill overlay
+    let pressTimer;
+    canvas.addEventListener('mousedown',()=>{ pressTimer = setTimeout(()=>{ document.getElementById('skill-overlay').classList.add('open'); },600); });
+    canvas.addEventListener('mouseup',()=>clearTimeout(pressTimer));
+    canvas.addEventListener('contextmenu',(e)=>{ e.preventDefault(); document.getElementById('skill-overlay').classList.add('open'); });
+    
+    window.handleConvKey = function(e) {
+      if(e.key==='Enter' && !e.shiftKey) {
+        e.preventDefault();
+        const input = document.getElementById('conv-input');
+        const text = input.value.trim();
+        if(!text) return;
+        input.value = '';
+        STATE.lastUserSpoke = Date.now();
+        const hist = document.getElementById('conv-history');
+        hist.insertAdjacentHTML('beforeend',`<div style="color:var(--text);margin-bottom:4px;"><span style="color:var(--text3);">you ▸</span> ${text}</div>`);
+        // Orb reply
+        const replies = [
+          "On it. Checking now.",
+          "Noted. NanoClaw is aware.",
+          "That pattern came up twice this week.",
+          "BrambleThundery is the bottleneck. kb_search is degraded.",
+          "Snowball build is clean. Ready when you are.",
+          "Three tasks queued. Weaver is handling two."
+        ];
+        setTimeout(()=>{
+          const reply = replies[Math.floor(Math.random()*replies.length)];
+          hist.insertAdjacentHTML('beforeend',`<div style="color:var(--accent);margin-bottom:4px;"><span style="color:var(--text3);">apex ▸</span> ${reply}</div>`);
+          hist.scrollTop=hist.scrollHeight;
+          orbSpeak(reply);
+        }, 600);
+      }
+    };
+    
+    window.sendMsg = function() {
+      const input = document.getElementById('msg-input');
+      const text = input.value.trim();
+      if(!text) return;
+      input.value='';
+      const el = document.getElementById('msg-stream');
+      el.insertAdjacentHTML('beforeend',`
+        <div class="msg-item">
+          <div class="msg-avatar" style="background:rgba(74,158,255,0.1);color:var(--accent);border:1px solid rgba(74,158,255,0.3);">CS</div>
+          <div class="msg-bubble">
+            <div class="msg-from">You <span class="msg-type system">user</span> <span class="msg-time" style="margin-left:auto;">now</span></div>
+            <div class="msg-text">${text}</div>
+          </div>
+        </div>`);
+      el.scrollTop=el.scrollHeight;
+    };
+    
+    window.promoteSkill = function(name) {
+      const skill = MOCK.skills.find(s=>s.name===name);
+      if(skill) { skill.mode='compiled'; renderSkills(); }
+    };
+    
+    window.addSkill = function() {
+      const url = document.getElementById('skill-url').value.trim();
+      if(!url) return;
+      MOCK.skills.push({name:url.split('/').pop()||url, mode:'dormant', lastRun:'never', success:'—', cost:'?', health:'green'});
+      renderSkills();
+      document.getElementById('skill-url').value='';
+    };
+    
+    window.addMCPServer = function() {
+      const name = prompt('MCP server name or URL:');
+      if(name) {
+        MOCK.mcpServers.push({id:'mcp'+Date.now(),name,status:'connected',tools:['list'],calls:0,latency:'—'});
+        renderMCP();
+      }
+    };
+    
+    // ═══════════════════════════════════════════════
+    // SPEECH
+    // ═══════════════════════════════════════════════
+    function orbSpeak(text) {
+      if(STATE.mode==='dark') return;
+      if(STATE.speechQueue.length >= 3) STATE.speechQueue.shift(); // drop oldest
+      STATE.speechQueue.push(text);
+      if(!STATE.isSpeaking) processQueue();
+    }
+    
+    function processQueue() {
+      if(STATE.speechQueue.length===0) {
+        STATE.isSpeaking=false;
+        setOrbState('idle');
+        return;
+      }
+      const text = STATE.speechQueue.shift();
+      STATE.isSpeaking=true;
+      setOrbState('speaking');
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.rate=0.95; utter.pitch=0.9; utter.volume=0.85;
+      const voices = STATE.speechSynth.getVoices();
+      const neural = voices.find(v=>v.name.includes('Neural')||v.name.includes('Natural')||v.localService===false);
+      if(neural) utter.voice=neural;
+      utter.onend=()=>{ STATE.currentUtterance=null; processQueue(); };
+      STATE.currentUtterance=utter;
+      STATE.speechSynth.speak(utter);
+      STATE.lastOrbSpoke=Date.now();
+    }
+    
+    // ═══════════════════════════════════════════════
+    // PROACTIVE SPEECH EVALUATOR
+    // ═══════════════════════════════════════════════
+    function evaluateTriggers() {
+      if(STATE.mode==='dark') return;
+      const now = Date.now();
+      if((now - STATE.lastOrbSpoke) < 20*60*1000 && STATE.lastOrbSpoke > 0) return;
+      if((now - STATE.lastUserSpoke) < 10*60*1000 && STATE.lastUserSpoke > 0) return;
+      const h = new Date().getHours();
+      if(h >= 23 || h < 7) return; // quiet hours
+      const phrase = MOCK.proactivePhrases[Math.floor(Math.random()*MOCK.proactivePhrases.length)];
+      orbSpeak(phrase);
+    }
+    
+    // ═══════════════════════════════════════════════
+    // MOCK SSE — fires every 15s
+    // ═══════════════════════════════════════════════
+    function mockSSETick() {
+      const events = [
+        ()=>{ MOCK.messages.push({from:'NanoClaw',type:'agent',text:'Graph traversal complete. 12 new dependency edges mapped.',time:'now',color:'#7c3aed',init:'NC'}); renderMsgBus(); },
+        ()=>{ MOCK.projects[0].updates.unshift({agent:'Weaver',text:'auth_flow compiled. Blake3: d9e2f1a4.',time:'now',tools:['skill_compile']}); renderStream(); setOrbState('active'); setTimeout(()=>setOrbState('idle'),3000); },
+        ()=>{ MOCK.health.unshift({icon:'🟡',text:'anthropic SDK 2.1 behind declared requirement 2.3',proj:'HyperForge'}); renderHealth(); setOrbState('alert'); setTimeout(()=>setOrbState('idle'),4000); },
+        ()=>{ MOCK.agents[0].tokens += 1247; renderAgents(); },
+        ()=>{ orbSpeak(MOCK.proactivePhrases[Math.floor(Math.random()*MOCK.proactivePhrases.length)]); },
+      ];
+      const fn = events[Math.floor(Math.random()*events.length)];
+      fn();
+    }
+    
+    // Clock
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('clock').textContent = now.toLocaleTimeString('en-US',{hour12:false});
+    }
+    
+    // ═══════════════════════════════════════════════
+    // INIT
+    // ═══════════════════════════════════════════════
+    renderStream();
+    renderKanban();
+    renderMCP();
+    renderCRM();
+    renderSkills();
+    renderAgents();
+    renderHealth();
+    renderPrefs();
+    renderMsgBus();
+    updateClock();
+    
+    setInterval(updateClock, 1000);
+    setInterval(mockSSETick, 15000); // 15s SSE mock
+    setInterval(evaluateTriggers, 30000); // 30s proactive
+    setTimeout(()=>{ orbSpeak("HyperForge dependency shifted. NanoClaw is rebuilding the graph."); }, 3000);
+    setOrbState('active');
+    setTimeout(()=>setOrbState('idle'),4000);
+    
+    // Try real SSE
+    try {
+      const sse = new EventSource('http://localhost:8080/stream/mock-session');
+      sse.onopen = ()=>{
+        document.getElementById('mock-badge').style.display='none';
+        document.getElementById('conn-dot').classList.remove('mock');
+      };
+      sse.onerror = ()=>{};
+    } catch(e){}
+    
+    console.log('%cAPEX STUDIO V3 — SNOWBALL COMMAND CENTER', 'color:#4a9eff;font-size:14px;font-weight:700;');
+    console.log('%cMCP + Kanban + CRM + Stream + 3D Face Avatar', 'color:#94a3b8;');
+    </script>
+    </body>
+    </html>

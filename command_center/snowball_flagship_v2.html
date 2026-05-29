@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snowball Design Intelligence — Luxury Design OS</title>
+    <style>
+      :root {
+        --bg: #070709;
+        --bg2: #0d0d12;
+        --bg3: #111118;
+        --accent: #4a9eff;
+        --gold: #c9a84c;
+        --text: #f0f0f5;
+        --text2: #888899;
+        --text3: #444455;
+        --border: rgba(255,255,255,0.06);
+        --border2: rgba(255,255,255,0.12);
+        --card: rgba(255,255,255,0.025);
+        --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --mono: ui-monospace, monospace;
+      }
+      * { margin:0; padding:0; box-sizing:border-box; }
+      html { scroll-behavior: smooth; }
+      body { background: var(--bg); color: var(--text); font-family: var(--sans); overflow-x: hidden; }
+    
+      /* ── NAV ── */
+      nav {
+        position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+        height: 60px; display: flex; align-items: center; padding: 0 40px; gap: 32px;
+        transition: background 0.4s, backdrop-filter 0.4s;
+      }
+      nav.scrolled { background: rgba(7,7,9,0.92); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+      .nav-logo { font-size: 15px; font-weight: 800; letter-spacing: 0.12em; color: var(--text); }
+      .nav-logo span { color: var(--accent); }
+      .nav-links { display: flex; gap: 28px; margin-left: 32px; }
+      .nav-links a { font-size: 12px; color: var(--text2); text-decoration: none; letter-spacing: 0.06em; transition: color 0.2s; }
+      .nav-links a:hover { color: var(--text); }
+      .nav-spacer { flex: 1; }
+      .nav-cta {
+        font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+        padding: 8px 20px; border-radius: 4px;
+        background: var(--accent); color: #000; border: none; cursor: pointer;
+        text-decoration: none; transition: opacity 0.2s;
+      }
+      .nav-cta:hover { opacity: 0.85; }
+      .nav-cta.ghost { background: transparent; color: var(--text2); border: 1px solid var(--border2); }
+    
+      /* ── HERO ── */
+      #hero {
+        min-height: 100vh; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; text-align: center;
+        padding: 120px 40px 80px; position: relative; overflow: hidden;
+      }
+      .hero-grid {
+        position: absolute; inset: 0;
+        background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                          linear-gradient(90deg, var(--border) 1px, transparent 1px);
+        background-size: 60px 60px;
+        mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 100%);
+      }
+      .hero-glow {
+        position: absolute; width: 600px; height: 600px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(74,158,255,0.08) 0%, transparent 70%);
+        top: 50%; left: 50%; transform: translate(-50%,-50%);
+        pointer-events: none;
+      }
+      .hero-eyebrow {
+        font-size: 10px; font-family: var(--mono); letter-spacing: 0.25em;
+        color: var(--accent); margin-bottom: 24px; position: relative;
+      }
+      .hero-title {
+        font-size: clamp(52px, 7vw, 96px); font-weight: 900;
+        line-height: 1.0; letter-spacing: -0.03em; position: relative;
+        max-width: 900px; margin: 0 auto 24px;
+      }
+      .hero-title .line2 { color: var(--accent); }
+      .hero-sub {
+        font-size: 17px; color: var(--text2); line-height: 1.7;
+        max-width: 560px; margin: 0 auto 48px; position: relative;
+      }
+      .hero-actions { display: flex; gap: 14px; justify-content: center; position: relative; }
+      .btn-primary {
+        font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+        padding: 14px 32px; border-radius: 4px;
+        background: var(--accent); color: #000; border: none; cursor: pointer;
+        text-decoration: none; transition: all 0.2s;
+      }
+      .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(74,158,255,0.25); }
+      .btn-ghost {
+        font-size: 12px; font-weight: 600; letter-spacing: 0.08em;
+        padding: 14px 32px; border-radius: 4px;
+        background: transparent; color: var(--text2);
+        border: 1px solid var(--border2); cursor: pointer;
+        text-decoration: none; transition: all 0.2s;
+      }
+      .btn-ghost:hover { border-color: var(--text2); color: var(--text); }
+    
+      /* ── TICKER ── */
+      .ticker-wrap {
+        overflow: hidden; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+        padding: 14px 0; background: var(--bg2);
+      }
+      .ticker {
+        display: flex; gap: 0; white-space: nowrap;
+        animation: ticker 30s linear infinite;
+      }
+      .ticker-item {
+        font-size: 11px; font-family: var(--mono); letter-spacing: 0.12em;
+        color: var(--text3); padding: 0 32px; display: inline-flex; align-items: center; gap: 12px;
+      }
+      .ticker-item .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); }
+      @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    
+      /* ── STATS ── */
+      .stats-bar {
+        display: flex; justify-content: center; gap: 0;
+        border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+        background: var(--bg2);
+      }
+      .stat-item {
+        flex: 1; max-width: 200px; padding: 32px 20px; text-align: center;
+        border-right: 1px solid var(--border);
+      }
+      .stat-item:last-child { border-right: none; }
+      .stat-number { font-size: 36px; font-weight: 900; color: var(--text); letter-spacing: -0.02em; }
+      .stat-label { font-size: 10px; font-family: var(--mono); color: var(--text3); letter-spacing: 0.12em; margin-top: 4px; }
+    
+      /* ── SECTION ── */
+      section { padding: 100px 40px; max-width: 1200px; margin: 0 auto; }
+      .section-label {
+        font-size: 10px; font-family: var(--mono); letter-spacing: 0.2em;
+        color: var(--accent); margin-bottom: 16px;
+      }
+      .section-title { font-size: clamp(32px, 4vw, 52px); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 20px; }
+      .section-sub { font-size: 16px; color: var(--text2); line-height: 1.7; max-width: 560px; margin-bottom: 60px; }
+    
+      /* ── ARCHETYPES GRID ── */
+      .archetypes-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+      .archetype-card {
+        background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 24px 20px; cursor: pointer;
+        transition: all 0.3s; position: relative; overflow: hidden;
+      }
+      .archetype-card::before {
+        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+        background: var(--accent-color, var(--accent));
+      }
+      .archetype-card:hover { border-color: var(--accent-color, var(--accent)); transform: translateY(-2px); }
+      .arch-name { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+      .arch-tagline { font-size: 11px; color: var(--text2); line-height: 1.5; margin-bottom: 12px; }
+      .arch-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+      .arch-tag { font-size: 9px; font-family: var(--mono); padding: 2px 6px; border-radius: 3px; background: rgba(255,255,255,0.05); color: var(--text3); }
+      .arch-num { position: absolute; top: 16px; right: 16px; font-size: 9px; font-family: var(--mono); color: var(--text3); }
+    
+      /* ── FEATURES GRID ── */
+      .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+      .feature-card {
+        background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 32px 28px; transition: all 0.3s;
+      }
+      .feature-card:hover { border-color: var(--border2); }
+      .feature-icon { font-size: 28px; margin-bottom: 16px; }
+      .feature-title { font-size: 15px; font-weight: 700; margin-bottom: 10px; }
+      .feature-desc { font-size: 13px; color: var(--text2); line-height: 1.7; }
+    
+      /* ── APEX CALLOUT ── */
+      .apex-callout {
+        background: linear-gradient(135deg, rgba(74,158,255,0.06) 0%, rgba(124,58,237,0.06) 100%);
+        border: 1px solid rgba(74,158,255,0.15); border-radius: 12px; padding: 60px;
+        display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+        margin: 0 40px 100px;
+      }
+      .apex-modules { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 20px; }
+      .apex-module {
+        padding: 12px; background: rgba(0,0,0,0.3); border-radius: 5px;
+        border: 1px solid rgba(74,158,255,0.1); font-size: 10px;
+        font-family: var(--mono); color: var(--text2); text-align: center;
+      }
+      .apex-module .amod-name { font-size: 11px; color: var(--accent); font-weight: 700; margin-bottom: 4px; }
+    
+      /* ── PRICING ── */
+      .pricing-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+      .pricing-card {
+        background: var(--card); border: 1px solid var(--border);
+        border-radius: 10px; padding: 32px 24px; position: relative;
+        transition: all 0.3s;
+      }
+      .pricing-card.featured {
+        border-color: var(--accent); background: rgba(74,158,255,0.04);
+        transform: scale(1.02);
+      }
+      .pricing-card:hover { border-color: var(--border2); }
+      .pricing-card.featured:hover { border-color: var(--accent); }
+      .featured-badge {
+        position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+        background: var(--accent); color: #000; font-size: 9px; font-weight: 700;
+        letter-spacing: 0.1em; padding: 4px 14px; border-radius: 0 0 6px 6px;
+      }
+      .price-tier { font-size: 11px; font-family: var(--mono); color: var(--text3); letter-spacing: 0.1em; margin-bottom: 12px; }
+      .price-amount { font-size: 40px; font-weight: 900; line-height: 1; margin-bottom: 4px; }
+      .price-amount sup { font-size: 20px; vertical-align: super; }
+      .price-period { font-size: 11px; color: var(--text3); margin-bottom: 20px; }
+      .price-desc { font-size: 12px; color: var(--text2); margin-bottom: 24px; line-height: 1.6; }
+      .price-features { list-style: none; margin-bottom: 28px; }
+      .price-features li { font-size: 12px; color: var(--text2); padding: 6px 0; border-bottom: 1px solid var(--border); display: flex; gap: 8px; }
+      .price-features li::before { content: "—"; color: var(--accent); }
+      .price-btn {
+        width: 100%; padding: 12px; border-radius: 5px; font-size: 11px;
+        font-weight: 700; letter-spacing: 0.1em; cursor: pointer;
+        border: 1px solid var(--border2); background: transparent; color: var(--text2);
+        transition: all 0.2s; font-family: var(--sans);
+      }
+      .price-btn.primary { background: var(--accent); color: #000; border-color: var(--accent); }
+      .price-btn:hover { border-color: var(--text2); color: var(--text); }
+      .price-btn.primary:hover { opacity: 0.85; }
+    
+      /* ── DFY SECTION ── */
+      .dfy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+      .dfy-card {
+        background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 32px 24px; transition: all 0.3s;
+      }
+      .dfy-card.featured { border-color: var(--gold); background: rgba(201,168,76,0.03); }
+      .dfy-price { font-size: 32px; font-weight: 900; margin: 12px 0; }
+      .dfy-days { font-size: 11px; font-family: var(--mono); color: var(--text3); margin-bottom: 20px; }
+    
+      /* ── FOOTER ── */
+      footer {
+        border-top: 1px solid var(--border); padding: 60px 40px;
+        display: flex; justify-content: space-between; align-items: center;
+        max-width: 1200px; margin: 0 auto;
+      }
+      .footer-logo { font-size: 13px; font-weight: 800; letter-spacing: 0.1em; }
+      .footer-links { display: flex; gap: 24px; }
+      .footer-links a { font-size: 11px; color: var(--text3); text-decoration: none; }
+      .footer-links a:hover { color: var(--text2); }
+      .footer-copy { font-size: 11px; color: var(--text3); font-family: var(--mono); }
+    
+      /* ── SCROLL ANIMATIONS ── */
+      .reveal { opacity: 0; transform: translateY(24px); transition: all 0.6s ease; }
+      .reveal.visible { opacity: 1; transform: translateY(0); }
+    
+      /* ── RESPONSIVE ── */
+      @media (max-width: 900px) {
+        .archetypes-grid { grid-template-columns: repeat(2, 1fr); }
+        .features-grid { grid-template-columns: repeat(2, 1fr); }
+        .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+        .dfy-grid { grid-template-columns: 1fr; }
+        .apex-callout { grid-template-columns: 1fr; }
+      }
+    </style>
+    </head>
+    <body>
+    
+    <!-- ── NAV ── -->
+    <nav id="nav">
+      <div class="nav-logo">SNOW<span>BALL</span></div>
+      <div class="nav-links">
+        <a href="#archetypes">Archetypes</a>
+        <a href="#features">Intelligence</a>
+        <a href="#apex">APEX</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#dfy">DFY</a>
+      </div>
+      <div class="nav-spacer"></div>
+      <a href="#pricing" class="nav-cta ghost" style="margin-right:8px;">Sign In</a>
+      <a href="#pricing" class="nav-cta">Start Building →</a>
+    </nav>
+    
+    <!-- ── HERO ── -->
+    <section id="hero" style="max-width:none;padding:0;">
+      <div class="hero-grid"></div>
+      <div class="hero-glow"></div>
+      <div class="hero-eyebrow">SNOWBALL DESIGN INTELLIGENCE · 2027</div>
+      <h1 class="hero-title">
+        Every site we build<br>
+        <span class="line2">makes the next one better.</span>
+      </h1>
+      <p class="hero-sub">A luxury design OS that compounds. 8 archetypes, 200+ components, AI that knows your brand grammar — running dark when you sleep.</p>
+      <div class="hero-actions">
+        <a href="#pricing" class="btn-primary">Start with Snowball</a>
+        <a href="#archetypes" class="btn-ghost">Explore Archetypes</a>
+      </div>
+    </section>
+    
+    <!-- ── TICKER ── -->
+    <div class="ticker-wrap">
+      <div class="ticker">
+        <span class="ticker-item"><span class="dot"></span>8 DESIGN ARCHETYPES</span>
+        <span class="ticker-item"><span class="dot"></span>200+ COMPONENTS</span>
+        <span class="ticker-item"><span class="dot"></span>COMPOUND INTELLIGENCE</span>
+        <span class="ticker-item"><span class="dot"></span>AI STYLE ADVISOR</span>
+        <span class="ticker-item"><span class="dot"></span>APEX STUDIO INCLUDED</span>
+        <span class="ticker-item"><span class="dot"></span>DARK MODE COMPUTE</span>
+        <span class="ticker-item"><span class="dot"></span>TREND INGESTION WEEKLY</span>
+        <span class="ticker-item"><span class="dot"></span>BLAKE3 PROVENANCE</span>
+        <span class="ticker-item"><span class="dot"></span>8 DESIGN ARCHETYPES</span>
+        <span class="ticker-item"><span class="dot"></span>200+ COMPONENTS</span>
+        <span class="ticker-item"><span class="dot"></span>COMPOUND INTELLIGENCE</span>
+        <span class="ticker-item"><span class="dot"></span>AI STYLE ADVISOR</span>
+        <span class="ticker-item"><span class="dot"></span>APEX STUDIO INCLUDED</span>
+        <span class="ticker-item"><span class="dot"></span>DARK MODE COMPUTE</span>
+        <span class="ticker-item"><span class="dot"></span>TREND INGESTION WEEKLY</span>
+        <span class="ticker-item"><span class="dot"></span>BLAKE3 PROVENANCE</span>
+      </div>
+    </div>
+    
+    <!-- ── STATS ── -->
+    <div class="stats-bar">
+      <div class="stat-item"><div class="stat-number">8</div><div class="stat-label">ARCHETYPES</div></div>
+      <div class="stat-item"><div class="stat-number">200+</div><div class="stat-label">COMPONENTS</div></div>
+      <div class="stat-item"><div class="stat-number">20</div><div class="stat-label">MAX AGENTS</div></div>
+      <div class="stat-item"><div class="stat-number">∞</div><div class="stat-label">COMPOUNDS</div></div>
+    </div>
+    
+    <!-- ── ARCHETYPES ── -->
+    <section id="archetypes">
+      <div class="section-label">THE 8 ARCHETYPES</div>
+      <h2 class="section-title reveal">Design DNA, codified.</h2>
+      <p class="section-sub reveal">Each archetype is a complete design system — tokens, components, motion recipes, and copy register — extracted from the world's most effective luxury sites.</p>
+      <div class="archetypes-grid reveal" id="arch-grid"></div>
+    </section>
+    
+    <!-- ── FEATURES ── -->
+    <section id="features">
+      <div class="section-label">DESIGN INTELLIGENCE</div>
+      <h2 class="section-title reveal">The platform learns. Your output compounds.</h2>
+      <p class="section-sub reveal">Every site built, every client won, every trend absorbed makes Snowball smarter — and makes you faster, better, worth more.</p>
+      <div class="features-grid reveal" id="features-grid"></div>
+    </section>
+    
+    <!-- ── APEX CALLOUT ── -->
+    <div class="apex-callout reveal" id="apex">
+      <div>
+        <div class="section-label">APEX STUDIO</div>
+        <h2 style="font-size:36px;font-weight:800;line-height:1.1;letter-spacing:-0.02em;margin-bottom:16px;">Your personal<br>agent OS.</h2>
+        <p style="font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:24px;">A living studio with a 3D face. Watches your work. Speaks when something needs attention. Runs a full crew when you have power, compiles skills and runs dark when you don't.</p>
+        <a href="#pricing" class="btn-primary" style="font-size:11px;">Included in all plans →</a>
+      </div>
+      <div>
+        <div style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:12px;letter-spacing:0.1em;">APEX MODULES</div>
+        <div class="apex-modules" id="apex-modules"></div>
+      </div>
+    </div>
+    
+    <!-- ── PRICING — SAAS ── -->
+    <section id="pricing">
+      <div class="section-label">SAAS PLATFORM</div>
+      <h2 class="section-title reveal">Start building. Scale when ready.</h2>
+      <p class="section-sub reveal">All plans include APEX Studio, all 8 archetypes, and the AI Style Advisor. Cancel anytime.</p>
+      <div class="pricing-grid reveal" id="pricing-grid"></div>
+    </section>
+    
+    <!-- ── DFY ── -->
+    <section id="dfy">
+      <div class="section-label">DONE FOR YOU</div>
+      <h2 class="section-title reveal">We build it. You own it.</h2>
+      <p class="section-sub reveal">Full luxury experience delivered in days, not months. Built with Snowball archetypes, tuned to your brand DNA.</p>
+      <div class="dfy-grid reveal" id="dfy-grid"></div>
+    </section>
+    
+    <!-- ── FOOTER ── -->
+    <div style="border-top:1px solid var(--border);margin-top:60px;">
+      <footer>
+        <div class="footer-logo">SNOWBALL<span style="color:var(--accent);">.</span></div>
+        <div class="footer-links">
+          <a href="#">Archetypes</a>
+          <a href="#">Templates</a>
+          <a href="#">APEX Studio</a>
+          <a href="#">Pricing</a>
+          <a href="#">Contact</a>
+        </div>
+        <div class="footer-copy">© 2027 Snowball Design Intelligence</div>
+      </footer>
+    </div>
+    
+    <script>
+    // ── DATA ──
+    const ARCHETYPES = [
+      { name:'Marcello Dark Precision', tagline:'High contrast. Technical elegance. The feeling everything costs money.', tags:['dark','minimal','geometric'], color:'#4a9eff', n:'01' },
+      { name:'Pininfarina Editorial', tagline:'Italian elegance. Wide whitespace. Heritage meeting future.', tags:['white','editorial','serif'], color:'#c9a84c', n:'02' },
+      { name:'Porsche Grid System', tagline:'Structured performance. German precision. Every pixel earns its place.', tags:['grid','performance','clean'], color:'#e8e8e8', n:'03' },
+      { name:'Gossip Goblin Dark', tagline:'Cinematic dystopian. Otherworldly depth. Art that unsettles.', tags:['dark','cinematic','weird'], color:'#7c3aed', n:'04' },
+      { name:'Rolls-Royce Heritage', tagline:'Warmth. Restraint. Quality so obvious it needs no announcement.', tags:['warm','luxury','serif'], color:'#8b6914', n:'05' },
+      { name:'Apple Ultra Clean', tagline:'Negative space as design element. Product as hero. Nothing decorative.', tags:['white','product','ultra-clean'], color:'#86888a', n:'06' },
+      { name:'Studio Drift Spatial', tagline:'Depth and dimension. Three-dimensional thinking in two dimensions.', tags:['spatial','3d','motion'], color:'#4ade80', n:'07' },
+      { name:'Bang & Olufsen Minimal', tagline:'Sound you can see. Design that justifies the price before you read it.', tags:['dark','audio','premium'], color:'#a78bfa', n:'08' },
+    ];
+    
+    const FEATURES = [
+      { icon:'◈', title:'Compound Intelligence', desc:'Every site built makes the platform smarter. Design decisions, client wins, trend data — all compound into better output for every future project.' },
+      { icon:'◎', title:'AI Style Advisor', desc:'Audits any URL or uploaded design against luxury grammar. Flags violations — spacing, typography weight, motion timing — before your client sees them.' },
+      { icon:'◬', title:'Trend Ingestion', desc:'Firecrawl monitors Awwwards, Red Dot, iF, and Dezeen weekly. Surface-level shifts in luxury design reach your archetype library before your competitors notice.' },
+      { icon:'◻', title:'APEX Agent OS', desc:'3D face orb. Weight-sorted stream. Kanban. MCP panel. CRM. Your entire operation in one ambient surface — with a colleague who speaks when things need attention.' },
+      { icon:'◆', title:'Brand DNA System', desc:'8 archetypes, 200+ components, 40 font pairs, 120 palettes, 30 motion recipes, 15 layout systems. Locked, versioned, provenance-tracked with Blake3 hashes.' },
+      { icon:'◐', title:'Dark Mode Compute', desc:'Compiled skills fire on schedule with no LLM calls. Your build keeps running when you are not. Cost: $0.00 per compiled execution.' },
+    ];
+    
+    const APEX_MODULES = ['3D FACE ORB','WEIGHT STREAM','KANBAN','MCP PANEL','CRM BUS','SKILL REGISTRY','HEALTH BOT','SSE STREAM','PROVENANCE','SPATIAL MEMORY','GAZE TRACK','WAKE WORD'];
+    
+    const PRICING = [
+      { tier:'SOLO', price:149, period:'/mo', desc:'One person. All archetypes. The full compound model.', features:['1 active site','All 8 archetypes','AI Style Advisor','APEX Studio','Basic analytics'], featured:false },
+      { tier:'STUDIO', price:299, period:'/mo', desc:'Small agency. Five sites. White-label for your clients.', features:['5 active sites','White-label export','Priority support','Trend reports weekly','Full component library'], featured:true },
+      { tier:'AGENCY', price:697, period:'/mo', desc:'Full agency. Unlimited output. Client portal included.', features:['Unlimited sites','Client review portal','Custom archetype training','API access','Dedicated account manager'], featured:false },
+      { tier:'ENTERPRISE', price:999, period:'/mo', desc:'Platform license. Build on top of Snowball.', features:['Platform API','Custom LLM fine-tune','White-label platform','SLA + support','Usage analytics'], featured:false },
+    ];
+    
+    const DFY = [
+      { name:'Snowball Starter', price:'$2,500', days:'5 business days', features:['1 archetype','6 sections','1 revision round','CMS setup','Figma handoff'] },
+      { name:'Snowball Studio', price:'$4,500', days:'10 business days', featured:true, features:['1 archetype blend','12 sections','3 revision rounds','CMS + SEO setup','30-day support'] },
+      { name:'Snowball Bespoke', price:'$8,500', days:'15 business days', features:['Custom archetype blend','Full 12 sections','Unlimited revisions','3-month support','Brand kit included'] },
+    ];
+    
+    // ── RENDER ──
+    function renderArchetypes() {
+      document.getElementById('arch-grid').innerHTML = ARCHETYPES.map(a => `
+        <div class="archetype-card" style="--accent-color:${a.color}">
+          <div class="arch-num">${a.n}</div>
+          <div class="arch-name" style="color:${a.color};">${a.name}</div>
+          <div class="arch-tagline">${a.tagline}</div>
+          <div class="arch-tags">${a.tags.map(t=>`<span class="arch-tag">${t}</span>`).join('')}</div>
+        </div>`).join('');
+    }
+    
+    function renderFeatures() {
+      document.getElementById('features-grid').innerHTML = FEATURES.map(f => `
+        <div class="feature-card">
+          <div class="feature-icon">${f.icon}</div>
+          <div class="feature-title">${f.title}</div>
+          <div class="feature-desc">${f.desc}</div>
+        </div>`).join('');
+    }
+    
+    function renderApexModules() {
+      document.getElementById('apex-modules').innerHTML = APEX_MODULES.map(m => `
+        <div class="apex-module"><div class="amod-name">${m}</div></div>`).join('');
+    }
+    
+    function renderPricing() {
+      document.getElementById('pricing-grid').innerHTML = PRICING.map(p => `
+        <div class="pricing-card ${p.featured?'featured':''}">
+          ${p.featured?'<div class="featured-badge">MOST POPULAR</div>':''}
+          <div class="price-tier">${p.tier}</div>
+          <div class="price-amount"><sup>$</sup>${p.price}</div>
+          <div class="price-period">${p.period} · billed monthly</div>
+          <div class="price-desc">${p.desc}</div>
+          <ul class="price-features">${p.features.map(f=>`<li>${f}</li>`).join('')}</ul>
+          <button class="price-btn ${p.featured?'primary':''}" onclick="alert('Stripe checkout coming soon. Contact: snowball@design for early access.')">
+            ${p.featured?'Start Studio Plan →':'Get Started →'}
+          </button>
+        </div>`).join('');
+    }
+    
+    function renderDFY() {
+      document.getElementById('dfy-grid').innerHTML = DFY.map(d => `
+        <div class="dfy-card ${d.featured?'featured':''}">
+          <div style="font-size:11px;font-family:var(--mono);color:${d.featured?'var(--gold)':'var(--text3)'};letter-spacing:0.1em;">${d.name.toUpperCase()}</div>
+          <div class="dfy-price" style="color:${d.featured?'var(--gold)':'var(--text)'};">${d.price}</div>
+          <div class="dfy-days">${d.days}</div>
+          <ul class="price-features" style="margin-bottom:24px;">${d.features.map(f=>`<li>${f}</li>`).join('')}</ul>
+          <button class="price-btn ${d.featured?'primary':''}" onclick="alert('Book a DFY project: snowball@design')">
+            ${d.featured?'Book Studio →':'Book Now →'}
+          </button>
+        </div>`).join('');
+    }
+    
+    // ── SCROLL ──
+    window.addEventListener('scroll', () => {
+      document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+      document.querySelectorAll('.reveal').forEach(el => {
+        if (el.getBoundingClientRect().top < window.innerHeight - 80) el.classList.add('visible');
+      });
+    });
+    
+    // ── INIT ──
+    renderArchetypes();
+    renderFeatures();
+    renderApexModules();
+    renderPricing();
+    renderDFY();
+    setTimeout(() => document.querySelectorAll('.reveal').forEach(el => { if(el.getBoundingClientRect().top < window.innerHeight) el.classList.add('visible'); }), 100);
+    </script>
+    </body>
+    </html>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Space Grotesk',sans-serif; background:#0a0a0a; }
+.slide { width:1920px; height:1080px; position:relative; overflow:hidden; page-break-after:always; }
+
+/* SLIDE 7 - REVENUE MODEL */
+.slide-7 { background:#0a0a0a; padding:80px 120px; display:flex; flex-direction:column; justify-content:center; }
+.slide-7 .s-tag { font-family:'Space Mono',monospace; font-size:13px; letter-spacing:0.4em; color:#c9a84c; text-transform:uppercase; margin-bottom:24px; display:flex; align-items:center; gap:16px; }
+.slide-7 .s-tag::before { content:''; width:40px; height:1px; background:#c9a84c; }
+.slide-7 h2 { font-size:64px; font-weight:700; color:#f0f0e8; margin-bottom:48px; letter-spacing:-0.02em; }
+.slide-7 .rev-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:24px; margin-bottom:40px; }
+.slide-7 .rev-card { background:#111418; border:1px solid rgba(201,168,76,0.12); padding:48px 40px; position:relative; overflow:hidden; }
+.slide-7 .rev-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:#c9a84c; opacity:0.4; }
+.slide-7 .rev-type { font-family:'Space Mono',monospace; font-size:11px; letter-spacing:0.3em; color:#c9a84c; text-transform:uppercase; margin-bottom:20px; }
+.slide-7 .rev-name { font-size:28px; font-weight:700; color:#f0f0e8; margin-bottom:12px; }
+.slide-7 .rev-price { font-family:'Space Mono',monospace; font-size:40px; font-weight:700; color:#c9a84c; line-height:1; margin-bottom:16px; }
+.slide-7 .rev-desc { font-size:16px; color:rgba(240,240,232,0.45); line-height:1.6; margin-bottom:24px; }
+.slide-7 .rev-potential { font-size:15px; color:rgba(240,240,232,0.6); }
+.slide-7 .rev-potential strong { color:#c9a84c; }
+.slide-7 .chart-row { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:8px; }
+.slide-7 .proj-block { background:#111418; border:1px solid rgba(201,168,76,0.12); padding:28px 36px; display:flex; align-items:center; gap:32px; }
+.slide-7 .proj-label { font-family:'Space Mono',monospace; font-size:11px; color:#c9a84c; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:6px; }
+.slide-7 .proj-num { font-size:40px; font-weight:700; color:#f0f0e8; font-family:'Space Mono',monospace; }
+.slide-7 .proj-sub { font-size:14px; color:rgba(240,240,232,0.35); margin-top:4px; }
+
+/* SLIDE 8 - COMPETITIVE MOAT */
+.slide-8 { background:#0f0f0f; padding:80px 120px; display:flex; flex-direction:column; justify-content:center; }
+.slide-8 .s-tag { font-family:'Space Mono',monospace; font-size:13px; letter-spacing:0.4em; color:#c9a84c; text-transform:uppercase; margin-bottom:24px; display:flex; align-items:center; gap:16px; }
+.slide-8 .s-tag::before { content:''; width:40px; height:1px; background:#c9a84c; }
+.slide-8 h2 { font-size:64px; font-weight:700; color:#f0f0e8; margin-bottom:48px; letter-spacing:-0.02em; }
+.slide-8 .comp-table { width:100%; border-collapse:collapse; }
+.slide-8 .comp-table th { font-family:'Space Mono',monospace; font-size:14px; letter-spacing:0.2em; color:#c9a84c; text-transform:uppercase; padding:20px 28px; border-bottom:1px solid rgba(201,168,76,0.2); text-align:left; background:rgba(201,168,76,0.05); }
+.slide-8 .comp-table th:first-child { text-align:left; }
+.slide-8 .comp-table td { padding:22px 28px; border-bottom:1px solid rgba(255,255,255,0.05); font-size:18px; color:rgba(240,240,232,0.6); }
+.slide-8 .comp-table tr:last-child td { border-bottom:none; }
+.slide-8 .comp-table .snowball-row td { color:#f0f0e8; background:rgba(201,168,76,0.06); font-weight:600; }
+.slide-8 .comp-table .snowball-row td:first-child { color:#c9a84c; }
+.slide-8 .check { color:#c9a84c; display:flex; align-items:center; gap:8px; }
+.slide-8 .cross { color:rgba(240,240,232,0.2); display:flex; align-items:center; gap:8px; }
+.slide-8 .partial { color:rgba(201,168,76,0.5); display:flex; align-items:center; gap:8px; }
+.slide-8 .moat-badges { display:flex; gap:16px; margin-top:40px; flex-wrap:wrap; }
+.slide-8 .badge { font-family:'Space Mono',monospace; font-size:12px; letter-spacing:0.15em; padding:12px 24px; border:1px solid rgba(201,168,76,0.2); color:#c9a84c; text-transform:uppercase; display:flex; align-items:center; gap:10px; }
+
+/* SLIDE 9 - ROADMAP */
+.slide-9 { background:#0a0a0a; padding:80px 120px; display:flex; flex-direction:column; justify-content:center; }
+.slide-9 .s-tag { font-family:'Space Mono',monospace; font-size:13px; letter-spacing:0.4em; color:#c9a84c; text-transform:uppercase; margin-bottom:24px; display:flex; align-items:center; gap:16px; }
+.slide-9 .s-tag::before { content:''; width:40px; height:1px; background:#c9a84c; }
+.slide-9 h2 { font-size:64px; font-weight:700; color:#f0f0e8; margin-bottom:48px; letter-spacing:-0.02em; }
+.slide-9 .phases { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+.slide-9 .phase { background:#111418; border:1px solid rgba(201,168,76,0.12); padding:48px 40px; position:relative; }
+.slide-9 .phase-badge { position:absolute; top:-1px; left:-1px; background:#c9a84c; padding:8px 20px; font-family:'Space Mono',monospace; font-size:11px; letter-spacing:0.2em; color:#0a0a0a; font-weight:700; text-transform:uppercase; }
+.slide-9 .phase-period { font-family:'Space Mono',monospace; font-size:13px; color:#c9a84c; letter-spacing:0.2em; margin-bottom:16px; margin-top:40px; }
+.slide-9 .phase-name { font-size:28px; font-weight:700; color:#f0f0e8; margin-bottom:24px; }
+.slide-9 .phase-items { display:flex; flex-direction:column; gap:12px; }
+.slide-9 .phase-item { display:flex; align-items:flex-start; gap:12px; font-size:17px; color:rgba(240,240,232,0.6); line-height:1.4; }
+.slide-9 .phase-item i { color:#c9a84c; flex-shrink:0; margin-top:2px; }
+.slide-9 .phase-target { margin-top:32px; padding-top:24px; border-top:1px solid rgba(201,168,76,0.15); font-family:'Space Mono',monospace; font-size:13px; color:#c9a84c; }
+.slide-9 .phase-target span { color:rgba(240,240,232,0.4); font-size:12px; display:block; margin-top:4px; }
+.slide-9 .chart-container { margin-top:40px; width:100%; height:120px; }
+
+/* SLIDE 10 - CLOSING */
+.slide-10 { background:#0a0a0a; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; position:relative; overflow:hidden; }
+.slide-10 .bg-text { position:absolute; font-size:320px; font-weight:700; color:transparent; -webkit-text-stroke:1px rgba(201,168,76,0.04); letter-spacing:-0.05em; pointer-events:none; white-space:nowrap; top:50%; left:50%; transform:translate(-50%,-50%); font-family:'Space Mono',monospace; }
+.slide-10 .gold-line { width:80px; height:2px; background:#c9a84c; margin:0 auto 40px; }
+.slide-10 .s-tag { font-family:'Space Mono',monospace; font-size:13px; letter-spacing:0.4em; color:#c9a84c; text-transform:uppercase; margin-bottom:32px; }
+.slide-10 h2 { font-size:96px; font-weight:700; color:#f0f0e8; letter-spacing:-0.03em; line-height:1; margin-bottom:32px; }
+.slide-10 h2 span { color:#c9a84c; }
+.slide-10 .sub { font-size:28px; color:rgba(240,240,232,0.4); font-weight:300; max-width:700px; margin:0 auto 56px; line-height:1.5; }
+.slide-10 .cta-row { display:flex; gap:24px; justify-content:center; margin-bottom:64px; }
+.slide-10 .btn-gold { display:inline-flex; align-items:center; gap:14px; background:#c9a84c; padding:20px 48px; font-family:'Space Mono',monospace; font-size:14px; letter-spacing:0.2em; color:#0a0a0a; font-weight:700; text-transform:uppercase; }
+.slide-10 .btn-ghost { display:inline-flex; align-items:center; gap:14px; background:transparent; border:1px solid rgba(201,168,76,0.3); padding:20px 48px; font-family:'Space Mono',monospace; font-size:14px; letter-spacing:0.2em; color:#c9a84c; text-transform:uppercase; }
+.slide-10 .contact-row { display:flex; gap:48px; justify-content:center; }
+.slide-10 .contact-item { font-family:'Space Mono',monospace; font-size:14px; color:rgba(240,240,232,0.3); letter-spacing:0.1em; display:flex; align-items:center; gap:10px; }
+.slide-10 .contact-item i { color:#c9a84c; }
+.slide-10 .corner-mark { position:absolute; bottom:40px; right:80px; font-family:'Space Mono',monospace; font-size:11px; color:rgba(240,240,232,0.15); letter-spacing:0.2em; text-align:right; }
+</style>
+</head>
+<body>
+
+<!-- SLIDE 7: REVENUE MODEL -->
+<section class="slide slide-7">
+  <div class="s-tag">Revenue Model</div>
+  <h2>Three streams. One compounding platform.</h2>
+  <div class="rev-grid">
+    <div class="rev-card">
+      <div class="rev-type">Stream 01 — Active</div>
+      <div class="rev-name">Done-For-You Commissions</div>
+      <div class="rev-price">$3.5K–$8.5K</div>
+      <p class="rev-desc">Complete site builds delivered in 7 days. High margin, high touch, immediate cash flow.</p>
+      <div class="rev-potential">2 sales/mo = <strong>$84K/yr</strong> · 4 sales/mo = <strong>$168K/yr</strong></div>
+    </div>
+    <div class="rev-card">
+      <div class="rev-type">Stream 02 — Passive</div>
+      <div class="rev-name">Template Licenses</div>
+      <div class="rev-price">$497–$4,997</div>
+      <p class="rev-desc">One-time license to use an archetype template. Clients build themselves within the luxury system.</p>
+      <div class="rev-potential">10 sales/mo = <strong>$59K/yr</strong> · 20 sales/mo = <strong>$119K/yr</strong></div>
+    </div>
+    <div class="rev-card">
+      <div class="rev-type">Stream 03 — Recurring</div>
+      <div class="rev-name">SaaS Platform</div>
+      <div class="rev-price">$149–$999/mo</div>
+      <p class="rev-desc">Full platform access with AI style advisor, trend learning, and unlimited site generation.</p>
+      <div class="rev-potential">50 clients = <strong>$89K/yr</strong> · 100 clients = <strong>$179K/yr</strong></div>
+    </div>
+  </div>
+  <div class="chart-row">
+    <div class="proj-block">
+      <div>
+        <div class="proj-label">Year 1 Conservative</div>
+        <div class="proj-num">$198K</div>
+        <div class="proj-sub">2 DFY/mo + 5 licenses/mo + 20 SaaS clients</div>
+      </div>
+    </div>
+    <div class="proj-block">
+      <div>
+        <div class="proj-label">Year 1 Aggressive</div>
+        <div class="proj-num">$504K</div>
+        <div class="proj-sub">4 DFY/mo + 20 licenses/mo + 100 SaaS clients</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 8: COMPETITIVE MOAT -->
+<section class="slide slide-8">
+  <div class="s-tag">Competitive Position</div>
+  <h2>We play a different game entirely</h2>
+  <table class="comp-table">
+    <tr>
+      <th>Feature</th>
+      <th>Snowball</th>
+      <th>Webflow</th>
+      <th>Squarespace</th>
+      <th>Framer</th>
+      <th>Generic Agency</th>
+    </tr>
+    <tr class="snowball-row">
+      <td>Luxury niche focus</td>
+      <td><span class="check"><i data-lucide="check" style="width:20px;height:20px"></i> Yes — built for it</span></td>
+      <td><span class="cross"><i data-lucide="x" style="width:20px;height:20px"></i> No</span></td>
+      <td><span class="cross"><i data-lucide="x" style="width:20px;height:20px"></i> No</span></td>
+      <td><span class="cross"><i data-lucide="x" style="width:20px;height:20px"></i> No</span></td>
+      <td><span class="cross"><i data-lucide="x" style="width:20px;height:20px"></i> No</span></td>
+    </tr>
+    <tr>
+      <td>Design DNA from real luxury brands</td>
+      <td><span class="check"><i data-lucide="check" style="width:20px;height:20px"></i> 8 archetypes</span></td>
+      <td><span class="cross"><i data-lucide="x" style="width:20px;height:20px"></i> No</span></td>
+      <td><span class="cross"><i data-lucide="x" style="width:20px;height:20px"></i> No</span></td>
+      <td><span class="cross"><i data-lucide="x" style="width:20px;height:20px"></i> No</span></td>
+      <td><span class="partial"><i data-lucide="minus" style="width:20px;height:20px"></i> Maybe</span></td>
+    </tr>
+    <tr>
+      <td>AI luxury style guardrails</td>
+      <td><span class="check"><i data-lucide="check" style="width:20px;height:20px"></i> Built in</span></td>
+      <td><span class="cross"><i data-lucide="x" style="width:20px;height:20px"></i> No</span></td>
+      <td><span class="cross"><i data-lucide="x" style="width:20px;height:20px"></i> No</span></td>
+      <td><span class="partial"><i data-lucide="minus" style="width:20px;height:20px"></i> Limited</span></td>
+      <td><span class="cross"><i data-lucide="x" style="width:20px;height:20px"></i> No</span></td>
+    </tr>
+    <tr>
+      <td>Learns from luxury trends</td>
+      <td><span class="check"><i data-lucide="check" style="width:20px;height:20px"></i> Weekly updates</span></td>
+      <td><span class="cross"><i data-lucide="x" style="width:20px;height:20px"></i> No</span></td>
+      <td><span class="cross"><i data-lucide="x" style="width:20px;height:20px"></i> No</span></td>
+      <td><span class="cross"><i data-lucide="x" style="width:20px;height:20px"></i> No</span></td>
+      <td><span class="cross"><i data-lucide="x" style="width:20px;height:20px"></i> No</span></td>
+    </tr>
+    <tr>
+      <td>7-day guaranteed delivery</td>
+      <td><span class="check"><i data-lucide="check" style="width:20px;height:20px"></i> Guaranteed</span></td>
+      <td><span class="partial"><i data-lucide="minus" style="width:20px;height:20px"></i> Self-build</span></td>
+      <td><span class="partial"><i data-lucide="minus" style="width:20px;height:20px"></i> Self-build</span></td>
+      <td><span class="partial"><i data-lucide="minus" style="width:20px;height:20px"></i> Self-build</span></td>
+      <td><span class="cross"><i data-lucide="x" style="width:20px;height:20px"></i> 4-12 weeks</span></td>
+    </tr>
+  </table>
+  <div class="moat-badges">
+    <div class="badge"><i data-lucide="shield" style="width:16px;height:16px"></i> Niche Specialization</div>
+    <div class="badge"><i data-lucide="brain" style="width:16px;height:16px"></i> AI Design Intelligence</div>
+    <div class="badge"><i data-lucide="trending-up" style="width:16px;height:16px"></i> Compounding Learning</div>
+    <div class="badge"><i data-lucide="layers" style="width:16px;height:16px"></i> Archetype System</div>
+    <div class="badge"><i data-lucide="zap" style="width:16px;height:16px"></i> Speed Advantage</div>
+  </div>
+</section>
+
+<!-- SLIDE 9: ROADMAP -->
+<section class="slide slide-9">
+  <div class="s-tag">90-Day Roadmap</div>
+  <h2>Proof. Product. Platform.</h2>
+  <div class="phases">
+    <div class="phase">
+      <div class="phase-badge">Phase 1</div>
+      <div class="phase-period">Weeks 1-4 — Proof</div>
+      <div class="phase-name">DFY Sales Machine</div>
+      <div class="phase-items">
+        <div class="phase-item"><i data-lucide="check" style="width:18px;height:18px"></i>Deploy all 8 demo sites live</div>
+        <div class="phase-item"><i data-lucide="check" style="width:18px;height:18px"></i>Launch cold email sequences</div>
+        <div class="phase-item"><i data-lucide="check" style="width:18px;height:18px"></i>Close first 3 DFY commissions</div>
+        <div class="phase-item"><i data-lucide="check" style="width:18px;height:18px"></i>Build first case studies</div>
+        <div class="phase-item"><i data-lucide="check" style="width:18px;height:18px"></i>LinkedIn brand presence live</div>
+      </div>
+      <div class="phase-target">Target: $15,000 revenue<span>3 commissions x $5K avg</span></div>
+    </div>
+    <div class="phase">
+      <div class="phase-badge">Phase 2</div>
+      <div class="phase-period">Weeks 5-8 — Product</div>
+      <div class="phase-name">Template System</div>
+      <div class="phase-items">
+        <div class="phase-item"><i data-lucide="check" style="width:18px;height:18px"></i>Package 8 archetypes as licenses</div>
+        <div class="phase-item"><i data-lucide="check" style="width:18px;height:18px"></i>Build self-serve purchase flow</div>
+        <div class="phase-item"><i data-lucide="check" style="width:18px;height:18px"></i>Launch template marketplace</div>
+        <div class="phase-item"><i data-lucide="check" style="width:18px;height:18px"></i>First 10 license sales</div>
+        <div class="phase-item"><i data-lucide="check" style="width:18px;height:18px"></i>Referral program launch</div>
+      </div>
+      <div class="phase-target">Target: $25,000 revenue<span>DFY + template license sales</span></div>
+    </div>
+    <div class="phase">
+      <div class="phase-badge">Phase 3</div>
+      <div class="phase-period">Weeks 9-12 — Platform</div>
+      <div class="phase-name">SaaS Launch</div>
+      <div class="phase-items">
+        <div class="phase-item"><i data-lucide="check" style="width:18px;height:18px"></i>AI style advisor beta launch</div>
+        <div class="phase-item"><i data-lucide="check" style="width:18px;height:18px"></i>SaaS pricing tiers live</div>
+        <div class="phase-item"><i data-lucide="check" style="width:18px;height:18px"></i>First 20 SaaS subscribers</div>
+        <div class="phase-item"><i data-lucide="check" style="width:18px;height:18px"></i>Agency white-label pilot</div>
+        <div class="phase-item"><i data-lucide="check" style="width:18px;height:18px"></i>Trend learning system live</div>
+      </div>
+      <div class="phase-target">Target: $20,000 MRR<span>Recurring SaaS + ongoing DFY</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 10: CLOSING -->
+<section class="slide slide-10">
+  <div class="bg-text">SNOWBALL</div>
+  <div class="gold-line"></div>
+  <div class="s-tag">Ready to commission</div>
+  <h2>Let's build something<br><span>exceptional.</span></h2>
+  <p class="sub">One slot available this month. Commissions start at $3,500. Live in 7 days.</p>
+  <div class="cta-row">
+    <div class="btn-gold">
+      <i data-lucide="mail" style="width:18px;height:18px"></i>
+      Start Your Commission
+    </div>
+    <div class="btn-ghost">
+      <i data-lucide="globe" style="width:18px;height:18px"></i>
+      View Live Demo Sites
+    </div>
+  </div>
+  <div class="contact-row">
+    <div class="contact-item"><i data-lucide="mail" style="width:16px;height:16px"></i>chad@snowball.design</div>
+    <div class="contact-item"><i data-lucide="globe" style="width:16px;height:16px"></i>snowball.design</div>
+    <div class="contact-item"><i data-lucide="linkedin" style="width:16px;height:16px"></i>Chad Snowball</div>
+  </div>
+  <div class="corner-mark">Snowball Design Intelligence<br>All rights reserved 2025</div>
+</section>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

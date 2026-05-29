@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: #0a0f1e; }
+.slide {
+  width: 1920px;
+  height: 1080px;
+  position: relative;
+  overflow: hidden;
+  page-break-after: always;
+}
+
+/* SLIDE 1 - TITLE */
+.slide-1 {
+  background: linear-gradient(135deg, #0a0f1e 0%, #0d2137 50%, #0a1628 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0 140px;
+}
+.slide-1 .bg-image {
+  position: absolute;
+  right: 0; top: 0;
+  width: 900px; height: 1080px;
+  object-fit: cover;
+  opacity: 0.35;
+}
+.slide-1 .accent-bar {
+  width: 8px; height: 120px;
+  background: linear-gradient(180deg, #f97316, #fb923c);
+  margin-bottom: 40px;
+  border-radius: 4px;
+}
+.slide-1 .logo-tag {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #f97316;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.slide-1 h1 {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 108px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 2;
+}
+.slide-1 h1 span { color: #f97316; }
+.slide-1 .tagline {
+  font-size: 32px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.75);
+  margin-bottom: 60px;
+  letter-spacing: 2px;
+  position: relative;
+  z-index: 2;
+}
+.slide-1 .pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(249,115,22,0.15);
+  border: 1px solid rgba(249,115,22,0.4);
+  padding: 16px 32px;
+  border-radius: 50px;
+  color: #fb923c;
+  font-size: 22px;
+  font-weight: 600;
+  position: relative;
+  z-index: 2;
+}
+.slide-1 .bottom-strip {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #f97316, #fb923c, #fdba74, #f97316);
+}
+
+/* SLIDE 2 - METRICS CRISIS */
+.slide-2 {
+  background: #0d1117;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 100px;
+}
+.slide-2 .slide-header {
+  margin-bottom: 60px;
+}
+.slide-2 .eyebrow {
+  font-size: 22px;
+  font-weight: 700;
+  color: #f97316;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.slide-2 h2 {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 72px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+}
+.slide-2 h2 span { color: #f97316; }
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+}
+.metric-card {
+  background: linear-gradient(135deg, #161b2e, #1a2035);
+  border: 1px solid rgba(249,115,22,0.2);
+  border-radius: 20px;
+  padding: 44px 36px;
+  position: relative;
+  overflow: hidden;
+}
+.metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #f97316, #fb923c);
+}
+.metric-card .icon-wrap {
+  width: 56px; height: 56px;
+  background: rgba(249,115,22,0.15);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 28px;
+}
+.metric-card .big-num {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 72px;
+  font-weight: 700;
+  color: #f97316;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.metric-card .metric-label {
+  font-size: 22px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+.metric-card .metric-desc {
+  font-size: 18px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.5;
+}
+
+/* SLIDE 3 - WHO WE SERVE */
+.slide-3 {
+  background: linear-gradient(160deg, #0a0f1e 0%, #0f1a2e 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 100px;
+}
+.slide-3 .eyebrow {
+  font-size: 22px; font-weight: 700;
+  color: #f97316; letter-spacing: 4px;
+  text-transform: uppercase; margin-bottom: 16px;
+}
+.slide-3 h2 {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 72px; font-weight: 700;
+  color: #ffffff; margin-bottom: 60px;
+}
+.serve-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 36px;
+}
+.serve-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 24px;
+  padding: 52px 44px;
+  transition: all 0.3s;
+}
+.serve-card .card-icon {
+  width: 72px; height: 72px;
+  background: linear-gradient(135deg, #f97316, #fb923c);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+.serve-card h3 {
+  font-size: 34px; font-weight: 700;
+  color: #ffffff; margin-bottom: 20px;
+}
+.serve-card .pain-label {
+  font-size: 16px; font-weight: 700;
+  color: #f97316; text-transform: uppercase;
+  letter-spacing: 2px; margin-bottom: 12px;
+}
+.serve-card p {
+  font-size: 22px; color: rgba(255,255,255,0.65);
+  line-height: 1.6;
+}
+.serve-card ul {
+  list-style: none;
+  margin-top: 20px;
+}
+.serve-card ul li {
+  font-size: 20px;
+  color: rgba(255,255,255,0.6);
+  padding: 6px 0;
+  padding-left: 24px;
+  position: relative;
+}
+.serve-card ul li::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 8px; height: 8px;
+  background: #f97316;
+  border-radius: 50%;
+}
+
+/* SLIDE 4 - ASSET PACKAGE */
+.slide-4 {
+  background: #080c18;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 100px;
+}
+.slide-4 .eyebrow { font-size: 22px; font-weight: 700; color: #f97316; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 16px; }
+.slide-4 h2 { font-family: 'Rajdhani', sans-serif; font-size: 72px; font-weight: 700; color: #ffffff; margin-bottom: 60px; }
+.package-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 36px;
+}
+.package-card {
+  background: linear-gradient(135deg, #101624, #141c2e);
+  border: 1px solid rgba(249,115,22,0.3);
+  border-radius: 24px;
+  padding: 52px 44px;
+  position: relative;
+}
+.package-card.featured {
+  border-color: #f97316;
+  background: linear-gradient(135deg, #1a1208, #201508);
+}
+.package-card .pkg-icon {
+  width: 68px; height: 68px;
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 28px;
+  background: rgba(249,115,22,0.15);
+}
+.package-card .pkg-title {
+  font-size: 32px; font-weight: 700;
+  color: #ffffff; margin-bottom: 12px;
+}
+.package-card .pkg-subtitle {
+  font-size: 19px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 32px;
+  line-height: 1.5;
+}
+.package-card .pkg-price {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 52px; font-weight: 700;
+  color: #f97316; margin-bottom: 6px;
+}
+.package-card .pkg-turn {
+  font-size: 18px;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 32px;
+}
+.pkg-features { list-style: none; }
+.pkg-features li {
+  font-size: 19px;
+  color: rgba(255,255,255,0.7);
+  padding: 8px 0;
+  padding-left: 28px;
+  position: relative;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.pkg-features li::before {
+  content: '';
+  position: absolute; left: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 10px; height: 10px;
+  background: #f97316; border-radius: 50%;
+}
+
+/* SLIDE 5 - MARKET OPPORTUNITY */
+.slide-5 {
+  background: #0a0f1e;
+  display: flex;
+  align-items: center;
+  padding: 80px 100px;
+  gap: 80px;
+}
+.slide-5 .left-col { flex: 1; }
+.slide-5 .right-col { flex: 1.2; }
+.slide-5 .eyebrow { font-size: 22px; font-weight: 700; color: #f97316; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 16px; }
+.slide-5 h2 { font-family: 'Rajdhani', sans-serif; font-size: 64px; font-weight: 700; color: #ffffff; margin-bottom: 40px; line-height: 1.1; }
+.market-stat { margin-bottom: 32px; padding-left: 24px; border-left: 4px solid #f97316; }
+.market-stat .stat-num { font-family: 'Rajdhani', sans-serif; font-size: 64px; font-weight: 700; color: #f97316; line-height: 1; }
+.market-stat .stat-label { font-size: 22px; color: rgba(255,255,255,0.7); margin-top: 4px; }
+.chart-wrap { background: rgba(255,255,255,0.04); border-radius: 24px; padding: 40px; border: 1px solid rgba(255,255,255,0.08); }
+.chart-title { font-size: 24px; font-weight: 600; color: rgba(255,255,255,0.8); margin-bottom: 24px; }
+
+/* SLIDE 6 - COMPLIANCE BURDEN COMPARISON */
+.slide-6 {
+  background: linear-gradient(135deg, #080c18, #0d1525);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 100px;
+}
+.slide-6 .eyebrow { font-size: 22px; font-weight: 700; color: #f97316; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 16px; }
+.slide-6 h2 { font-family: 'Rajdhani', sans-serif; font-size: 72px; font-weight: 700; color: #ffffff; margin-bottom: 56px; }
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 80px 1fr;
+  gap: 0;
+  align-items: center;
+}
+.compare-col {
+  background: rgba(255,255,255,0.04);
+  border-radius: 24px;
+  padding: 48px 44px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.compare-col.highlight {
+  background: linear-gradient(135deg, rgba(249,115,22,0.1), rgba(249,115,22,0.05));
+  border-color: rgba(249,115,22,0.4);
+}
+.compare-col .col-label {
+  font-size: 20px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 3px;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid;
+}
+.compare-col.highlight .col-label { color: #f97316; border-color: #f97316; }
+.compare-col:not(.highlight) .col-label { color: rgba(255,255,255,0.4); border-color: rgba(255,255,255,0.1); }
+.compare-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.compare-row .row-label { font-size: 20px; color: rgba(255,255,255,0.6); }
+.compare-row .row-val { font-size: 22px; font-weight: 700; }
+.compare-col.highlight .row-val { color: #fb923c; }
+.compare-col:not(.highlight) .row-val { color: rgba(255,255,255,0.4); }
+.vs-circle {
+  width: 80px; height: 80px;
+  background: linear-gradient(135deg, #f97316, #fb923c);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 28px; font-weight: 700; color: white;
+  margin: 0 auto;
+}
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: TITLE -->
+<section class="slide slide-1">
+  <img class="bg-image" src="IMAGE_PLACEHOLDER:generated_image_20260528_164241_1.png" alt="Logistics">
+  <div class="accent-bar"></div>
+  <div class="logo-tag">NexusLogix Advisory Group</div>
+  <h1>LOGISTICS<br><span>COMPLIANCE</span><br>INTELLIGENCE</h1>
+  <p class="tagline">Your Compliance. Automated. Delivered in 48 Hours.</p>
+  <div class="pill">
+    <i data-lucide="shield-check" style="width:24px;height:24px"></i>
+    Enterprise-Grade Documentation for Mid-Market Operators
+  </div>
+  <div class="bottom-strip"></div>
+</section>
+
+<!-- SLIDE 2: THE CRISIS -->
+<section class="slide slide-2">
+  <div class="slide-header">
+    <div class="eyebrow">The Problem</div>
+    <h2>The Mid-Market <span>Compliance Crisis</span></h2>
+  </div>
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="icon-wrap"><i data-lucide="alert-triangle" style="width:28px;height:28px;color:#f97316"></i></div>
+      <div class="big-num">$800M</div>
+      <div class="metric-label">Annual Freight Fraud</div>
+      <div class="metric-desc">Double brokering and cargo theft losses industry-wide in 2024</div>
+    </div>
+    <div class="metric-card">
+      <div class="icon-wrap"><i data-lucide="file-x" style="width:28px;height:28px;color:#f97316"></i></div>
+      <div class="big-num">73%</div>
+      <div class="metric-label">Onboarding Failure Rate</div>
+      <div class="metric-desc">Of carrier onboarding failures caused by incomplete documentation</div>
+    </div>
+    <div class="metric-card">
+      <div class="icon-wrap"><i data-lucide="dollar-sign" style="width:28px;height:28px;color:#f97316"></i></div>
+      <div class="big-num">$91K</div>
+      <div class="metric-label">Avg Violation Cost</div>
+      <div class="metric-desc">Maximum FMCSA penalty per compliance incident for mid-market operators</div>
+    </div>
+    <div class="metric-card">
+      <div class="icon-wrap"><i data-lucide="trending-up" style="width:28px;height:28px;color:#f97316"></i></div>
+      <div class="big-num">+40%</div>
+      <div class="metric-label">Compliance Complexity</div>
+      <div class="metric-desc">Increase in documentation burden under FMCSA SFD modernization rule 2025</div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 3: WHO WE SERVE -->
+<section class="slide slide-3">
+  <div class="eyebrow">Our Clients</div>
+  <h2>Who We Serve</h2>
+  <div class="serve-grid">
+    <div class="serve-card">
+      <div class="card-icon"><i data-lucide="truck" style="width:36px;height:36px;color:white"></i></div>
+      <h3>Freight Brokers</h3>
+      <div class="pain-label">Core Pain</div>
+      <p>BTR transparency mandates and double brokering fraud destroying margins</p>
+      <ul>
+        <li>Broker-Carrier Agreement templates</li>
+        <li>Carrier vetting documentation</li>
+        <li>Load confirmation audit trails</li>
+        <li>BTR compliance briefings</li>
+      </ul>
+    </div>
+    <div class="serve-card">
+      <div class="card-icon"><i data-lucide="map-pin" style="width:36px;height:36px;color:white"></i></div>
+      <h3>Mid-Market Carriers</h3>
+      <div class="pain-label">Core Pain</div>
+      <p>FMCSA SFD overhaul demands continuous safety documentation at scale</p>
+      <ul>
+        <li>Driver qualification file systems</li>
+        <li>FMCSA SAFER audit preparation</li>
+        <li>ELD compliance documentation</li>
+        <li>HOS policy frameworks</li>
+      </ul>
+    </div>
+    <div class="serve-card">
+      <div class="card-icon"><i data-lucide="building" style="width:36px;height:36px;color:white"></i></div>
+      <h3>3PL Operators</h3>
+      <div class="pain-label">Core Pain</div>
+      <p>Shipper onboarding complexity and EDI integration requirements escalating fast</p>
+      <ul>
+        <li>Shipper-3PL service agreements</li>
+        <li>EDI integration playbooks</li>
+        <li>KPI reporting frameworks</li>
+        <li>Cybersecurity policy docs</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 4: THE PACKAGE -->
+<section class="slide slide-4">
+  <div class="eyebrow">Our Services</div>
+  <h2>The Complete Asset Package</h2>
+  <div class="package-grid">
+    <div class="package-card">
+      <div class="pkg-icon"><i data-lucide="file-text" style="width:32px;height:32px;color:#f97316"></i></div>
+      <div class="pkg-title">Compliance Report</div>
+      <div class="pkg-subtitle">30+ page deep-dive industry compliance and onboarding intelligence report</div>
+      <div class="pkg-price">$2,500</div>
+      <div class="pkg-turn">Delivered in 48 hours</div>
+      <ul class="pkg-features">
+        <li>FMCSA regulatory analysis</li>
+        <li>Carrier vetting checklist</li>
+        <li>22-document onboarding kit</li>
+        <li>90-day implementation roadmap</li>
+        <li>Print-ready PDF + DOCX</li>
+      </ul>
+    </div>
+    <div class="package-card featured">
+      <div class="pkg-icon"><i data-lucide="presentation" style="width:32px;height:32px;color:#f97316"></i></div>
+      <div class="pkg-title">Capabilities Deck</div>
+      <div class="pkg-subtitle">12-slide professional pitch deck or capabilities briefing for enterprise buyers</div>
+      <div class="pkg-price">$1,500</div>
+      <div class="pkg-turn">Delivered in 24 hours</div>
+      <ul class="pkg-features">
+        <li>Custom branded design</li>
+        <li>Data-driven market slides</li>
+        <li>Competitive positioning</li>
+        <li>Export-ready .pptx format</li>
+        <li>2 revision rounds included</li>
+      </ul>
+    </div>
+    <div class="package-card">
+      <div class="pkg-icon"><i data-lucide="video" style="width:32px;height:32px;color:#f97316"></i></div>
+      <div class="pkg-title">Explainer Video</div>
+      <div class="pkg-subtitle">60-second cinematic B2B overview video with professional AI narration</div>
+      <div class="pkg-price">$2,000</div>
+      <div class="pkg-turn">Delivered in 72 hours</div>
+      <ul class="pkg-features">
+        <li>Cinematic visual production</li>
+        <li>Professional voiceover</li>
+        <li>Workflow visualization</li>
+        <li>MP4 export all resolutions</li>
+        <li>LinkedIn and web optimized</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 5: MARKET OPPORTUNITY -->
+<section class="slide slide-5">
+  <div class="left-col">
+    <div class="eyebrow">Market Size</div>
+    <h2>A $1.4 Trillion Opportunity</h2>
+    <div class="market-stat">
+      <div class="stat-num">$1.4T</div>
+      <div class="stat-label">U.S. Freight Logistics Market 2025</div>
+    </div>
+    <div class="market-stat">
+      <div class="stat-num">14.2%</div>
+      <div class="stat-label">E-commerce freight volume growth YoY</div>
+    </div>
+    <div class="market-stat">
+      <div class="stat-num">$295B</div>
+      <div class="stat-label">3PL sector alone — fastest growing segment</div>
+    </div>
+  </div>
+  <div class="right-col">
+    <div class="chart-wrap">
+      <div class="chart-title">Market Breakdown by Segment (Billions USD)</div>
+      <canvas id="marketChart" style="height:520px"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 6: COMPLIANCE BURDEN -->
+<section class="slide slide-6">
+  <div class="eyebrow">The Gap We Fill</div>
+  <h2>Mid-Market vs. Enterprise: The Compliance Gap</h2>
+  <div class="compare-grid">
+    <div class="compare-col">
+      <div class="col-label">Enterprise ($250M+)</div>
+      <div class="compare-row"><span class="row-label">Compliance Staff</span><span class="row-val">5-25 FTEs</span></div>
+      <div class="compare-row"><span class="row-label">Annual Budget</span><span class="row-val">$1.2M - $8M</span></div>
+      <div class="compare-row"><span class="row-label">TMS Platform</span><span class="row-val">Oracle / SAP</span></div>
+      <div class="compare-row"><span class="row-label">Onboarding Time</span><span class="row-val">2-4 weeks</span></div>
+      <div class="compare-row"><span class="row-label">Violation Risk</span><span class="row-val">Managed</span></div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;">
+      <div class="vs-circle">VS</div>
+    </div>
+    <div class="compare-col highlight">
+      <div class="col-label">Mid-Market — Our Target</div>
+      <div class="compare-row"><span class="row-label">Compliance Staff</span><span class="row-val">1-3 FTEs</span></div>
+      <div class="compare-row"><span class="row-label">Annual Budget</span><span class="row-val">$180K - $850K</span></div>
+      <div class="compare-row"><span class="row-label">TMS Platform</span><span class="row-val">Basic / None</span></div>
+      <div class="compare-row"><span class="row-label">Onboarding Time</span><span class="row-val">6-12 weeks</span></div>
+      <div class="compare-row"><span class="row-label">Violation Risk</span><span class="row-val">HIGH — Exposed</span></div>
+    </div>
+  </div>
+</section>
+
+<script>
+lucide.createIcons();
+new Chart(document.getElementById('marketChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Truckload', '3PL', 'Last-Mile', 'Intermodal', 'LTL', 'Brokerage'],
+    datasets: [{
+      data: [380, 295, 180, 87, 108, 98],
+      backgroundColor: ['#f97316','#fb923c','#f97316','#fb923c','#f97316','#fb923c'],
+      borderRadius: 8,
+      borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: { color: 'rgba(255,255,255,0.08)' },
+        ticks: { color: 'rgba(255,255,255,0.6)', font: { size: 18 }, callback: v => '$' + v + 'B' }
+      },
+      x: {
+        grid: { display: false },
+        ticks: { color: 'rgba(255,255,255,0.7)', font: { size: 18 } }
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>

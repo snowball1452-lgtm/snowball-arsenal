@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snowball — New Project Intake</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+    :root {
+      --void: #060608;
+      --obsidian: #0d0d12;
+      --carbon: #111118;
+      --graphite: #1a1a24;
+      --steel: #2a2a38;
+      --smoke: #6b6b8a;
+      --silver: #a0a0c0;
+      --pearl: #d4d4e8;
+      --white: #f0f0f8;
+      --gold: #c9a84c;
+      --gold-light: #e4c97e;
+      --gold-dim: #8a6f2e;
+      --radius: 14px;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--void);
+      color: var(--pearl);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    
+    /* Background grid */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    .container {
+      max-width: 720px;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* Header */
+    .intake-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    
+    .logo-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    
+    .logo-mark {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 600;
+      color: var(--void);
+    }
+    
+    .logo-text-col { text-align: left; }
+    .logo-name { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 600; color: var(--white); }
+    .logo-sub { font-size: 11px; color: var(--gold); letter-spacing: 0.15em; text-transform: uppercase; }
+    
+    .intake-header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 42px;
+      font-weight: 300;
+      color: var(--white);
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
+    }
+    
+    .intake-header h1 em { font-style: italic; color: var(--gold-light); }
+    
+    .intake-header p {
+      font-size: 15px;
+      color: var(--smoke);
+      line-height: 1.7;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    
+    /* Progress */
+    .progress-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 40px;
+    }
+    
+    .progress-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      position: relative;
+    }
+    
+    .progress-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: var(--obsidian);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: var(--smoke);
+      transition: all 0.3s;
+      z-index: 1;
+    }
+    
+    .progress-step.active .progress-dot {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.1);
+      color: var(--gold-light);
+    }
+    
+    .progress-step.done .progress-dot {
+      border-color: var(--gold);
+      background: var(--gold);
+      color: var(--void);
+    }
+    
+    .progress-label {
+      font-size: 10px;
+      color: var(--smoke);
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+    
+    .progress-step.active .progress-label { color: var(--gold); }
+    
+    .progress-line {
+      width: 80px;
+      height: 1px;
+      background: rgba(255,255,255,0.08);
+      margin-bottom: 20px;
+    }
+    
+    .progress-line.done { background: var(--gold-dim); }
+    
+    /* Form Card */
+    .form-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 20px;
+      padding: 40px;
+      backdrop-filter: blur(20px);
+    }
+    
+    /* Steps */
+    .step { display: none; }
+    .step.active { display: block; animation: fadeSlide 0.3s ease; }
+    
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .step-eyebrow {
+      font-size: 10px;
+      color: var(--gold);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    
+    .step-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 300;
+      color: var(--white);
+      margin-bottom: 6px;
+    }
+    
+    .step-title em { font-style: italic; color: var(--gold-light); }
+    
+    .step-desc {
+      font-size: 13px;
+      color: var(--smoke);
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+    
+    /* Form Fields */
+    .field-group { margin-bottom: 20px; }
+    
+    .field-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--silver);
+      margin-bottom: 8px;
+      display: block;
+      letter-spacing: 0.03em;
+    }
+    
+    .field-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s;
+    }
+    
+    .field-input:focus {
+      border-color: rgba(201,168,76,0.4);
+      background: rgba(255,255,255,0.05);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.05);
+    }
+    
+    .field-input::placeholder { color: rgba(107,107,138,0.6); }
+    
+    textarea.field-input {
+      resize: vertical;
+      min-height: 100px;
+      line-height: 1.6;
+    }
+    
+    /* Card Grid Selectors */
+    .card-selector {
+      display: grid;
+      gap: 10px;
+    }
+    
+    .card-selector.cols-2 { grid-template-columns: 1fr 1fr; }
+    .card-selector.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+    
+    .select-card {
+      padding: 16px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    
+    .select-card:hover {
+      border-color: rgba(201,168,76,0.25);
+      background: rgba(201,168,76,0.03);
+    }
+    
+    .select-card.selected {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.08);
+    }
+    
+    .select-card-icon { font-size: 20px; margin-bottom: 4px; }
+    .select-card-title { font-size: 13px; font-weight: 500; color: var(--pearl); }
+    .select-card-sub { font-size: 11px; color: var(--smoke); line-height: 1.4; }
+    
+    /* Range Slider */
+    .range-group {
+      margin-bottom: 20px;
+    }
+    
+    .range-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+    
+    .range-label { font-size: 11px; color: var(--smoke); }
+    
+    input[type=range] {
+      width: 100%;
+      -webkit-appearance: none;
+      height: 3px;
+      background: linear-gradient(90deg, var(--gold) 0%, var(--steel) 0%);
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+    
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--gold);
+      border: 2px solid var(--void);
+      box-shadow: 0 2px 8px rgba(201,168,76,0.4);
+    }
+    
+    .range-value {
+      text-align: center;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--gold-light);
+      margin-top: 8px;
+    }
+    
+    /* Color Archetype Selector */
+    .archetype-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+    
+    .arch-card {
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .arch-card:hover { transform: translateY(-2px); }
+    .arch-card.selected { border-color: var(--gold); }
+    
+    .arch-preview {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    
+    .arch-label {
+      padding: 8px 10px;
+      background: rgba(0,0,0,0.4);
+    }
+    
+    .arch-label-name { font-size: 11px; font-weight: 500; color: var(--pearl); }
+    .arch-label-sub { font-size: 9px; color: var(--smoke); margin-top: 1px; }
+    
+    /* Navigation */
+    .form-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 32px;
+    }
+    
+    .nav-btn {
+      padding: 12px 28px;
+      border-radius: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.02em;
+    }
+    
+    .nav-btn.back {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--smoke);
+    }
+    
+    .nav-btn.back:hover { border-color: rgba(255,255,255,0.15); color: var(--silver); }
+    
+    .nav-btn.next {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+      border: none;
+      color: var(--void);
+    }
+    
+    .nav-btn.next:hover { box-shadow: 0 4px 20px rgba(201,168,76,0.3); transform: translateY(-1px); }
+    
+    .step-counter { font-size: 12px; color: var(--smoke); }
+    
+    /* Summary Step */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .summary-item {
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+    }
+    
+    .summary-label { font-size: 10px; color: var(--smoke); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+    .summary-value { font-size: 14px; color: var(--pearl); font-weight: 500; }
+    
+    .price-reveal {
+      text-align: center;
+      padding: 24px;
+      background: rgba(201,168,76,0.05);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+    }
+    
+    .price-label { font-size: 11px; color: var(--smoke); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; }
+    .price-amount { font-family: 'Cormorant Garamond', serif; font-size: 56px; font-weight: 300; color: var(--gold-light); line-height: 1; }
+    .price-note { font-size: 12px; color: var(--smoke); margin-top: 6px; }
+    
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+      border: none;
+      border-radius: 12px;
+      color: var(--void);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      transition: all 0.2s;
+    }
+    
+    .submit-btn:hover { box-shadow: 0 8px 32px rgba(201,168,76,0.35); transform: translateY(-2px); }
+    
+    /* Success State */
+    .success-state {
+      text-align: center;
+      padding: 20px 0;
+      display: none;
+    }
+    
+    .success-mark {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin: 0 auto 24px;
+      box-shadow: 0 0 60px rgba(201,168,76,0.3);
+    }
+    
+    .success-state h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px;
+      font-weight: 300;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+    
+    .success-state p {
+      font-size: 14px;
+      color: var(--smoke);
+      line-height: 1.7;
+      max-width: 420px;
+      margin: 0 auto 28px;
+    }
+    
+    .next-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      text-align: left;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+    
+    .next-step-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 10px;
+    }
+    
+    .next-step-num {
+      width: 22px;
+      height: 22px;
+      background: rgba(201,168,76,0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--gold);
+      flex-shrink: 0;
+      font-weight: 600;
+    }
+    
+    .next-step-text { font-size: 13px; color: var(--silver); line-height: 1.5; }
+    </style>
+    </head>
+    <body>
+    <div class="container">
+      <div class="intake-header">
+        <div class="logo-row">
+          <div class="logo-mark">S</div>
+          <div class="logo-text-col">
+            <div class="logo-name">Snowball</div>
+            <div class="logo-sub">Design Intelligence</div>
+          </div>
+        </div>
+        <h1>Begin your <em>commission</em></h1>
+        <p>5 questions. 3 minutes. A luxury design site proposal ready before you finish your coffee.</p>
+      </div>
+    
+      <!-- Progress -->
+      <div class="progress-bar" id="progressBar">
+        <div class="progress-step active" id="ps1">
+          <div class="progress-dot">1</div>
+          <div class="progress-label">Studio</div>
+        </div>
+        <div class="progress-line" id="pl1"></div>
+        <div class="progress-step" id="ps2">
+          <div class="progress-dot">2</div>
+          <div class="progress-label">Archetype</div>
+        </div>
+        <div class="progress-line" id="pl2"></div>
+        <div class="progress-step" id="ps3">
+          <div class="progress-dot">3</div>
+          <div class="progress-label">Scope</div>
+        </div>
+        <div class="progress-line" id="pl3"></div>
+        <div class="progress-step" id="ps4">
+          <div class="progress-dot">4</div>
+          <div class="progress-label">Vision</div>
+        </div>
+        <div class="progress-line" id="pl4"></div>
+        <div class="progress-step" id="ps5">
+          <div class="progress-dot">5</div>
+          <div class="progress-label">Confirm</div>
+        </div>
+      </div>
+    
+      <div class="form-card">
+        <!-- STEP 1: Studio Info -->
+        <div class="step active" id="step1">
+          <div class="step-eyebrow">Step 01 — Studio Identity</div>
+          <div class="step-title">Tell us about <em>your studio</em></div>
+          <div class="step-desc">The basics. We'll use this to calibrate everything — from copy tone to typographic hierarchy.</div>
+    
+          <div class="field-group">
+            <label class="field-label">Studio / Company Name</label>
+            <input type="text" class="field-input" id="studioName" placeholder="e.g. Vortex Industrial Design" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">Your Design Sector</label>
+            <div class="card-selector cols-3" id="sectorSelector">
+              <div class="select-card selected" onclick="selectCard(this, 'sectorSelector')">
+                <div class="select-card-icon">🏎</div>
+                <div class="select-card-title">Automotive</div>
+                <div class="select-card-sub">Vehicle, mobility, motorsport design</div>
+              </div>
+              <div class="select-card" onclick="selectCard(this, 'sectorSelector')">
+                <div class="select-card-icon">✈️</div>
+                <div class="select-card-title">Aviation</div>
+                <div class="select-card-sub">Aircraft, aerospace, interiors</div>
+              </div>
+              <div class="select-card" onclick="selectCard(this, 'sectorSelector')">
+                <div class="select-card-icon">🏗</div>
+                <div class="select-card-title">Architecture</div>
+                <div class="select-card-sub">Built environments, spaces</div>
+              </div>
+              <div class="select-card" onclick="selectCard(this, 'sectorSelector')">
+                <div class="select-card-icon">💎</div>
+                <div class="select-card-title">Luxury Goods</div>
+                <div class="select-card-sub">Jewelry, watches, accessories</div>
+              </div>
+              <div class="select-card" onclick="selectCard(this, 'sectorSelector')">
+                <div class="select-card-icon">⚙️</div>
+                <div class="select-card-title">Industrial</div>
+                <div class="select-card-sub">Product, engineering, manufacturing</div>
+              </div>
+              <div class="select-card" onclick="selectCard(this, 'sectorSelector')">
+                <div class="select-card-icon">🚢</div>
+                <div class="select-card-title">Marine</div>
+                <div class="select-card-sub">Yacht, vessel, naval design</div>
+              </div>
+            </div>
+          </div>
+    
+          <div class="form-nav">
+            <span></span>
+            <span class="step-counter">1 of 5</span>
+            <button class="nav-btn next" onclick="nextStep(1)">Continue →</button>
+          </div>
+        </div>
+    
+        <!-- STEP 2: Archetype -->
+        <div class="step" id="step2">
+          <div class="step-eyebrow">Step 02 — Design DNA</div>
+          <div class="step-title">Choose your <em>archetype</em></div>
+          <div class="step-desc">Each archetype is a distinct visual language — extracted from the world's most respected design houses, but built entirely original for you.</div>
+    
+          <div class="archetype-cards" id="archetypeSelector">
+            <div class="arch-card selected" onclick="selectArch(this)">
+              <div class="arch-preview" style="background:linear-gradient(135deg,#060608,#1a1a24)">◈</div>
+              <div class="arch-label"><div class="arch-label-name">Dark Precision</div><div class="arch-label-sub">Obsidian · Gold</div></div>
+            </div>
+            <div class="arch-card" onclick="selectArch(this)">
+              <div class="arch-preview" style="background:linear-gradient(135deg,#f5f0e8,#d4b896)">◉</div>
+              <div class="arch-label" style="background:rgba(0,0,0,0.6)"><div class="arch-label-name">Fluid Elegance</div><div class="arch-label-sub">Cream · Warm Gold</div></div>
+            </div>
+            <div class="arch-card" onclick="selectArch(this)">
+              <div class="arch-preview" style="background:linear-gradient(135deg,#0a0a0a,#1a0505)">◎</div>
+              <div class="arch-label"><div class="arch-label-name">Avant-Garde</div><div class="arch-label-sub">Black · Signal Red</div></div>
+            </div>
+            <div class="arch-card" onclick="selectArch(this)">
+              <div class="arch-preview" style="background:linear-gradient(135deg,#0a0f1a,#1a2a4a)">◍</div>
+              <div class="arch-label"><div class="arch-label-name">Wedge Futurist</div><div class="arch-label-sub">Navy · Electric Blue</div></div>
+            </div>
+            <div class="arch-card" onclick="selectArch(this)">
+              <div class="arch-preview" style="background:linear-gradient(135deg,#f5ede0,#d4a882)">◌</div>
+              <div class="arch-label" style="background:rgba(0,0,0,0.5)"><div class="arch-label-name">Brand Identity</div><div class="arch-label-sub">Sand · Rust</div></div>
+            </div>
+            <div class="arch-card" onclick="selectArch(this)">
+              <div class="arch-preview" style="background:linear-gradient(135deg,#030305,#0a0f05)">✦</div>
+              <div class="arch-label"><div class="arch-label-name">Future Concept</div><div class="arch-label-sub">Void · Lime</div></div>
+            </div>
+          </div>
+    
+          <div class="form-nav">
+            <button class="nav-btn back" onclick="prevStep(2)">← Back</button>
+            <span class="step-counter">2 of 5</span>
+            <button class="nav-btn next" onclick="nextStep(2)">Continue →</button>
+          </div>
+        </div>
+    
+        <!-- STEP 3: Scope -->
+        <div class="step" id="step3">
+          <div class="step-eyebrow">Step 03 — Project Scope</div>
+          <div class="step-title">What does your <em>site need</em>?</div>
+          <div class="step-desc">Select everything that applies. We'll use this to build your project specification and investment range.</div>
+    
+          <div class="card-selector cols-2" id="scopeSelector">
+            <div class="select-card selected" onclick="selectMulti(this)">
+              <div class="select-card-title">◈ Hero Site</div>
+              <div class="select-card-sub">Full-viewport cinematic landing page with project showcase</div>
+            </div>
+            <div class="select-card" onclick="selectMulti(this)">
+              <div class="select-card-title">◉ Brand Identity</div>
+              <div class="select-card-sub">Logo mark, color system, typography, usage rules</div>
+            </div>
+            <div class="select-card" onclick="selectMulti(this)">
+              <div class="select-card-title">◎ Case Studies</div>
+              <div class="select-card-sub">3–6 project pages with editorial photography layout</div>
+            </div>
+            <div class="select-card" onclick="selectMulti(this)">
+              <div class="select-card-title">◍ About + Team</div>
+              <div class="select-card-sub">Studio story, manifesto, team grid</div>
+            </div>
+            <div class="select-card" onclick="selectMulti(this)">
+              <div class="select-card-title">✦ Motion + Animation</div>
+              <div class="select-card-sub">Scroll triggers, hover states, cinematic transitions</div>
+            </div>
+            <div class="select-card" onclick="selectMulti(this)">
+              <div class="select-card-title">⚡ Commission CTA System</div>
+              <div class="select-card-sub">Inquiry form, call booking, conversion architecture</div>
+            </div>
+          </div>
+    
+          <div style="margin-top:24px">
+            <div class="range-group">
+              <label class="field-label">Timeline (weeks)</label>
+              <input type="range" min="1" max="12" value="3" id="timelineRange" oninput="updateRange('timelineRange', 'timelineVal', ' weeks')" />
+              <div class="range-labels">
+                <span class="range-label">1 week</span>
+                <span class="range-label">12 weeks</span>
+              </div>
+              <div class="range-value" id="timelineVal">3 weeks</div>
+            </div>
+          </div>
+    
+          <div class="form-nav">
+            <button class="nav-btn back" onclick="prevStep(3)">← Back</button>
+            <span class="step-counter">3 of 5</span>
+            <button class="nav-btn next" onclick="nextStep(3)">Continue →</button>
+          </div>
+        </div>
+    
+        <!-- STEP 4: Vision -->
+        <div class="step" id="step4">
+          <div class="step-eyebrow">Step 04 — Creative Direction</div>
+          <div class="step-title">Paint the <em>vision</em></div>
+          <div class="step-desc">Don't think about features. Think about the feeling. What should visitors experience the moment they land on your site?</div>
+    
+          <div class="field-group">
+            <label class="field-label">Describe the experience in 2–3 sentences</label>
+            <textarea class="field-input" id="visionText" placeholder="e.g. I want visitors to feel like they've entered the studio of the world's most precise automotive designer. Every pixel should communicate decades of craft. It should feel expensive before a single word is read."></textarea>
+          </div>
+    
+          <div class="field-group">
+            <label class="field-label">Reference brands that inspire you (outside your industry is fine)</label>
+            <input type="text" class="field-input" id="references" placeholder="e.g. Porsche, Rolex, Bottega Veneta, Apple (pre-2015)" />
+          </div>
+    
+          <div class="field-group">
+            <label class="field-label">What does your current site do wrong?</label>
+            <input type="text" class="field-input" id="currentProblem" placeholder="e.g. Looks like every other design studio. No personality. No gravitas." />
+          </div>
+    
+          <div class="form-nav">
+            <button class="nav-btn back" onclick="prevStep(4)">← Back</button>
+            <span class="step-counter">4 of 5</span>
+            <button class="nav-btn next" onclick="nextStep(4)">Review →</button>
+          </div>
+        </div>
+    
+        <!-- STEP 5: Summary -->
+        <div class="step" id="step5">
+          <div class="step-eyebrow">Step 05 — Commission Summary</div>
+          <div class="step-title">Your <em>design brief</em></div>
+          <div class="step-desc">Everything we need to build your luxury design site. Review and confirm to receive your proposal within 24 hours.</div>
+    
+          <div class="price-reveal">
+            <div class="price-label">Investment Range</div>
+            <div class="price-amount" id="priceAmount">$4,500</div>
+            <div class="price-note">One-time · Full ownership · Deploy-ready</div>
+          </div>
+    
+          <div class="summary-grid" id="summaryGrid">
+            <!-- populated by JS -->
+          </div>
+    
+          <button class="submit-btn" onclick="submitForm()">✦ Submit Commission Brief</button>
+    
+          <div class="form-nav" style="margin-top:16px">
+            <button class="nav-btn back" onclick="prevStep(5)">← Edit Brief</button>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+    
+        <!-- SUCCESS -->
+        <div class="success-state" id="successState">
+          <div class="success-mark">✦</div>
+          <h2>Commission <em>received</em></h2>
+          <p>Your design brief is in the Snowball Intelligence system. We'll have a full proposal and project timeline in your inbox within 24 hours.</p>
+          <div class="next-steps">
+            <div class="next-step-item">
+              <div class="next-step-num">1</div>
+              <div class="next-step-text"><strong style="color:var(--pearl)">Proposal arrives</strong> — Full scope, timeline, and investment breakdown.</div>
+            </div>
+            <div class="next-step-item">
+              <div class="next-step-num">2</div>
+              <div class="next-step-text"><strong style="color:var(--pearl)">Discovery call</strong> — 30 minutes to align on vision and creative direction.</div>
+            </div>
+            <div class="next-step-item">
+              <div class="next-step-num">3</div>
+              <div class="next-step-text"><strong style="color:var(--pearl)">Build begins</strong> — Your luxury design site, built to the Snowball standard.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <script>
+    let currentStep = 1;
+    
+    const stepData = {
+      studio: '', sector: 'Automotive', archetype: 'Dark Precision',
+      scope: ['Hero Site'], timeline: '3 weeks', vision: '', references: '', problem: ''
+    };
+    
+    function nextStep(from) {
+      if (from === 1) {
+        const name = document.getElementById('studioName').value.trim();
+        if (name) stepData.studio = name;
+      }
+      if (from === 4) buildSummary();
+      
+      goToStep(from + 1);
+    }
+    
+    function prevStep(from) { goToStep(from - 1); }
+    
+    function goToStep(to) {
+      document.getElementById('step' + currentStep).classList.remove('active');
+      document.getElementById('ps' + currentStep).classList.remove('active');
+      document.getElementById('ps' + currentStep).classList.add('done');
+      
+      if (to <= currentStep) {
+        for (let i = to; i <= currentStep; i++) {
+          const ps = document.getElementById('ps' + i);
+          if (ps) { ps.classList.remove('done'); ps.classList.remove('active'); }
+          const pl = document.getElementById('pl' + (i-1));
+          if (pl) pl.classList.remove('done');
+        }
+      }
+      
+      const pl = document.getElementById('pl' + currentStep);
+      if (pl) pl.classList.add('done');
+      
+      currentStep = to;
+      const nextEl = document.getElementById('step' + to);
+      const nextPs = document.getElementById('ps' + to);
+      if (nextEl) nextEl.classList.add('active');
+      if (nextPs) { nextPs.classList.remove('done'); nextPs.classList.add('active'); }
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    function selectCard(el, groupId) {
+      const group = document.getElementById(groupId);
+      group.querySelectorAll('.select-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      if (groupId === 'sectorSelector') stepData.sector = el.querySelector('.select-card-title').textContent;
+    }
+    
+    function selectMulti(el) {
+      el.classList.toggle('selected');
+      stepData.scope = [];
+      document.getElementById('scopeSelector').querySelectorAll('.select-card.selected').forEach(c => {
+        stepData.scope.push(c.querySelector('.select-card-title').textContent.replace(/^[◈◉◎◍✦⚡]\s/, ''));
+      });
+    }
+    
+    function selectArch(el) {
+      document.getElementById('archetypeSelector').querySelectorAll('.arch-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      stepData.archetype = el.querySelector('.arch-label-name').textContent;
+    }
+    
+    function updateRange(rangeId, valId, suffix) {
+      const val = document.getElementById(rangeId).value;
+      document.getElementById(valId).textContent = val + suffix;
+      if (rangeId === 'timelineRange') stepData.timeline = val + suffix;
+      const pct = ((val - 1) / 11) * 100;
+      document.getElementById(rangeId).style.background = `linear-gradient(90deg, #c9a84c ${pct}%, #2a2a38 ${pct}%)`;
+    }
+    
+    function buildSummary() {
+      stepData.vision = document.getElementById('visionText').value;
+      stepData.references = document.getElementById('references').value;
+      stepData.problem = document.getElementById('currentProblem').value;
+      
+      const scopeCount = stepData.scope.length;
+      const basePrice = 2500 + (scopeCount * 400);
+      const archetypeBonus = ['Future Concept', 'Avant-Garde'].includes(stepData.archetype) ? 500 : 0;
+      const total = basePrice + archetypeBonus;
+      document.getElementById('priceAmount').textContent = '$' + total.toLocaleString();
+      
+      const grid = document.getElementById('summaryGrid');
+      grid.innerHTML = `
+        <div class="summary-item"><div class="summary-label">Studio</div><div class="summary-value">${stepData.studio || 'Not specified'}</div></div>
+        <div class="summary-item"><div class="summary-label">Sector</div><div class="summary-value">${stepData.sector}</div></div>
+        <div class="summary-item"><div class="summary-label">Archetype</div><div class="summary-value">${stepData.archetype}</div></div>
+        <div class="summary-item"><div class="summary-label">Timeline</div><div class="summary-value">${stepData.timeline}</div></div>
+        <div class="summary-item" style="grid-column:1/-1"><div class="summary-label">Scope (${scopeCount} items)</div><div class="summary-value">${stepData.scope.join(', ') || 'Hero Site'}</div></div>
+        ${stepData.vision ? `<div class="summary-item" style="grid-column:1/-1"><div class="summary-label">Vision</div><div class="summary-value" style="font-size:13px;color:var(--smoke);line-height:1.5">${stepData.vision.substring(0,100)}${stepData.vision.length > 100 ? '...' : ''}</div></div>` : ''}
+      `;
+    }
+    
+    function submitForm() {
+      document.getElementById('step5').classList.remove('active');
+      const success = document.getElementById('successState');
+      success.style.display = 'block';
+      success.style.animation = 'fadeSlide 0.4s ease';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    </script>
+    </body>
+    </html>
